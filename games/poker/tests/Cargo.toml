@@ -1,0 +1,25 @@
+[package]
+name = "riverproof-integration"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# Integration tests only. The crate has no library or binary of its own.
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+riverproof = { path = "../programs/riverproof", features = ["no-entrypoint"] }
+riverproof-engine = { path = "../engine" }
+riverproof-mental = { path = "../mental" }
+anchor-lang = "1.0.2"
+anchor-spl = "1.0.2"
+
+[dev-dependencies]
+litesvm = "0.13"
+litesvm-token = "0.13"
+solana-sdk = "3"
+solana-compute-budget-interface = "3"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"

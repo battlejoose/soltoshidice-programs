@@ -1,0 +1,40 @@
+[package]
+name = "riverproof"
+version = "0.1.0"
+edition = "2021"
+description = "Hash Holdem on-chain Texas hold'em"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "riverproof"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[dependencies]
+anchor-lang = { version = "=1.0.2", features = ["init-if-needed"] }
+anchor-spl = "=1.0.2"
+riverproof-engine = { path = "../../engine" }
+
+# Ristretto scalar multiplication: a syscall on chain, curve25519-dalek in a
+# native test, so `src/mental.rs` runs the same arithmetic either way. Pinned to
+# the 3.x line because `anchor-spl` already brings it in and a second copy would
+# mean a second curve library in one binary.
+solana-curve25519 = "=3.1.14"
+
+# SHA-256 as a syscall, for folding a key's Merkle path back to the commitment
+# its author made. SHA-512 — what the rest of the protocol hashes with — is not
+# a syscall, so this is the one hash the program can afford per level. Already
+# in the tree through `anchor-lang`; named here because `src/mental.rs` calls it
+# directly.
+solana-sha256-hasher = "=3.1.0"
+
+# Never built for the SBF target. `src/mental.rs` is checked against deals the
+# protocol crate actually deals, rather than against hand-written vectors.
+[dev-dependencies]
+riverproof-mental = { path = "../../mental" }

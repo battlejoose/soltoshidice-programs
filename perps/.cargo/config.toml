@@ -1,0 +1,5 @@
+[env]
+ACIDPUMP_BUILD_MANIFEST = "deployments/acidpump-mainnet-production.json"
+
+[profile.release]
+opt-level = "s"

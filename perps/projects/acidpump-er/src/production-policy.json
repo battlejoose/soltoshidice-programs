@@ -1,0 +1,13 @@
+{
+  "policy": "production-v1",
+  "minimumEntryUsd": 1,
+  "maximumEntryUsd": null,
+  "maximumLeverage": 1000,
+  "maximumPositionNotionalUsd": 10000000,
+  "maximumWalletNotionalUsd": 10000000,
+  "marketCapacityMode": "rolling-headroom",
+  "marketHeadroomUsd": 5000000,
+  "marketCapacityRefreshSeconds": 30,
+  "marketCapacityHysteresisBps": 1000,
+  "requireWalletAdmission": false
+}

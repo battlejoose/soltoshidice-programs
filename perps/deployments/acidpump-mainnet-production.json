@@ -1,0 +1,160 @@
+{
+  "cluster": "mainnet-beta",
+  "launchEnabled": false,
+  "programId": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+  "stage": "mainnet-launch",
+  "acidpumpMint": "4nCmpwne7hCoWTSpAd54uENmCgHJrHTyn4DMPCEMpump",
+  "primaryTokenSource": "existing-pump-fun-token",
+  "secondaryTokenModel": "contract-issued-pool-local-ownership-balances",
+  "launchTransition": {
+    "reuseProgramId": false,
+    "separateDeployment": true,
+    "primaryTokenSource": "fresh-pump-fun-token",
+    "acidpumpMint": null,
+    "freshSecondaryOwnership": true,
+    "requirements": [
+      "Deploy the tested production code under a separate program ID with the fresh launch Pump.fun token.",
+      "Initialize fresh pool, secondary ownership, keys and persistent application state.",
+      "Keep SDICE balances, FIFO claims and rewards bound to the SDICE production deployment; do not migrate them.",
+      "Keep SDICE withdrawals and claims available until SDICE liabilities have been handled.",
+      "Verify the independent launch deployment before switching the public website and backend."
+    ],
+    "carryPreviousOwnershipIntoLaunch": false
+  },
+  "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  "wrappedSolMint": "So11111111111111111111111111111111111111112",
+  "adminAuthority": "2mqNPWFZo8oLUCYrAsEVgos1SfZJNasfs3LZxKNpvSbX",
+  "adminAuthorityKind": "isolated-launch-keypair",
+  "upgradeAuthority": "GqJwW3CF9XfopAmCP9zNKN1BvVo3aSPQHmfHdrGUeTzA",
+  "publisher": "D2Vpw3rdDCYNZbFGKP85qU4fqPx3oCeZikoKUpStm3hv",
+  "sponsor": "8AcgJzPXtXwA8X2AEYmBK54DiYoNGJPRgwNcZro6fNX9",
+  "rpcEnvironmentVariable": "ACIDPUMP_MAINNET_RPC_URL",
+  "erRpcEnvironmentVariable": "ACIDPUMP_MAINNET_ER_RPC_URL",
+  "binarySha256": null,
+  "auditReport": null,
+  "loadTestReport": null,
+  "disasterRecoveryReport": null,
+  "walletSecurityReview": null,
+  "liquidityRoutes": [
+    {
+      "kind": "primary-SOL",
+      "baseMint": "4nCmpwne7hCoWTSpAd54uENmCgHJrHTyn4DMPCEMpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "pool": "B88u4SDr4GdM6nnfeWdDqGE4VaU3naxtYPnSunECZpGE"
+    },
+    {
+      "kind": "USDC-SOL",
+      "baseMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "pool": "Gf7sXMoP8iRw4iiXmJ1nq4vxcRycbGXy5RL8a8LnTd3v"
+    }
+  ],
+  "gasReserveSol": null,
+  "sponsoredBaseDailySol": 0.5,
+  "sponsoredAddFinalizedIncomeLast24h": true,
+  "lossAllocationPercent": {
+    "pool": 90,
+    "gas": 2,
+    "stakers": 7,
+    "burn": 1
+  },
+  "maximumLeverage": 1000,
+  "collateralBacking": {
+    "model": "core-token-stake-entry-close-v1",
+    "stakeMint": "4nCmpwne7hCoWTSpAd54uENmCgHJrHTyn4DMPCEMpump",
+    "capacityBasis": "sum-of-open-entry-usd-before-leverage",
+    "stakePerBetUsd": 1,
+    "collateralValuation": "full-amount-executable-opening-and-closing-quotes",
+    "historicalLowRequired": false,
+    "automaticCloseOrder": "oldest-opened-at-then-nonce",
+    "unlockRequiresNoOpenOrUnsettledBackedPositions": true,
+    "exemptAssets": [
+      "canonical-native-SOL",
+      "canonical-USDC",
+      "configured-primary-token"
+    ],
+    "implementationVerified": false,
+    "winnerProfitBasis": "min-opening-closing-full-bag-usd",
+    "winnerStakeDebit": false,
+    "lossCoverage": "lost-token-fraction-of-positive-full-bag-usd-depreciation",
+    "exhaustedStake": "close-record-pool-shortfall-no-user-debt",
+    "ownershipRewardBasis": "loss-swap-pool-tokens-plus-actual-consumed-backing",
+    "exemptMints": [
+      "So11111111111111111111111111111111111111112",
+      "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "4nCmpwne7hCoWTSpAd54uENmCgHJrHTyn4DMPCEMpump"
+    ]
+  },
+  "notes": "Fresh SDICE/pSDICE program replacing the retired private test. Reuses recovered project funds, with separate program, authorities, journals and ownership balances. Public wallet initialization is compiled in. Starts paused pending exact-binary and native lifecycle checks.",
+  "releaseName": "SDICE mainnet",
+  "secondaryTokenSymbol": "pSDICE",
+  "contractLimits": {
+    "policy": "production-v1",
+    "minimumEntryUsd": 1,
+    "maximumEntryUsd": null,
+    "maximumLeverage": 1000,
+    "maximumPositionNotionalUsd": 10000000,
+    "maximumWalletNotionalUsd": 10000000,
+    "marketCapacityMode": "rolling-headroom",
+    "marketHeadroomUsd": 5000000,
+    "marketCapacityRefreshSeconds": 30,
+    "marketCapacityHysteresisBps": 1000,
+    "requireWalletAdmission": false
+  },
+  "branding": {
+    "primaryLogo": "/tokens/sdice.png",
+    "secondaryLogo": "/acidpump-teal.svg"
+  },
+  "publicTradingEnabled": false,
+  "deployer": "GpQkBJ9X5EAD1bhJg6hYVdNZor87y65BYu9YFPuMy3yX",
+  "er": {
+    "rpcUrl": "https://mainnet.magicblock.app",
+    "wsUrl": "wss://mainnet.magicblock.app",
+    "validator": "MAS1Dt9qreoRMQ14YQuhg8UTZMMzDdKhmkZMECCzk57"
+  },
+  "primaryTokenSymbol": "SDICE",
+  "addresses": {
+    "programId": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+    "config": "HFVvFANmPCGS5ZoWiA943TsBxXzPv1MdG5WQ49aBDcGg",
+    "pool": "91nGwDnPuBRTxH7d2tiEusqdbFF8MGoxshtYfuyHQh3N",
+    "authority": "4FftrbipTLfR4K1DXnFWMLkXmSRcm3Ukz2RfMP57Dv7z",
+    "primaryAsset": "By1nGEwXcRPP6ZWPKtXoxP9Hap195ux6yc96ufVQ2YdJ",
+    "primaryVault": "6gdwgymhcZM9V2Lcyp8gfv8mTYXjNTPvEihVFeGNBAmr",
+    "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "quoteVault": "DzxKKhJF4BckKpBPcDRyXwR9E9EWmA3Q3yXUYJhHp2wq",
+    "ownershipPool": "4LN6fppDXWMAJVGZfRvjJhpY6txDqeVFeRu8MMhDeBiU",
+    "gasReserve": "FXjWCZEWncFDK1XY6oE92U41DQ9KwTwTrcioCsZBVKmL"
+  },
+  "runtimeIsolation": {
+    "dataNamespace": "acidpump-mainnet-production",
+    "privateKeyDirectory": ".keys/acidpump-mainnet-production",
+    "reuseDevnetKeys": false,
+    "reuseDevnetDataVolume": false,
+    "mintTestCopies": false,
+    "faucetEnabled": false
+  },
+  "routePlan": {
+    "primary": {
+      "mint": "4nCmpwne7hCoWTSpAd54uENmCgHJrHTyn4DMPCEMpump",
+      "pool": "B88u4SDr4GdM6nnfeWdDqGE4VaU3naxtYPnSunECZpGE",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "executionVerified": false
+    },
+    "usdcPayout": {
+      "pool": "Gf7sXMoP8iRw4iiXmJ1nq4vxcRycbGXy5RL8a8LnTd3v",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "executionVerified": false
+    },
+    "note": "Fresh finalized account audit; execution and native lifecycle verification pending"
+  },
+  "routeAudit": "reports/acidpump-mainnet-production-primary-audit.json",
+  "erAudit": null,
+  "readiness": "Separate launch prepared; exact-build mainnet execution and recovery verification pending",
+  "replaces": {
+    "program": "8Uh8KYcEPdEMSiavjRgEFew3Q5keoozZdA6AoX6az6qc",
+    "inventoryReport": "reports/acidpump-mainnet-retirement-inventory.json",
+    "reason": "User-authorized retirement and rent reuse instead of a second full-size upgrade buffer"
+  }
+}

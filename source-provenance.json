@@ -1,0 +1,1060 @@
+{
+  "gameCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+  "perpsCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+  "transformations": [
+    "Poker declare_id substituted with existing mainnet identity, as in original release build.",
+    "Perps workspace members limited to acidpump-er; release profile unchanged."
+  ],
+  "files": [
+    {
+      "path": "games/chain/program/Cargo.lock",
+      "sourcePath": "game/chain/program/Cargo.lock",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "ec351dc411857ef7e3a4a91957a39d48ffc0005306063d90648e3a433eb5fa10",
+      "sha256": "ec351dc411857ef7e3a4a91957a39d48ffc0005306063d90648e3a433eb5fa10"
+    },
+    {
+      "path": "games/chain/program/Cargo.toml",
+      "sourcePath": "game/chain/program/Cargo.toml",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "e4aa66d849c07fe8050e1577c381690178acf7a5ceaf4cfd8e7026e7730818db",
+      "sha256": "e4aa66d849c07fe8050e1577c381690178acf7a5ceaf4cfd8e7026e7730818db"
+    },
+    {
+      "path": "games/chain/program/src/banking.rs",
+      "sourcePath": "game/chain/program/src/banking.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "9ed1c8e0143cd3f0e65c317c550ae6c45615011e03772db33d556b10db732b68",
+      "sha256": "9ed1c8e0143cd3f0e65c317c550ae6c45615011e03772db33d556b10db732b68"
+    },
+    {
+      "path": "games/chain/program/src/blackjack/instructions.rs",
+      "sourcePath": "game/chain/program/src/blackjack/instructions.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "1a94de83230b1627583daa8a5c094051c9e09427491f50a5204ec303a4ff419d",
+      "sha256": "1a94de83230b1627583daa8a5c094051c9e09427491f50a5204ec303a4ff419d"
+    },
+    {
+      "path": "games/chain/program/src/blackjack/magicblock.rs",
+      "sourcePath": "game/chain/program/src/blackjack/magicblock.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "e5d51d3501a3012a5d44a9fc64236a14c4772bcac1e5a83d1c92ceb0feff70e5",
+      "sha256": "e5d51d3501a3012a5d44a9fc64236a14c4772bcac1e5a83d1c92ceb0feff70e5"
+    },
+    {
+      "path": "games/chain/program/src/blackjack/mod.rs",
+      "sourcePath": "game/chain/program/src/blackjack/mod.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "2d43ff770021e8aa671527bc2d46c80fe3466d529702107757fefeb55cf3fbab",
+      "sha256": "2d43ff770021e8aa671527bc2d46c80fe3466d529702107757fefeb55cf3fbab"
+    },
+    {
+      "path": "games/chain/program/src/blackjack/network_funding.rs",
+      "sourcePath": "game/chain/program/src/blackjack/network_funding.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "a7612bc9e09d7ed70235e335570af6ecf0be2547ce96663e83ac030359a1661b",
+      "sha256": "a7612bc9e09d7ed70235e335570af6ecf0be2547ce96663e83ac030359a1661b"
+    },
+    {
+      "path": "games/chain/program/src/blackjack/rewards.rs",
+      "sourcePath": "game/chain/program/src/blackjack/rewards.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "1eaca6f6281e56bb1607690d0835b8aa4c4546fd4ff2f457fafe3c4f328c0bd2",
+      "sha256": "1eaca6f6281e56bb1607690d0835b8aa4c4546fd4ff2f457fafe3c4f328c0bd2"
+    },
+    {
+      "path": "games/chain/program/src/blackjack/rules.rs",
+      "sourcePath": "game/chain/program/src/blackjack/rules.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "7f387e93dc3aa8e1bee2e0ea57fc98b91f84a38adeba17e1614518bb3c741169",
+      "sha256": "7f387e93dc3aa8e1bee2e0ea57fc98b91f84a38adeba17e1614518bb3c741169"
+    },
+    {
+      "path": "games/chain/program/src/blackjack/rules/tests.rs",
+      "sourcePath": "game/chain/program/src/blackjack/rules/tests.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "2017a2cb6d9eab0761de201f0fec9434426ce6021d9086f126cc43662f63d5d6",
+      "sha256": "2017a2cb6d9eab0761de201f0fec9434426ce6021d9086f126cc43662f63d5d6"
+    },
+    {
+      "path": "games/chain/program/src/blackjack/sol_funding.rs",
+      "sourcePath": "game/chain/program/src/blackjack/sol_funding.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "883e46ba24823485f1c441c11f5e2e40ec8bebcf13bd468e0d51e103e09a6353",
+      "sha256": "883e46ba24823485f1c441c11f5e2e40ec8bebcf13bd468e0d51e103e09a6353"
+    },
+    {
+      "path": "games/chain/program/src/blackjack/state.rs",
+      "sourcePath": "game/chain/program/src/blackjack/state.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "08f6d292553a0888fdc64d6c7ec3fba85e2c76fe66ee473a9c77725ef9b15c12",
+      "sha256": "08f6d292553a0888fdc64d6c7ec3fba85e2c76fe66ee473a9c77725ef9b15c12"
+    },
+    {
+      "path": "games/chain/program/src/economy.rs",
+      "sourcePath": "game/chain/program/src/economy.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "f7c63665984324e1bf70d6ee9ea63ce8ac4f6dd76dc2e5d557e4e3d6e4f0bedc",
+      "sha256": "f7c63665984324e1bf70d6ee9ea63ce8ac4f6dd76dc2e5d557e4e3d6e4f0bedc"
+    },
+    {
+      "path": "games/chain/program/src/economy/game_rewards.rs",
+      "sourcePath": "game/chain/program/src/economy/game_rewards.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "b7bd9a56fca2a19f8f92a5c7b54f27efc70bf47d18fbf78c20b0a06c0f8889cc",
+      "sha256": "b7bd9a56fca2a19f8f92a5c7b54f27efc70bf47d18fbf78c20b0a06c0f8889cc"
+    },
+    {
+      "path": "games/chain/program/src/economy/locks.rs",
+      "sourcePath": "game/chain/program/src/economy/locks.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "4bbfededbce0042d4a6842991078f0d28fea0979f870121d55c1da3fdfd6f732",
+      "sha256": "4bbfededbce0042d4a6842991078f0d28fea0979f870121d55c1da3fdfd6f732"
+    },
+    {
+      "path": "games/chain/program/src/economy/settlement.rs",
+      "sourcePath": "game/chain/program/src/economy/settlement.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "9a76db86cd8d6218b55a8a719570bf5f7cabf937e453c688e29513b783041b8c",
+      "sha256": "9a76db86cd8d6218b55a8a719570bf5f7cabf937e453c688e29513b783041b8c"
+    },
+    {
+      "path": "games/chain/program/src/economy/staking.rs",
+      "sourcePath": "game/chain/program/src/economy/staking.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "402cdba85507833526e466333acd307da87b3836f053c957f663498e31ce8288",
+      "sha256": "402cdba85507833526e466333acd307da87b3836f053c957f663498e31ce8288"
+    },
+    {
+      "path": "games/chain/program/src/funding.rs",
+      "sourcePath": "game/chain/program/src/funding.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "7825a1c82d8f5075100577dd98925027d71806159152cd7c5b5cd6319fb9a40d",
+      "sha256": "7825a1c82d8f5075100577dd98925027d71806159152cd7c5b5cd6319fb9a40d"
+    },
+    {
+      "path": "games/chain/program/src/lib.rs",
+      "sourcePath": "game/chain/program/src/lib.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "3ae82a0c38fcd5cbfa75fe7a09acc140a29bc19318b35e3bd64dfbc16e4fd25f",
+      "sha256": "3ae82a0c38fcd5cbfa75fe7a09acc140a29bc19318b35e3bd64dfbc16e4fd25f"
+    },
+    {
+      "path": "games/chain/program/src/orao.rs",
+      "sourcePath": "game/chain/program/src/orao.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "31e14cc63d25ed68cb1ba070af6834673af897773fa5437ca457a92a35753fd1",
+      "sha256": "31e14cc63d25ed68cb1ba070af6834673af897773fa5437ca457a92a35753fd1"
+    },
+    {
+      "path": "games/chain/program/src/shared.rs",
+      "sourcePath": "game/chain/program/src/shared.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "e68d6c9f8b7f6cddf72727f8c1f44e061c8c0b55f6463372a85a11637d8c8c4c",
+      "sha256": "e68d6c9f8b7f6cddf72727f8c1f44e061c8c0b55f6463372a85a11637d8c8c4c"
+    },
+    {
+      "path": "games/chain/program/src/slots/mod.rs",
+      "sourcePath": "game/chain/program/src/slots/mod.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "ffcb800a4908a1824ee1b7f94585446856d14eee4b7bb2c161d5a9eef56c8fe7",
+      "sha256": "ffcb800a4908a1824ee1b7f94585446856d14eee4b7bb2c161d5a9eef56c8fe7"
+    },
+    {
+      "path": "games/chain/program/src/slots/rewards.rs",
+      "sourcePath": "game/chain/program/src/slots/rewards.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "06813fa2f0ff371d0deaf5f264d98d69a846fda38f4979fc2b94fa043cbf4f4a",
+      "sha256": "06813fa2f0ff371d0deaf5f264d98d69a846fda38f4979fc2b94fa043cbf4f4a"
+    },
+    {
+      "path": "games/chain/program/src/slots/tests.rs",
+      "sourcePath": "game/chain/program/src/slots/tests.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "f1386ee1b2678a0facc6698d1aee533814e27707d1ae5c568f6d3df5f844b31a",
+      "sha256": "f1386ee1b2678a0facc6698d1aee533814e27707d1ae5c568f6d3df5f844b31a"
+    },
+    {
+      "path": "games/chain/program/src/tournament.rs",
+      "sourcePath": "game/chain/program/src/tournament.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "7020926fc96cd15b7b1f1b633b7bd21003f2412b3d34e8580ab2f98e8924ec05",
+      "sha256": "7020926fc96cd15b7b1f1b633b7bd21003f2412b3d34e8580ab2f98e8924ec05"
+    },
+    {
+      "path": "games/chain/program/src/tournament/model.rs",
+      "sourcePath": "game/chain/program/src/tournament/model.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "fcf46251fcafbe64b8c7e90a1b9dcecf4a9b23fe5a6f7ba7958491e22d2a1245",
+      "sha256": "fcf46251fcafbe64b8c7e90a1b9dcecf4a9b23fe5a6f7ba7958491e22d2a1245"
+    },
+    {
+      "path": "games/chain/slots-rules/Cargo.lock",
+      "sourcePath": "game/chain/slots-rules/Cargo.lock",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "1f3e086d1e23fd44d6c93cbc55716763cb4a04061b50d4cc8213ee2945dbb605",
+      "sha256": "1f3e086d1e23fd44d6c93cbc55716763cb4a04061b50d4cc8213ee2945dbb605"
+    },
+    {
+      "path": "games/chain/slots-rules/Cargo.toml",
+      "sourcePath": "game/chain/slots-rules/Cargo.toml",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "f3880132f713d2668f00f493419848b4f431c36e8cee13efba9ab032af3a36fb",
+      "sha256": "f3880132f713d2668f00f493419848b4f431c36e8cee13efba9ab032af3a36fb"
+    },
+    {
+      "path": "games/chain/slots-rules/src/lib.rs",
+      "sourcePath": "game/chain/slots-rules/src/lib.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "b21d72803dc32010b92363a707ea9a8a4c827ffa01aa2a3dfa0ea485e6926730",
+      "sha256": "b21d72803dc32010b92363a707ea9a8a4c827ffa01aa2a3dfa0ea485e6926730"
+    },
+    {
+      "path": "games/chain/rps-program/Cargo.lock",
+      "sourcePath": "game/chain/rps-program/Cargo.lock",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "9a5c5a5e7dd2dfe37e161a9e12bf465f1118ee5b84a23ea47bc4d743fe73af89",
+      "sha256": "9a5c5a5e7dd2dfe37e161a9e12bf465f1118ee5b84a23ea47bc4d743fe73af89"
+    },
+    {
+      "path": "games/chain/rps-program/Cargo.toml",
+      "sourcePath": "game/chain/rps-program/Cargo.toml",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "292067b5caf52679f36718a988472fdd349a97cb85408fd351f0422ff52364b7",
+      "sha256": "292067b5caf52679f36718a988472fdd349a97cb85408fd351f0422ff52364b7"
+    },
+    {
+      "path": "games/chain/rps-program/src/common.rs",
+      "sourcePath": "game/chain/rps-program/src/common.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "e6b0b162fcd77086cb9fe7bb3c78ee46d178fffedc8867e8e2a2a6cd2736ecad",
+      "sha256": "e6b0b162fcd77086cb9fe7bb3c78ee46d178fffedc8867e8e2a2a6cd2736ecad"
+    },
+    {
+      "path": "games/chain/rps-program/src/lib.rs",
+      "sourcePath": "game/chain/rps-program/src/lib.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "a398bc4fa0a0ff79b3066343b1f80028af98a8f2a17c48fbcda2dcb2ecda15f3",
+      "sha256": "a398bc4fa0a0ff79b3066343b1f80028af98a8f2a17c48fbcda2dcb2ecda15f3"
+    },
+    {
+      "path": "games/chain/rps-program/src/rules.rs",
+      "sourcePath": "game/chain/rps-program/src/rules.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "38942aa31a515e479c59deeedf8b6e6074d657a90c902fd877e5301f3fe916e4",
+      "sha256": "38942aa31a515e479c59deeedf8b6e6074d657a90c902fd877e5301f3fe916e4"
+    },
+    {
+      "path": "games/fights/fight-program/Cargo.lock",
+      "sourcePath": "game/chain/fight-program/Cargo.lock",
+      "sourceCommit": "392d4d518f5572cf534c9875f2f8263b68ce2896",
+      "originalSha256": "72b4d5c40074d992bf62c980a941fb1096cad347ac11b4ff3851cee087c336d7",
+      "sha256": "72b4d5c40074d992bf62c980a941fb1096cad347ac11b4ff3851cee087c336d7"
+    },
+    {
+      "path": "games/fights/fight-program/Cargo.toml",
+      "sourcePath": "game/chain/fight-program/Cargo.toml",
+      "sourceCommit": "392d4d518f5572cf534c9875f2f8263b68ce2896",
+      "originalSha256": "168d1575dae6de8c9bd6e1b0db0a4b8474b360539ca572c3c1817d53c249cc7b",
+      "sha256": "168d1575dae6de8c9bd6e1b0db0a4b8474b360539ca572c3c1817d53c249cc7b"
+    },
+    {
+      "path": "games/fights/fight-program/examples/vectors.rs",
+      "sourcePath": "game/chain/fight-program/examples/vectors.rs",
+      "sourceCommit": "392d4d518f5572cf534c9875f2f8263b68ce2896",
+      "originalSha256": "1a79f6660d704eea04b726c120abaa10d4b5a60853fc5501caada15ef70930f2",
+      "sha256": "1a79f6660d704eea04b726c120abaa10d4b5a60853fc5501caada15ef70930f2"
+    },
+    {
+      "path": "games/fights/fight-program/src/combat.rs",
+      "sourcePath": "game/chain/fight-program/src/combat.rs",
+      "sourceCommit": "392d4d518f5572cf534c9875f2f8263b68ce2896",
+      "originalSha256": "b55c1f8c5f40bf6a476f5ab714fe1163df8fb57aa98a77a1fee2fcb8702264e3",
+      "sha256": "b55c1f8c5f40bf6a476f5ab714fe1163df8fb57aa98a77a1fee2fcb8702264e3"
+    },
+    {
+      "path": "games/fights/fight-program/src/lib.rs",
+      "sourcePath": "game/chain/fight-program/src/lib.rs",
+      "sourceCommit": "392d4d518f5572cf534c9875f2f8263b68ce2896",
+      "originalSha256": "55eb070ae7951cebcf1351057242512c4f94c22f7b7fd21c52faca6002c08d9c",
+      "sha256": "55eb070ae7951cebcf1351057242512c4f94c22f7b7fd21c52faca6002c08d9c"
+    },
+    {
+      "path": "games/fights/program/src/orao.rs",
+      "sourcePath": "game/chain/program/src/orao.rs",
+      "sourceCommit": "392d4d518f5572cf534c9875f2f8263b68ce2896",
+      "originalSha256": "088cf95e7d39092f306832d557490928c7fab0ccbf9a9effe1b62c7eebece1f9",
+      "sha256": "088cf95e7d39092f306832d557490928c7fab0ccbf9a9effe1b62c7eebece1f9"
+    },
+    {
+      "path": "games/poker/Anchor.toml",
+      "sourcePath": "game/vendor/holdem/program/Anchor.toml",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "7a156e76169d7d94804dec089f7e743a2d0132d863dcb217c53e19e5c50c8b52",
+      "sha256": "57757438c71da911c9a574a37a178bb5b33d182c8d89da5853c72a2187cd1f63"
+    },
+    {
+      "path": "games/poker/Cargo.lock",
+      "sourcePath": "game/vendor/holdem/program/Cargo.lock",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "35bedd9c9c84fbd47263beca7682c03d11a9b452173277c449a9cccc022899c1",
+      "sha256": "35bedd9c9c84fbd47263beca7682c03d11a9b452173277c449a9cccc022899c1"
+    },
+    {
+      "path": "games/poker/Cargo.toml",
+      "sourcePath": "game/vendor/holdem/program/Cargo.toml",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "59d10bf182006a41254564e8fcc901d8c4d86a7816d105ff104b0114c411f05c",
+      "sha256": "59d10bf182006a41254564e8fcc901d8c4d86a7816d105ff104b0114c411f05c"
+    },
+    {
+      "path": "games/poker/engine/Cargo.toml",
+      "sourcePath": "game/vendor/holdem/program/engine/Cargo.toml",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "a1fe2c92ce26784c6eabb02247ea35d09e56b4cd607712ad04afa1adf18c4ac2",
+      "sha256": "a1fe2c92ce26784c6eabb02247ea35d09e56b4cd607712ad04afa1adf18c4ac2"
+    },
+    {
+      "path": "games/poker/engine/src/cards.rs",
+      "sourcePath": "game/vendor/holdem/program/engine/src/cards.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "5a75bff55a997932f4d9c5df0809bd87dd1f7b45803bb8f42d103738a840abbc",
+      "sha256": "5a75bff55a997932f4d9c5df0809bd87dd1f7b45803bb8f42d103738a840abbc"
+    },
+    {
+      "path": "games/poker/engine/src/eval.rs",
+      "sourcePath": "game/vendor/holdem/program/engine/src/eval.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "faf70271bcb8da6bf0af10209e7a40cc89433985b5f55d3dcebdb088d637ebff",
+      "sha256": "faf70271bcb8da6bf0af10209e7a40cc89433985b5f55d3dcebdb088d637ebff"
+    },
+    {
+      "path": "games/poker/engine/src/lib.rs",
+      "sourcePath": "game/vendor/holdem/program/engine/src/lib.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "a821527d57ae11a2da5460557dd0f9511bec44a81c326f53e78a3529c5dce314",
+      "sha256": "a821527d57ae11a2da5460557dd0f9511bec44a81c326f53e78a3529c5dce314"
+    },
+    {
+      "path": "games/poker/engine/src/pots.rs",
+      "sourcePath": "game/vendor/holdem/program/engine/src/pots.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "c838cb7d5b81fb88c2de6906d7ce2ab5dce7e4c25b768c9a925d1074e5fae322",
+      "sha256": "c838cb7d5b81fb88c2de6906d7ce2ab5dce7e4c25b768c9a925d1074e5fae322"
+    },
+    {
+      "path": "games/poker/engine/src/table.rs",
+      "sourcePath": "game/vendor/holdem/program/engine/src/table.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "7f337754f7cb113b08ea5779b520313627e4973ab1c3d8215e44210552b8281a",
+      "sha256": "7f337754f7cb113b08ea5779b520313627e4973ab1c3d8215e44210552b8281a"
+    },
+    {
+      "path": "games/poker/engine/tests/ace_straights.rs",
+      "sourcePath": "game/vendor/holdem/program/engine/tests/ace_straights.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "3d5ee657fec3aaa2cd1a3e846bc1f186ed80c03291a2cb3a3e76b78601b1671b",
+      "sha256": "3d5ee657fec3aaa2cd1a3e846bc1f186ed80c03291a2cb3a3e76b78601b1671b"
+    },
+    {
+      "path": "games/poker/engine/tests/away_mode.rs",
+      "sourcePath": "game/vendor/holdem/program/engine/tests/away_mode.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "3959da4df79bb4980132b42eea569d62261b464af340db447539a9f6b6afc496",
+      "sha256": "3959da4df79bb4980132b42eea569d62261b464af340db447539a9f6b6afc496"
+    },
+    {
+      "path": "games/poker/engine/tests/differential.rs",
+      "sourcePath": "game/vendor/holdem/program/engine/tests/differential.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "64beb5c93d4c9705c6273fada199f64a4ca797693911c1435d76eb46741bdf0a",
+      "sha256": "64beb5c93d4c9705c6273fada199f64a4ca797693911c1435d76eb46741bdf0a"
+    },
+    {
+      "path": "games/poker/mental/Cargo.toml",
+      "sourcePath": "game/vendor/holdem/program/mental/Cargo.toml",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "83bff1e16bc07ba19dfc2e4fb4c8df34473b2e117ea427b8b04f4e6cae72919a",
+      "sha256": "83bff1e16bc07ba19dfc2e4fb4c8df34473b2e117ea427b8b04f4e6cae72919a"
+    },
+    {
+      "path": "games/poker/mental/src/deal.rs",
+      "sourcePath": "game/vendor/holdem/program/mental/src/deal.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "29065e099c6357a37f88191428ab7aa8e5ebc532c7d0c812115c69906fe9dbc3",
+      "sha256": "29065e099c6357a37f88191428ab7aa8e5ebc532c7d0c812115c69906fe9dbc3"
+    },
+    {
+      "path": "games/poker/mental/src/group.rs",
+      "sourcePath": "game/vendor/holdem/program/mental/src/group.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "bf683c4d70854b14d4ea684ccad8068f71977a4c005f7025d182224de7dbf026",
+      "sha256": "bf683c4d70854b14d4ea684ccad8068f71977a4c005f7025d182224de7dbf026"
+    },
+    {
+      "path": "games/poker/mental/src/lib.rs",
+      "sourcePath": "game/vendor/holdem/program/mental/src/lib.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "8f7174a11bd492ceda9dae7fac61dd6f8c982229483687907d02c0bd2be136cc",
+      "sha256": "8f7174a11bd492ceda9dae7fac61dd6f8c982229483687907d02c0bd2be136cc"
+    },
+    {
+      "path": "games/poker/mental/src/lock.rs",
+      "sourcePath": "game/vendor/holdem/program/mental/src/lock.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "c3872046922361c28ea36655304f56c2712c03c3a75b2d796acaf9b6d43c63ce",
+      "sha256": "c3872046922361c28ea36655304f56c2712c03c3a75b2d796acaf9b6d43c63ce"
+    },
+    {
+      "path": "games/poker/mental/src/merkle.rs",
+      "sourcePath": "game/vendor/holdem/program/mental/src/merkle.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "8f374a91ee48a2d2bab9cc4119d356b059cffc4e3e15fa471c0fe9726c0e4438",
+      "sha256": "8f374a91ee48a2d2bab9cc4119d356b059cffc4e3e15fa471c0fe9726c0e4438"
+    },
+    {
+      "path": "games/poker/mental/src/proof.rs",
+      "sourcePath": "game/vendor/holdem/program/mental/src/proof.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "e88543835652ab3fb9d0422d32f1418ddfd0688214d8c52514a1e1b522e63169",
+      "sha256": "e88543835652ab3fb9d0422d32f1418ddfd0688214d8c52514a1e1b522e63169"
+    },
+    {
+      "path": "games/poker/mental/src/protocol.rs",
+      "sourcePath": "game/vendor/holdem/program/mental/src/protocol.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "03a2263cdc1bd545f2bad8c8943f5437e05e1d26b8fe025f6c38a4df9c9a1718",
+      "sha256": "03a2263cdc1bd545f2bad8c8943f5437e05e1d26b8fe025f6c38a4df9c9a1718"
+    },
+    {
+      "path": "games/poker/mental/src/share.rs",
+      "sourcePath": "game/vendor/holdem/program/mental/src/share.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "890559de46229a90f8b2d0b5ea582d71f97d64507a7b0f67e3464da26e06b373",
+      "sha256": "890559de46229a90f8b2d0b5ea582d71f97d64507a7b0f67e3464da26e06b373"
+    },
+    {
+      "path": "games/poker/mental/src/shuffle.rs",
+      "sourcePath": "game/vendor/holdem/program/mental/src/shuffle.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "aa502fc0379c658e5084eea2264c829ef82933375bc60b3f56490d5c13958043",
+      "sha256": "aa502fc0379c658e5084eea2264c829ef82933375bc60b3f56490d5c13958043"
+    },
+    {
+      "path": "games/poker/mental/src/shuffle_proof.rs",
+      "sourcePath": "game/vendor/holdem/program/mental/src/shuffle_proof.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "5d3277b73dabaf91bc2a4dbf7a35208fc10b16bb591ff9efe8ced259e13a8bdc",
+      "sha256": "5d3277b73dabaf91bc2a4dbf7a35208fc10b16bb591ff9efe8ced259e13a8bdc"
+    },
+    {
+      "path": "games/poker/mental/tests/differential.rs",
+      "sourcePath": "game/vendor/holdem/program/mental/tests/differential.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "df77107b21f75e050d3f08e8676c8d62f33356197d7a1162e365a2305a596d7c",
+      "sha256": "df77107b21f75e050d3f08e8676c8d62f33356197d7a1162e365a2305a596d7c"
+    },
+    {
+      "path": "games/poker/mental/tests/protocol.rs",
+      "sourcePath": "game/vendor/holdem/program/mental/tests/protocol.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "d649a8d47809e8335723e01e8ef43230791115e8316fbd1ee37b08f32a05fe75",
+      "sha256": "d649a8d47809e8335723e01e8ef43230791115e8316fbd1ee37b08f32a05fe75"
+    },
+    {
+      "path": "games/poker/mental/tests/shuffle_proof.rs",
+      "sourcePath": "game/vendor/holdem/program/mental/tests/shuffle_proof.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "c21e3ce50427a7536d4f3796beccdb5a0b551d91941482f9df1c741026ed085f",
+      "sha256": "c21e3ce50427a7536d4f3796beccdb5a0b551d91941482f9df1c741026ed085f"
+    },
+    {
+      "path": "games/poker/mental/tests/vectors.rs",
+      "sourcePath": "game/vendor/holdem/program/mental/tests/vectors.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "ebc547f5ce376d8a6771fa6062ba206e7a699c2996424fa14085661c855719b0",
+      "sha256": "ebc547f5ce376d8a6771fa6062ba206e7a699c2996424fa14085661c855719b0"
+    },
+    {
+      "path": "games/poker/programs/riverproof/Cargo.toml",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/Cargo.toml",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "f1a7700a1d6ff0fdda6fb3935716a0d1e675c082135e800c58d80e26436f789c",
+      "sha256": "f1a7700a1d6ff0fdda6fb3935716a0d1e675c082135e800c58d80e26436f789c"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/bridge.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/bridge.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "4b91ef8241bab6575038f14af482fbf05acf66fd553cdaa21efa28817d99a343",
+      "sha256": "4b91ef8241bab6575038f14af482fbf05acf66fd553cdaa21efa28817d99a343"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/errors.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/errors.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "135303ec47eda460be44a6f80e59498a72391dad347fc3edeb023989cc72fbc4",
+      "sha256": "135303ec47eda460be44a6f80e59498a72391dad347fc3edeb023989cc72fbc4"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/instructions/identity.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/instructions/identity.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "5944677f50dfca3c4aaa75e7fbae09b0a2ab1dbfdcd9f96a66af2e234586ac9c",
+      "sha256": "5944677f50dfca3c4aaa75e7fbae09b0a2ab1dbfdcd9f96a66af2e234586ac9c"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/instructions/mental.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/instructions/mental.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "c919c68a0b7079657518619fec8b107cc7d5a400f55e94a2342637234f32254a",
+      "sha256": "c919c68a0b7079657518619fec8b107cc7d5a400f55e94a2342637234f32254a"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/instructions/mod.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/instructions/mod.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "ad607a241716aa604388aec8569f14fb3ba9a41e1b8abceddec021d01b136ff9",
+      "sha256": "ad607a241716aa604388aec8569f14fb3ba9a41e1b8abceddec021d01b136ff9"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/instructions/play.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/instructions/play.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "fc6241c9253c2e95a50b4e76e1e4a1a5b97a07b2282d65aef62ea04efb87a8f4",
+      "sha256": "fc6241c9253c2e95a50b4e76e1e4a1a5b97a07b2282d65aef62ea04efb87a8f4"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/instructions/pot_settlement.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/instructions/pot_settlement.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "1ccf213178877acdfd3ae627df9370395b24cf5ec6c4a8f6c10db451e22d887a",
+      "sha256": "1ccf213178877acdfd3ae627df9370395b24cf5ec6c4a8f6c10db451e22d887a"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/instructions/table.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/instructions/table.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "5ebd247ee1812c30e2068a469d08c140eb6f9149fc9a488c46b47fe9e6c7975f",
+      "sha256": "5ebd247ee1812c30e2068a469d08c140eb6f9149fc9a488c46b47fe9e6c7975f"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/instructions/tournament.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/instructions/tournament.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "1cd54acf7083ab93119248d6f159432f11d7e28f0695d6aaeb05ecd7da742c3f",
+      "sha256": "1cd54acf7083ab93119248d6f159432f11d7e28f0695d6aaeb05ecd7da742c3f"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/instructions/tournament_finish.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/instructions/tournament_finish.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "ff26bb44106ab7b88cf4752690ffaa4eaaa07513f331c442339b21b121191ddf",
+      "sha256": "ff26bb44106ab7b88cf4752690ffaa4eaaa07513f331c442339b21b121191ddf"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/instructions/tournament_migrate.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/instructions/tournament_migrate.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "099f181eb323737ec4459fd81a6016c26f9906b7ceb904bf6750b0abe34a7404",
+      "sha256": "099f181eb323737ec4459fd81a6016c26f9906b7ceb904bf6750b0abe34a7404"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/instructions/tournament_play.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/instructions/tournament_play.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "52e31792ca1cb01d3124f4dc34b9ebb429b71b5fe347bb0ba10e98f5dc5fa8e8",
+      "sha256": "52e31792ca1cb01d3124f4dc34b9ebb429b71b5fe347bb0ba10e98f5dc5fa8e8"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/instructions/tournament_seats.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/instructions/tournament_seats.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "82d94d6e5e48aa99227ab472411137b92ba12ccee092cf83d2c5c37dc95c3a9d",
+      "sha256": "82d94d6e5e48aa99227ab472411137b92ba12ccee092cf83d2c5c37dc95c3a9d"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/lib.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/lib.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "d0eae582520746ede1455e366ab6137ca4fd31637c762523a84ee30650a26da6",
+      "sha256": "bb052f1beb27e22e756a2271843d40e874c93747e1939fe3fa28350b6fa210a7"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/mental.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/mental.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "5ecb1d5f1dcda5ba45929136e45f0bdddacd4b54b5e1dd4acef20e9d5d2869ca",
+      "sha256": "5ecb1d5f1dcda5ba45929136e45f0bdddacd4b54b5e1dd4acef20e9d5d2869ca"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/pot_fees.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/pot_fees.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "32b2b59abb8475711a1d556f43a82585bfd3467f3a809d04d66ab89e8033e6ba",
+      "sha256": "32b2b59abb8475711a1d556f43a82585bfd3467f3a809d04d66ab89e8033e6ba"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/pot_settlement.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/pot_settlement.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "17dd3717bd2b8730665148b036b15503d1ba2b4a8882befe42a9d97cf297e310",
+      "sha256": "17dd3717bd2b8730665148b036b15503d1ba2b4a8882befe42a9d97cf297e310"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/rules.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/rules.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "79e016fb08e5053f5e1d62e0e85f28c4b70678aa58651824f57385c52a4214fa",
+      "sha256": "79e016fb08e5053f5e1d62e0e85f28c4b70678aa58651824f57385c52a4214fa"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/sdice.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/sdice.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "04337f21b6e4c7e930c3b1987eef5fd8f350101ae1084ce1c5b9d5b087e9ccee",
+      "sha256": "04337f21b6e4c7e930c3b1987eef5fd8f350101ae1084ce1c5b9d5b087e9ccee"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/state.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/state.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "ba42927599f012fb25eb5dbe16b60b79b4980f2feb66758142be497afcb1644c",
+      "sha256": "ba42927599f012fb25eb5dbe16b60b79b4980f2feb66758142be497afcb1644c"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/tournament/accounts.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/tournament/accounts.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "187ebd260cdd2695ccde529844b886bff8a2a976201880ea46e759963f0fd4bd",
+      "sha256": "187ebd260cdd2695ccde529844b886bff8a2a976201880ea46e759963f0fd4bd"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/tournament/blinds.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/tournament/blinds.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "201acc0db9858d9ca848003b09f656d83da9784641a25dc400fe04216d37bd1a",
+      "sha256": "201acc0db9858d9ca848003b09f656d83da9784641a25dc400fe04216d37bd1a"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/tournament/legacy.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/tournament/legacy.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "9640858c65326ef6cbe561f49db2b72437cbed16b55485e3a5fe9e912b22ed73",
+      "sha256": "9640858c65326ef6cbe561f49db2b72437cbed16b55485e3a5fe9e912b22ed73"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/tournament/mod.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/tournament/mod.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "d21dba5e9b0507c535713b3b31155d186a98ec7660363c2c058b6e1cc8f01075",
+      "sha256": "d21dba5e9b0507c535713b3b31155d186a98ec7660363c2c058b6e1cc8f01075"
+    },
+    {
+      "path": "games/poker/programs/riverproof/src/tournament/model.rs",
+      "sourcePath": "game/vendor/holdem/program/programs/riverproof/src/tournament/model.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "182931aa5dabc3b8ff33d2ace63ba99ff36d62d2d973b99d866066947963e4b3",
+      "sha256": "182931aa5dabc3b8ff33d2ace63ba99ff36d62d2d973b99d866066947963e4b3"
+    },
+    {
+      "path": "games/poker/tests/Cargo.toml",
+      "sourcePath": "game/vendor/holdem/program/tests/Cargo.toml",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "e551ee6a9cc1a63abb29b6aa6ddadf1497d5464620095539e86f01d5afd2251d",
+      "sha256": "e551ee6a9cc1a63abb29b6aa6ddadf1497d5464620095539e86f01d5afd2251d"
+    },
+    {
+      "path": "games/poker/tests/src/lib.rs",
+      "sourcePath": "game/vendor/holdem/program/tests/src/lib.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "ee8a89c4b3838eb1d172c364ff7a7e14f64215cda80b6b1f5909819f5f5491d9",
+      "sha256": "ee8a89c4b3838eb1d172c364ff7a7e14f64215cda80b6b1f5909819f5f5491d9"
+    },
+    {
+      "path": "games/poker/tests/tests/program.rs",
+      "sourcePath": "game/vendor/holdem/program/tests/tests/program.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "5f56cdf4a1a20ced9bf9abb7cb098bd4e059cbf56aba78b3e23d65a1eeaa470e",
+      "sha256": "5f56cdf4a1a20ced9bf9abb7cb098bd4e059cbf56aba78b3e23d65a1eeaa470e"
+    },
+    {
+      "path": "games/poker/tests/tests/scenarios/away_mode.rs",
+      "sourcePath": "game/vendor/holdem/program/tests/tests/scenarios/away_mode.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "73d7f98263b5445bdd9a35b82a79819e9eb7c22f8e05f4d10ac9a833770ef696",
+      "sha256": "73d7f98263b5445bdd9a35b82a79819e9eb7c22f8e05f4d10ac9a833770ef696"
+    },
+    {
+      "path": "games/poker/tests/tests/scenarios/tournament_takeover.rs",
+      "sourcePath": "game/vendor/holdem/program/tests/tests/scenarios/tournament_takeover.rs",
+      "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+      "originalSha256": "58bd01b4f3ee3afa786355d313ede314d5f6de34c9cb719c87c50155d435b0d3",
+      "sha256": "58bd01b4f3ee3afa786355d313ede314d5f6de34c9cb719c87c50155d435b0d3"
+    },
+    {
+      "path": "perps/programs/acidpump-er/Cargo.toml",
+      "sourcePath": "programs/acidpump-er/Cargo.toml",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "1fd78e619f6b0f1db4e8596e691d17fa9f98e6c87144fa0cb912bcc3809be274",
+      "sha256": "1fd78e619f6b0f1db4e8596e691d17fa9f98e6c87144fa0cb912bcc3809be274"
+    },
+    {
+      "path": "perps/programs/acidpump-er/build.rs",
+      "sourcePath": "programs/acidpump-er/build.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "45d6c6cfc2878e327f43c997a30288f7f7de3fa6fd35ac1b287581475dc73d99",
+      "sha256": "45d6c6cfc2878e327f43c997a30288f7f7de3fa6fd35ac1b287581475dc73d99"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/basebridge.rs",
+      "sourcePath": "programs/acidpump-er/src/basebridge.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "76fb1eaf4ed189f97581da696d491b3b4fce5fd29787b4c8d24313ba5f4982e7",
+      "sha256": "76fb1eaf4ed189f97581da696d491b3b4fce5fd29787b4c8d24313ba5f4982e7"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/collateral_floor.rs",
+      "sourcePath": "programs/acidpump-er/src/collateral_floor.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "eff3aed89d9cbf4298309875cfad3361c170cc7415d4bc2b22dfbd123e8a87ca",
+      "sha256": "eff3aed89d9cbf4298309875cfad3361c170cc7415d4bc2b22dfbd123e8a87ca"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/core_migration.rs",
+      "sourcePath": "programs/acidpump-er/src/core_migration.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "8d09502eb63a574fbf15478f28c1120dded66ad2abc1721c1ca7e6db0413d196",
+      "sha256": "8d09502eb63a574fbf15478f28c1120dded66ad2abc1721c1ca7e6db0413d196"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/emissions.rs",
+      "sourcePath": "programs/acidpump-er/src/emissions.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "df0be1da0b8c422b5ed3752f6ea120c94f8e1c9758e16fc41b2302e115f2e0b9",
+      "sha256": "df0be1da0b8c422b5ed3752f6ea120c94f8e1c9758e16fc41b2302e115f2e0b9"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/engine.rs",
+      "sourcePath": "programs/acidpump-er/src/engine.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "b2ee19a503cc71f1c6e84454b2d2efff1250993bd270d16750967860703dd5a1",
+      "sha256": "b2ee19a503cc71f1c6e84454b2d2efff1250993bd270d16750967860703dd5a1"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/heap.rs",
+      "sourcePath": "programs/acidpump-er/src/heap.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "81c120fae1552c3a6ad145b5f9494679511205c02f59b2fa4ee7e61781323aba",
+      "sha256": "81c120fae1552c3a6ad145b5f9494679511205c02f59b2fa4ee7e61781323aba"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/lib.rs",
+      "sourcePath": "programs/acidpump-er/src/lib.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "9b86333b2447e1a2debbf9a5d9ed980a26a7e07c159fe5898493cfbb46ceba67",
+      "sha256": "9b86333b2447e1a2debbf9a5d9ed980a26a7e07c159fe5898493cfbb46ceba67"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/mainnet_collateral.rs",
+      "sourcePath": "programs/acidpump-er/src/mainnet_collateral.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "d2da535dd31d64d7931fdf8ad10475444b6e6e920c5a77b2e3b047cd9580b3c9",
+      "sha256": "d2da535dd31d64d7931fdf8ad10475444b6e6e920c5a77b2e3b047cd9580b3c9"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/mainnet_config.rs",
+      "sourcePath": "programs/acidpump-er/src/mainnet_config.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "5a13fb2c041df610854e2251af401bb7a03e898210022aaf46f8f0080235064b",
+      "sha256": "5a13fb2c041df610854e2251af401bb7a03e898210022aaf46f8f0080235064b"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/mainnet_curve.rs",
+      "sourcePath": "programs/acidpump-er/src/mainnet_curve.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "69a76e23ee7d72a80973a4a66b676d11e29371a3848e9e4cf42224b65e1b940e",
+      "sha256": "69a76e23ee7d72a80973a4a66b676d11e29371a3848e9e4cf42224b65e1b940e"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/mainnet_pump.rs",
+      "sourcePath": "programs/acidpump-er/src/mainnet_pump.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "71150561bbc0b9992b90a0a2190df9361ce88424374caece02006be103c96301",
+      "sha256": "71150561bbc0b9992b90a0a2190df9361ce88424374caece02006be103c96301"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/mainnet_quote_path.rs",
+      "sourcePath": "programs/acidpump-er/src/mainnet_quote_path.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "f2382f6f2c9b0dcd9e042f1946f27498bd15de803506d8a869a1c381b1ec7a63",
+      "sha256": "f2382f6f2c9b0dcd9e042f1946f27498bd15de803506d8a869a1c381b1ec7a63"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/math.rs",
+      "sourcePath": "programs/acidpump-er/src/math.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "669841bcf83276ec23fc9a745ad7327eb187f09019e9482390a12fa0084d68d2",
+      "sha256": "669841bcf83276ec23fc9a745ad7327eb187f09019e9482390a12fa0084d68d2"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/oracle.rs",
+      "sourcePath": "programs/acidpump-er/src/oracle.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "27854b38da809df2bfb9735172caf9cdec472ddd7cd85933646446dcc570675a",
+      "sha256": "27854b38da809df2bfb9735172caf9cdec472ddd7cd85933646446dcc570675a"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/ownership.rs",
+      "sourcePath": "programs/acidpump-er/src/ownership.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "0a4d71748779e7ffe4814c6b0a6a4cb01444082475ca8357ff02ec4523d90ab6",
+      "sha256": "0a4d71748779e7ffe4814c6b0a6a4cb01444082475ca8357ff02ec4523d90ab6"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/pump.rs",
+      "sourcePath": "programs/acidpump-er/src/pump.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "48216a8aabdfb9759c6768b95f30044cedb1a2a4cdcbce48f9021c654b4ba469",
+      "sha256": "48216a8aabdfb9759c6768b95f30044cedb1a2a4cdcbce48f9021c654b4ba469"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/pump_mainnet.rs",
+      "sourcePath": "programs/acidpump-er/src/pump_mainnet.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "3a0e5b009ccc42b934a69c19322fd77aabffd657a9a41a07e93a4a7508222995",
+      "sha256": "3a0e5b009ccc42b934a69c19322fd77aabffd657a9a41a07e93a4a7508222995"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/recovery.rs",
+      "sourcePath": "programs/acidpump-er/src/recovery.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "c7a15a0a13b945565de67f8dd63752257c21aee2538b113989362f3157336ec5",
+      "sha256": "c7a15a0a13b945565de67f8dd63752257c21aee2538b113989362f3157336ec5"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/risk.rs",
+      "sourcePath": "programs/acidpump-er/src/risk.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "daff0686d10c23f9ce1a25730fa5324476ed7a7d200689258e64fb010419ec95",
+      "sha256": "daff0686d10c23f9ce1a25730fa5324476ed7a7d200689258e64fb010419ec95"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/settlement.rs",
+      "sourcePath": "programs/acidpump-er/src/settlement.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "e20ca3b65e284594aae6d26cfb62e5c792af94c9863d47df2e86825deb7a649e",
+      "sha256": "e20ca3b65e284594aae6d26cfb62e5c792af94c9863d47df2e86825deb7a649e"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/stake_backing.rs",
+      "sourcePath": "programs/acidpump-er/src/stake_backing.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "08aeffdc3c2a67f99c910e14f17193f1f36088da5486a6ff73116441684c86d1",
+      "sha256": "08aeffdc3c2a67f99c910e14f17193f1f36088da5486a6ff73116441684c86d1"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/wallet_capacity.rs",
+      "sourcePath": "programs/acidpump-er/src/wallet_capacity.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "7567eb6b4ca8ee35cb96fc5433e2746797158ea9e3d14960e67b4fd2eb429868",
+      "sha256": "7567eb6b4ca8ee35cb96fc5433e2746797158ea9e3d14960e67b4fd2eb429868"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/collateral_records.rs",
+      "sourcePath": "programs/acidpump-er/tests/collateral_records.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "a09c30dd1a8bc967bdf3c196d28392a94661f8a75d84a58b74465390202e6947",
+      "sha256": "a09c30dd1a8bc967bdf3c196d28392a94661f8a75d84a58b74465390202e6947"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/core_migration.rs",
+      "sourcePath": "programs/acidpump-er/tests/core_migration.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "5b6b1e3d7ae7fe568b8bab058e884fdccb8b021a1088bcfc7473ca432ff25758",
+      "sha256": "5b6b1e3d7ae7fe568b8bab058e884fdccb8b021a1088bcfc7473ca432ff25758"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/er_collateral_floor.rs",
+      "sourcePath": "programs/acidpump-er/tests/er_collateral_floor.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "829f376db4fe608619a49e838ae61e551f54a67e3ae4f376429f0f9777674f3b",
+      "sha256": "829f376db4fe608619a49e838ae61e551f54a67e3ae4f376429f0f9777674f3b"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/er_history_gap.rs",
+      "sourcePath": "programs/acidpump-er/tests/er_history_gap.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "505505652a91fe1b5fd44d5a9f62cecbbac7d0a9be7b6470c515336ba56ca173",
+      "sha256": "505505652a91fe1b5fd44d5a9f62cecbbac7d0a9be7b6470c515336ba56ca173"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/er_onboarding.rs",
+      "sourcePath": "programs/acidpump-er/tests/er_onboarding.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "07a1050089f63688bcb85a804ca11660ad0a5e8b61d566e13d9827f6455bcd7d",
+      "sha256": "07a1050089f63688bcb85a804ca11660ad0a5e8b61d566e13d9827f6455bcd7d"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/er_settlement.rs",
+      "sourcePath": "programs/acidpump-er/tests/er_settlement.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "dec0d1cfae37994e3110611c1ad37f8bff8797d35c7a392e529b58304d52aa34",
+      "sha256": "dec0d1cfae37994e3110611c1ad37f8bff8797d35c7a392e529b58304d52aa34"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet-proxy/Cargo.lock",
+      "sourcePath": "programs/acidpump-er/tests/mainnet-proxy/Cargo.lock",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "cfc2ba13779a1b9593ff784554b685fd106007bcb0b9b5318855a0b0f8d11aad",
+      "sha256": "cfc2ba13779a1b9593ff784554b685fd106007bcb0b9b5318855a0b0f8d11aad"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet-proxy/Cargo.toml",
+      "sourcePath": "programs/acidpump-er/tests/mainnet-proxy/Cargo.toml",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "56baafba17f15ce22b6bd65e32ec7a18d68ce96391022e4041504686093d78b7",
+      "sha256": "56baafba17f15ce22b6bd65e32ec7a18d68ce96391022e4041504686093d78b7"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet-proxy/src/lib.rs",
+      "sourcePath": "programs/acidpump-er/tests/mainnet-proxy/src/lib.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "f4767173e1a8da703d44c9f2f2c4f59661a6fa24d2f8c2860332dff0b47daecb",
+      "sha256": "f4767173e1a8da703d44c9f2f2c4f59661a6fa24d2f8c2860332dff0b47daecb"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet_collateral.rs",
+      "sourcePath": "programs/acidpump-er/tests/mainnet_collateral.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "05f15574c28740316470596edd37c758310437d695a8f0929a4d48fad55da85c",
+      "sha256": "05f15574c28740316470596edd37c758310437d695a8f0929a4d48fad55da85c"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet_curve.rs",
+      "sourcePath": "programs/acidpump-er/tests/mainnet_curve.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "0af17d294d2a55ed481219b37298d602f0da73e31b58cabb8314a68e2e89a447",
+      "sha256": "0af17d294d2a55ed481219b37298d602f0da73e31b58cabb8314a68e2e89a447"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet_curve_custody.rs",
+      "sourcePath": "programs/acidpump-er/tests/mainnet_curve_custody.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "26ae4bc9c30bdb7292e2bd14fa1250a2d6a02a8908192406e30d8af0353848ed",
+      "sha256": "26ae4bc9c30bdb7292e2bd14fa1250a2d6a02a8908192406e30d8af0353848ed"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet_curve_execution.rs",
+      "sourcePath": "programs/acidpump-er/tests/mainnet_curve_execution.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "8b972c5b0124f38f4df8cb75ffb2bc9066cdff0593e26035768a527a27fe8f86",
+      "sha256": "8b972c5b0124f38f4df8cb75ffb2bc9066cdff0593e26035768a527a27fe8f86"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet_pool.rs",
+      "sourcePath": "programs/acidpump-er/tests/mainnet_pool.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "0978666271a251afdb201fbb30bd206215f17ff88e6d459349423bdbc1f5a534",
+      "sha256": "0978666271a251afdb201fbb30bd206215f17ff88e6d459349423bdbc1f5a534"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet_quote_fees.rs",
+      "sourcePath": "programs/acidpump-er/tests/mainnet_quote_fees.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "513dcf576ce462cb5e9619d939d2acc37ffd6e7797d344398eb68d720cfc52fc",
+      "sha256": "513dcf576ce462cb5e9619d939d2acc37ffd6e7797d344398eb68d720cfc52fc"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet_settlement.rs",
+      "sourcePath": "programs/acidpump-er/tests/mainnet_settlement.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "e22d71450894150827b9f5b4b7a1256c794efc4eb88f07d56bdefb1f019f65d9",
+      "sha256": "e22d71450894150827b9f5b4b7a1256c794efc4eb88f07d56bdefb1f019f65d9"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet_swaps.rs",
+      "sourcePath": "programs/acidpump-er/tests/mainnet_swaps.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "7b89a3d40bfdf779b12940650a0cb82dac868b0c2c9301d529af7cecdb2ca5dd",
+      "sha256": "7b89a3d40bfdf779b12940650a0cb82dac868b0c2c9301d529af7cecdb2ca5dd"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet_token_curve.rs",
+      "sourcePath": "programs/acidpump-er/tests/mainnet_token_curve.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "df252b8326fc82085bcc2ad3c1ae4f711a356db165652a9246399025bab0b9f7",
+      "sha256": "df252b8326fc82085bcc2ad3c1ae4f711a356db165652a9246399025bab0b9f7"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet_token_curve_custody.rs",
+      "sourcePath": "programs/acidpump-er/tests/mainnet_token_curve_custody.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "42008adb30fa32b07252d0c8791dc292743e3954a3acdd7ae0d70c3bf581c4fa",
+      "sha256": "42008adb30fa32b07252d0c8791dc292743e3954a3acdd7ae0d70c3bf581c4fa"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet_token_pool.rs",
+      "sourcePath": "programs/acidpump-er/tests/mainnet_token_pool.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "a781466b1f8684706ce4f2bba1b7b111dc0dd096490d29c4b3499d6b2e8ab0af",
+      "sha256": "a781466b1f8684706ce4f2bba1b7b111dc0dd096490d29c4b3499d6b2e8ab0af"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/mainnet_usdc_valuation.rs",
+      "sourcePath": "programs/acidpump-er/tests/mainnet_usdc_valuation.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "2a71cfc7f0af9edf2b2da2e1472bf45d9b2322d5e7306d2ffdbf345e275f80dd",
+      "sha256": "2a71cfc7f0af9edf2b2da2e1472bf45d9b2322d5e7306d2ffdbf345e275f80dd"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/support/mainnet_bootstrap.rs",
+      "sourcePath": "programs/acidpump-er/tests/support/mainnet_bootstrap.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "54d591490499b8620591b74a6440b5fa1a124a8663e28f9ece04514b14cd5d0c",
+      "sha256": "54d591490499b8620591b74a6440b5fa1a124a8663e28f9ece04514b14cd5d0c"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/support/mainnet_usdc_settlement.rs",
+      "sourcePath": "programs/acidpump-er/tests/support/mainnet_usdc_settlement.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "5f07745c64107acc32bef2958fd611c6651e2c1fc647984a016d7098c9ee9d1b",
+      "sha256": "5f07745c64107acc32bef2958fd611c6651e2c1fc647984a016d7098c9ee9d1b"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/wallet_capacity.rs",
+      "sourcePath": "programs/acidpump-er/tests/wallet_capacity.rs",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "0a0da36c90339f4cabd0948cd71e5058ed804153a42aee16e6a2d042c906bd5a",
+      "sha256": "0a0da36c90339f4cabd0948cd71e5058ed804153a42aee16e6a2d042c906bd5a"
+    },
+    {
+      "path": "perps/Cargo.toml",
+      "sourcePath": "Cargo.toml",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "dbd714c64166d92c8550badcd0964293191a945a0de4a756d1d69486e772c57f",
+      "sha256": "ed704e2e086d55b0bd6dbb6f4f8e161985a94a4ed8f24ca131f2d65ebfef54bc"
+    },
+    {
+      "path": "perps/Cargo.lock",
+      "sourcePath": "Cargo.lock",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "bb8b04cd821b27d65f613562ae2f5dde9fe48de645f45436b8ffd64b90a23564",
+      "sha256": "bb8b04cd821b27d65f613562ae2f5dde9fe48de645f45436b8ffd64b90a23564"
+    },
+    {
+      "path": "perps/deployments/acidpump-mainnet-production.json",
+      "sourcePath": "deployments/acidpump-mainnet-production.json",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "30dbd1ee215bd73557d4efdc902790454f6d37b49d172a38b110d327ab7330bf",
+      "sha256": "30dbd1ee215bd73557d4efdc902790454f6d37b49d172a38b110d327ab7330bf"
+    },
+    {
+      "path": "perps/projects/acidpump-er/src/production-policy.json",
+      "sourcePath": "projects/acidpump-er/src/production-policy.json",
+      "sourceCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
+      "originalSha256": "4064b83c2aabf545e8d1df7e65c41147c5e3c601f1379516bdc4d52806edbdab",
+      "sha256": "4064b83c2aabf545e8d1df7e65c41147c5e3c601f1379516bdc4d52806edbdab"
+    }
+  ]
+}

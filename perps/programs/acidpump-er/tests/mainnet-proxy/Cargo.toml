@@ -1,0 +1,25 @@
+[package]
+name = "acidpump-mainnet-adapter-test"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[workspace]
+
+[features]
+default = ["custom-heap"]
+custom-heap = []
+custom-panic = []
+
+[dependencies]
+acidpump-er = { path = "../..", features = ["no-entrypoint"] }
+anchor-lang = "1.0.2"
+
+[profile.release]
+overflow-checks = true
+lto = "fat"
+codegen-units = 1
+opt-level = "s"
