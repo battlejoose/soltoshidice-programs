@@ -1,0 +1,70 @@
+{
+  "at": "2026-10-17T14:23:30.667Z",
+  "results": [
+    {
+      "name": "bank",
+      "program": "CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR",
+      "is_verified": false,
+      "message": "On chain program not verified",
+      "on_chain_hash": "",
+      "executable_hash": "",
+      "repo_url": "",
+      "commit": "",
+      "last_verified_at": null,
+      "is_frozen": false,
+      "is_closed": false
+    },
+    {
+      "name": "poker",
+      "program": "3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+      "is_verified": true,
+      "message": "On chain program verified",
+      "on_chain_hash": "085eb68e5d157e35664dfb0943a85fd7216c5fa288e4c57b9eb7d0b7ddc66245",
+      "executable_hash": "085eb68e5d157e35664dfb0943a85fd7216c5fa288e4c57b9eb7d0b7ddc66245",
+      "repo_url": "https://github.com/battlejoose/soltoshidice-programs/tree/d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+      "commit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+      "last_verified_at": "2026-10-17T14:21:07.017456",
+      "is_frozen": false,
+      "is_closed": false
+    },
+    {
+      "name": "fights",
+      "program": "5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q",
+      "is_verified": true,
+      "message": "On chain program verified",
+      "on_chain_hash": "a050bde1ebadfd813cbc3a40c5a683420fa635b4a728f1145f6ad035b25dce49",
+      "executable_hash": "a050bde1ebadfd813cbc3a40c5a683420fa635b4a728f1145f6ad035b25dce49",
+      "repo_url": "https://github.com/battlejoose/soltoshidice-programs/tree/d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+      "commit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+      "last_verified_at": "2026-10-17T14:19:37.815466",
+      "is_frozen": false,
+      "is_closed": false
+    },
+    {
+      "name": "rps",
+      "program": "96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG",
+      "is_verified": true,
+      "message": "On chain program verified",
+      "on_chain_hash": "fd92af695b42e2b8fde87026e7c5c03a4f4c9457686ae843c55c2c25e288d90c",
+      "executable_hash": "fd92af695b42e2b8fde87026e7c5c03a4f4c9457686ae843c55c2c25e288d90c",
+      "repo_url": "https://github.com/battlejoose/soltoshidice-programs/tree/d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+      "commit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+      "last_verified_at": "2026-10-17T14:17:50.631183",
+      "is_frozen": false,
+      "is_closed": false
+    },
+    {
+      "name": "perps",
+      "program": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+      "is_verified": true,
+      "message": "On chain program verified",
+      "on_chain_hash": "08a302a6eedea430a94b9657187f4d84cc98bc2f8f7c23eb59050c894730a3ba",
+      "executable_hash": "08a302a6eedea430a94b9657187f4d84cc98bc2f8f7c23eb59050c894730a3ba",
+      "repo_url": "https://github.com/battlejoose/soltoshidice-programs/tree/d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+      "commit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+      "last_verified_at": "2026-10-17T14:22:20.231089",
+      "is_frozen": false,
+      "is_closed": false
+    }
+  ]
+}

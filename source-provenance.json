@@ -3,7 +3,9 @@
   "perpsCommit": "2accb564670431b32d8b3e9f1ce7ec2baff7614b",
   "transformations": [
     "Poker declare_id substituted with existing mainnet identity, as in original release build.",
-    "Perps workspace members limited to acidpump-er; release profile unchanged."
+    "Perps workspace members limited to acidpump-er; release profile unchanged.",
+    "Bank: remove nine comment-only lines from slots/mod.rs to reconstruct deployed panic source locations.",
+    "Bank compiler wrapper pins the original Cargo crate metadata: hooddice_bank=3ff28175af483e15 and sdice_slots_rules=c379fe2b17ba9730."
   ],
   "files": [
     {
@@ -158,7 +160,7 @@
       "sourcePath": "game/chain/program/src/slots/mod.rs",
       "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
       "originalSha256": "ffcb800a4908a1824ee1b7f94585446856d14eee4b7bb2c161d5a9eef56c8fe7",
-      "sha256": "ffcb800a4908a1824ee1b7f94585446856d14eee4b7bb2c161d5a9eef56c8fe7"
+      "sha256": "f3c196869f610ab010c9c1b3a9725f75cab1cc579301e17f77a969dcaa3b675c"
     },
     {
       "path": "games/chain/program/src/slots/rewards.rs",

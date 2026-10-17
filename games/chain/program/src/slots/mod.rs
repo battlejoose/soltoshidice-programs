@@ -1,6 +1,3 @@
-//! Classic slots candidate. Fixed 100K cap, shared bank reserves, and the same
-//! direct/tree/staking reward ledger as dice. Activation requires bank authority.
-//! Neither a keeper nor a callback can nominate a wager, payout or referrer.
 use crate::*;
 use sdice_slots_rules as rules;
 use solana_program::instruction::{AccountMeta, Instruction};
@@ -15,9 +12,6 @@ pub const SPIN_SEED: &[u8] = b"slots-spin-v1";
 pub const CONFIG_LEN: usize = 50;
 pub const CURSOR_LEN: usize = 82;
 pub const SPIN_LEN: usize = 261;
-// Upstream pinned queue TTL is 120s. This consumer has a fixed 180s callback
-// cutoff, then refunds unfulfilled spins. Callback and refund windows do not
-// overlap. Stored randomness MUST settle, even if the deadline has passed.
 pub const CALLBACK_SECONDS: i64 = 180;
 const PENDING: u8 = 1;
 const RANDOM: u8 = 2;
@@ -325,8 +319,6 @@ fn accept<'a>(program: &Pubkey, a: &[AccountInfo<'a>], data: &[u8]) -> ProgramRe
         14,
     )?;
     check(valid_mint(&a[5])? == 6, 5)?;
-    // A closed destination must be recreatable without a lost token-account
-    // keypair. Pin the original wallet's canonical Token-2022 ATA.
     let ata = Pubkey::find_program_address(
         &[
             a[0].key.as_ref(),
@@ -388,7 +380,6 @@ fn accept<'a>(program: &Pubkey, a: &[AccountInfo<'a>], data: &[u8]) -> ProgramRe
     write(&a[1], &bank)?;
     write(&a[3], &p)?;
     write(&a[4], &s)?;
-    // Existing checked standard queue identity and pinned scoped request ABI.
     let fee = blackjack::magicblock::fee(&a[11])?;
     let (identity, ibump) = Pubkey::find_program_address(&[b"identity"], program);
     check(

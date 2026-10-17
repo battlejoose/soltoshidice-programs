@@ -9,11 +9,11 @@ It contains no deployment keys, private RPC credentials or application history.
 
 | Program | Scope | Local Docker reproduction | Public registry |
 | --- | --- | --- | --- |
-| `CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR` | Bank, Cee-lo, slots, blackjack, staking, profiles, referrals | Build-environment investigation in progress; not yet a match | Not registered |
-| `3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ` | Hold'em and tournaments | Exact deployed bytes reproduced | Registration pending |
-| `5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q` | Street Fights | Exact deployed bytes reproduced | Registration pending |
-| `96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG` | Rock Paper Scissors | Exact deployed bytes reproduced | Registration pending |
-| `7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7` | SDICE Perps | Exact deployed bytes reproduced | Registration pending |
+| `CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR` | Bank, Cee-lo, slots, blackjack, staking, profiles, referrals | Exact deployed bytes reproduced | Registration pending |
+| `3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ` | Hold'em and tournaments | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ) |
+| `5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q` | Street Fights | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q) |
+| `96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG` | Rock Paper Scissors | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG) |
+| `7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7` | SDICE Perps | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7) |
 
 No deployed program, authority, custody account or game state was changed to
 produce this evidence. Verification metadata belongs to a separate verification
@@ -30,7 +30,6 @@ bash verify.sh poker
 bash verify.sh fights
 bash verify.sh rps
 bash verify.sh perps
-# Currently expected to fail the bytecode comparison; investigation is ongoing:
 bash verify.sh bank
 ```
 
@@ -52,7 +51,15 @@ Compare current chain state: upgrades after this snapshot can invalidate it.
 slots and upgrade authorities. None of these files contains private signing keys.
 
 - Bank source is the recorded slots release tree, including its separate pure
-  slots-rules crate. Its exact reproducible build remains under investigation.
+  slots-rules crate. The original Cargo crate identifiers depend on the original
+  filesystem path. A transparent Rust compiler wrapper pins only `-C metadata`
+  for `hooddice_bank` and `sdice_slots_rules` to the original values. It does not
+  change compiler code, executable statements, or compiled bytes.
+- The bank export removes nine comment-only lines from `src/slots/mod.rs` to
+  reconstruct embedded panic locations (407, 408, 497 rather than 416, 417, 506).
+  This restores the released binary without changing any executable source
+  statement. The original file hash and this transformation are recorded in
+  `source-provenance.json`. Other comments remain unchanged.
 - Fights includes its original September 13 ORAO adapter. The newer bank adapter
   was never deployed into the fight program and must not replace it here.
 - Poker's mainnet `declare_id!` substitution is the same one used by its original

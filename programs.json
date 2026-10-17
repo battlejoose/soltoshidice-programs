@@ -19,7 +19,7 @@
       "mount": "games/chain",
       "workspace": "games/chain/program",
       "library": "hooddice_bank",
-      "localDockerMatch": false,
+      "localDockerMatch": true,
       "publicRegistryStatus": "not-registered"
     },
     {
@@ -38,7 +38,9 @@
       "workspace": "games/poker",
       "library": "riverproof",
       "localDockerMatch": true,
-      "publicRegistryStatus": "not-registered"
+      "publicRegistryStatus": "verified",
+      "verifiedCommit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+      "verifiedAt": "2026-10-17T14:21:07.017456"
     },
     {
       "name": "fights",
@@ -56,7 +58,9 @@
       "workspace": "games/fights/fight-program",
       "library": "hooddice_fights",
       "localDockerMatch": true,
-      "publicRegistryStatus": "not-registered"
+      "publicRegistryStatus": "verified",
+      "verifiedCommit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+      "verifiedAt": "2026-10-17T14:19:37.815466"
     },
     {
       "name": "rps",
@@ -74,7 +78,9 @@
       "workspace": "games/chain/rps-program",
       "library": "hooddice_rps",
       "localDockerMatch": true,
-      "publicRegistryStatus": "not-registered"
+      "publicRegistryStatus": "verified",
+      "verifiedCommit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+      "verifiedAt": "2026-10-17T14:17:50.631183"
     },
     {
       "name": "perps",
@@ -96,7 +102,9 @@
         "mainnet"
       ],
       "localDockerMatch": true,
-      "publicRegistryStatus": "not-registered"
+      "publicRegistryStatus": "verified",
+      "verifiedCommit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+      "verifiedAt": "2026-10-17T14:22:20.231089"
     }
   ]
 }
