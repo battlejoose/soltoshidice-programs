@@ -9,7 +9,7 @@ It contains no deployment keys, private RPC credentials or application history.
 
 | Program | Scope | Local Docker reproduction | Public registry |
 | --- | --- | --- | --- |
-| `CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR` | Bank, Cee-lo, slots, blackjack, staking, profiles, referrals | Exact deployed bytes reproduced | Registration pending |
+| `CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR` | Bank, Cee-lo, slots, blackjack, staking, profiles, referrals | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR) |
 | `3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ` | Hold'em and tournaments | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ) |
 | `5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q` | Street Fights | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q) |
 | `96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG` | Rock Paper Scissors | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG) |
@@ -18,6 +18,13 @@ It contains no deployment keys, private RPC credentials or application history.
 No deployed program, authority, custody account or game state was changed to
 produce this evidence. Verification metadata belongs to a separate verification
 program. Local reproduction is distinct from remote verifier acceptance.
+
+All five independent verifier jobs completed successfully. Finalized registration
+transactions, exact verified commits, costs and unchanged deployment checks are
+in [`evidence/verification-receipts.json`](evidence/verification-receipts.json).
+Bank verifies commit `e875a74a72af04b0bb203ac2952401e2eb0cef0c`; the other four
+verify `d2c0b0b7fd14b727d925b137f64ee910261c9f3c`. Later documentation-only commits
+do not replace the precise source commit recorded by the verifier.
 
 ## Reproduce independently
 

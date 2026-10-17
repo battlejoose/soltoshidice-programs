@@ -1,16 +1,16 @@
 {
-  "at": "2026-10-17T14:23:30.667Z",
+  "at": "2026-10-17T14:31:14.388Z",
   "results": [
     {
       "name": "bank",
       "program": "CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR",
-      "is_verified": false,
-      "message": "On chain program not verified",
-      "on_chain_hash": "",
-      "executable_hash": "",
-      "repo_url": "",
-      "commit": "",
-      "last_verified_at": null,
+      "is_verified": true,
+      "message": "On chain program verified",
+      "on_chain_hash": "2d8b12dc307b5ac98f95adc24d4054a907350dcaf2b75e2a7b45f8f5057207c9",
+      "executable_hash": "2d8b12dc307b5ac98f95adc24d4054a907350dcaf2b75e2a7b45f8f5057207c9",
+      "repo_url": "https://github.com/battlejoose/soltoshidice-programs/tree/e875a74a72af04b0bb203ac2952401e2eb0cef0c",
+      "commit": "e875a74a72af04b0bb203ac2952401e2eb0cef0c",
+      "last_verified_at": "2026-10-17T14:30:33.153245",
       "is_frozen": false,
       "is_closed": false
     },
