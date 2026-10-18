@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-17T13:52:43.257Z",
+  "at": "2026-10-18T12:20:46.908Z",
   "cluster": "mainnet-beta",
   "solanaVerifyVersion": "0.5.2",
   "image": "solanafoundation/solana-verifiable-build@sha256:f71be5ca7620b7e40933b7f1294fa44e01d08c1fc5ba1f375a2478f5a01580d3",
@@ -88,14 +88,14 @@
       "name": "perps",
       "program": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
       "programData": "GngBxRxp2nvs7kHSTfjxfL9jgt7Abt3wHw4cUV92TEon",
-      "readSlot": 458059880,
-      "lastDeploySlot": 455643134,
+      "readSlot": 458432087,
+      "lastDeploySlot": 458267056,
       "upgradeAuthority": "GqJwW3CF9XfopAmCP9zNKN1BvVo3aSPQHmfHdrGUeTzA",
-      "allocatedBytes": 1755512,
-      "sha256": "b151adfb1975f0038d760d0c502fb974a5693f1f013ed1c273d19a18dbb43c47",
-      "zeroTrimmedSha256": "08a302a6eedea430a94b9657187f4d84cc98bc2f8f7c23eb59050c894730a3ba",
-      "zeroTrimmedBytes": 1755497,
-      "binarySha256": "b151adfb1975f0038d760d0c502fb974a5693f1f013ed1c273d19a18dbb43c47",
+      "allocatedBytes": 1935848,
+      "sha256": "f539733115c02fc778b9c081b5e4fb12ddd0b989f3089343dfbb23f7f53170da",
+      "zeroTrimmedSha256": "c3e105266b4a9a2d74487bf799c775c88b78fd7bfad615aa3602ec2ff6ac3b94",
+      "zeroTrimmedBytes": 1935833,
+      "binarySha256": "f539733115c02fc778b9c081b5e4fb12ddd0b989f3089343dfbb23f7f53170da",
       "mount": "perps",
       "workspace": "perps",
       "library": "acidpump_er",
@@ -104,9 +104,9 @@
         "mainnet"
       ],
       "localDockerMatch": true,
-      "publicRegistryStatus": "verified",
-      "verifiedCommit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
-      "verifiedAt": "2026-10-17T14:22:20.231089"
+      "publicRegistryStatus": "refresh-pending",
+      "previousVerifiedCommit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+      "previousVerifiedAt": "2026-10-17T14:22:20.231089"
     }
   ]
 }

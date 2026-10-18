@@ -5,6 +5,7 @@ use anchor_lang::prelude::*;
 use ephemeral_rollups_sdk::anchor::delegate;
 use ephemeral_rollups_sdk::cpi::DelegateConfig;
 use crate::{engine::*, pump, Asset, Config, MixError};
+use crate::venue::{ns, shared};
 
 pub const HISTORY: usize = 64;
 pub const MAX_SAMPLE_GAP: i64 = 10;
@@ -155,7 +156,7 @@ impl CollateralGuard {
     pub fn start(&mut self, trader: &ErTrader, history: &CollateralHistory, slot: u8) -> Result<()> {
         self.bind(trader)?;
         let position = trader.slots.get(slot as usize).ok_or(MixError::Binding)?;
-        require!(position.state == ER_OPEN && position.asset == history.asset && history.config == self.config
+        require!(position.state == ER_OPEN && position.asset == history.asset && shared(self.config, history.config)
             && history.sequence > 0 && history.source_slot == position.opened_source_slot, MixError::Binding);
         self.floors[slot as usize] = CollateralFloor { nonce: position.nonce, value: position.entry_value,
             #[cfg(feature="mainnet")]
@@ -168,7 +169,7 @@ impl CollateralGuard {
     }
     pub fn observe(&mut self, trader: &ErTrader, history: &CollateralHistory) -> Result<()> {
         self.bind(trader)?;
-        require!(history.config == self.config && history.samples.len() == HISTORY, MixError::Binding);
+        require!(shared(self.config, history.config) && history.samples.len() == HISTORY, MixError::Binding);
         for (position, floor) in trader.slots.iter().zip(self.floors.iter_mut()) {
             if ![ER_OPEN,ER_PENDING].contains(&position.state) || position.kind != ER_TRADE || position.asset != history.asset { continue; }
             // Once a post-close sample is included, later token moves and
@@ -219,7 +220,7 @@ impl CollateralGuard {
             && position.opened_source_slot == recovery.opened_source_slot
             && position.closed_at == recovery.closed_at && floor.closed_at == recovery.closed_at
             && position.exit == recovery.exit && floor.exit == recovery.exit
-            && position.asset == history.asset && trader.config == history.config, MixError::Binding);
+            && position.asset == history.asset && shared(trader.config, history.config), MixError::Binding);
         require!(floor.incomplete || floor.covered_at <= position.closed_at, MixError::Replay);
         require!(recovery.evidence_hash != [0; 32] && recovery.value <= floor.value
             && recovery.value <= position.entry_value, MixError::History);
@@ -265,7 +266,9 @@ pub fn delegate_guard(ctx: Context<DelegateCollateralGuard>) -> Result<()> {
     // party cannot race the paused return/resize migration.
     require!(ctx.accounts.guard.data_len()==8+CollateralGuard::INIT_SPACE,MixError::Binding);
     let owner = ctx.accounts.owner.key();
-    ctx.accounts.delegate_guard(&ctx.accounts.payer, &[b"er-collateral-guard",owner.as_ref()],
+    let n = ns(ctx.accounts.config.key());
+    let seeds = crate::venue::ns_seeds(b"er-collateral-guard", &n, &[owner.as_ref()]);
+    ctx.accounts.delegate_guard(&ctx.accounts.payer, &seeds,
         DelegateConfig {validator:Some(ER_VALIDATOR),commit_frequency_ms:u32::MAX})?;
     Ok(())
 }
@@ -292,12 +295,12 @@ pub struct CollateralHistoryRecovered {
 #[derive(Accounts)]
 pub struct RecoverCollateral<'info> {
     pub publisher: Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump,has_one=publisher)] pub config: Account<'info,Config>,
-    #[account(seeds=[b"er-trader",er_trader.owner.as_ref()],bump=er_trader.bump,has_one=config)]
+    #[account(has_one=publisher)] pub config: Account<'info,Config>,
+    #[account(seeds=[b"er-trader",vns!(config.key()),er_trader.owner.as_ref()],bump=er_trader.bump,has_one=config)]
     pub er_trader: Box<Account<'info,ErTrader>>,
-    #[account(mut,seeds=[b"er-collateral-guard",er_trader.owner.as_ref()],bump=guard.bump,has_one=config)]
+    #[account(mut,seeds=[b"er-collateral-guard",vns!(config.key()),er_trader.owner.as_ref()],bump=guard.bump,has_one=config)]
     pub guard: Box<Account<'info,CollateralGuard>>,
-    #[account(seeds=[b"er-collateral-history",history.asset.as_ref()],bump=history.bump,has_one=config)]
+    #[account(seeds=[b"er-collateral-history",history.asset.as_ref()],bump=history.bump,constraint=shared(config.key(),history.config) @ MixError::Binding)]
     pub history: Account<'info,CollateralHistory>,
     pub execution: ErExecution<'info>,
 }
@@ -318,8 +321,8 @@ pub struct InitializeCollateralGuard<'info> {
     #[account(mut)] pub payer: Signer<'info>,
     /// CHECK: Canonical owner's namespace; no custody or user permissions change.
     pub owner: UncheckedAccount<'info>,
-    #[account(seeds=[b"config"],bump=config.bump)] pub config: Account<'info,Config>,
-    #[account(init,payer=payer,space=8+CollateralGuard::INIT_SPACE,seeds=[b"er-collateral-guard",owner.key().as_ref()],bump)]
+    pub config: Account<'info,Config>,
+    #[account(init,payer=payer,space=8+CollateralGuard::INIT_SPACE,seeds=[b"er-collateral-guard",vns!(config.key()),owner.key().as_ref()],bump)]
     pub guard: Box<Account<'info,CollateralGuard>>,
     pub system_program: Program<'info,System>,
 }
@@ -340,13 +343,14 @@ pub struct DelegateCollateralGuard<'info> {
     #[account(mut)] pub payer: Signer<'info>,
     /// CHECK: Canonical owner's namespace; the PDA can only be initialized with this owner.
     pub owner: UncheckedAccount<'info>,
+    pub config: Account<'info,Config>,
     /// CHECK: DLP requires the canonical program-owned guard. Anyone can sponsor its delegation.
-    #[account(mut,del,seeds=[b"er-collateral-guard",owner.key().as_ref()],bump)] pub guard: UncheckedAccount<'info>,
+    #[account(mut,del,seeds=[b"er-collateral-guard",vns!(config.key()),owner.key().as_ref()],bump)] pub guard: UncheckedAccount<'info>,
 }
 #[derive(Accounts)]
 pub struct ObserveCollateral<'info> {
-    #[account(seeds=[b"er-trader",er_trader.owner.as_ref()],bump=er_trader.bump)] pub er_trader: Box<Account<'info,ErTrader>>,
-    #[account(mut,seeds=[b"er-collateral-guard",er_trader.owner.as_ref()],bump=guard.bump)] pub guard: Box<Account<'info,CollateralGuard>>,
+    #[account(seeds=[b"er-trader",vns!(er_trader.config),er_trader.owner.as_ref()],bump=er_trader.bump)] pub er_trader: Box<Account<'info,ErTrader>>,
+    #[account(mut,seeds=[b"er-collateral-guard",vns!(er_trader.config),er_trader.owner.as_ref()],bump=guard.bump)] pub guard: Box<Account<'info,CollateralGuard>>,
     #[account(seeds=[b"er-collateral-history",history.asset.as_ref()],bump=history.bump)] pub history: Account<'info,CollateralHistory>,
     pub execution: ErExecution<'info>,
 }

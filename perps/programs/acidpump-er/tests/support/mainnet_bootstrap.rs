@@ -31,6 +31,9 @@ impl Bank {
         let config:Config=get(&self.svm,self.config);
         assert!(config.paused);assert_eq!(config.admin,admin);assert_eq!(config.publisher,p::mainnet_config::PUBLISHER);
         assert_eq!(config.quote_mint,USDC);assert_eq!(config.next_settlement_seq,1);
+        self.admin("initialize immutable prospective economics",vec![ix(p::accounts::InitializeEconomicsV1{
+            admin,config:self.config,economics:pda(&[b"economics-v1"]),system_program,
+            execution:p::accounts::BaseExecution{magic_program:magic}},p::instruction::InitializeEconomicsV1{deadband:false})],false);
 
         for id in [102u16,104,103,0,1,2,3] {
             let feed=pda(&[b"feed",&id.to_le_bytes()]);

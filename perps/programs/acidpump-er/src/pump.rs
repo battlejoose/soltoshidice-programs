@@ -132,7 +132,8 @@ pub fn swap_loss<'info>(p:&Account<Pool>,authority:&UncheckedAccount<'info>,from
 
 /// Sell the reserved gas allocation into native SOL. Quote rounding stays in the pool.
 pub fn swap_fees<'info>(p:&Account<Pool>,authority:&UncheckedAccount<'info>,from:&Account<Asset>,perp:&Account<Asset>,gas:&Account<Asset>,source:&InterfaceAccount<'info,TokenAccount>,perp_vault:&InterfaceAccount<'info,TokenAccount>,gas_vault:&InterfaceAccount<'info,TokenAccount>,quote:&InterfaceAccount<'info,TokenAccount>,program:&UncheckedAccount<'info>,accounts:&[AccountInfo<'info>],sell_count:u8,perp_count:u8,amount:u64,gas_tokens:u64,min_perp:u64,min_gas:u64)->Result<(u64,u64)> {
-    require!(program.key()==ID && program.executable && perp.id==102 && gas.mint==anchor_spl::token::spl_token::native_mint::ID && gas.token_program==anchor_spl::token::ID, MixError::Binding);
+    // The caller binds `perp` to the pool's own settlement token.
+    require!(program.key()==ID && program.executable && gas.mint==anchor_spl::token::spl_token::native_mint::ID && gas.token_program==anchor_spl::token::ID, MixError::Binding);
     require!(from.quote_mint==perp.quote_mint && from.quote_mint==gas.quote_mint && source.owner==authority.key() && perp_vault.owner==authority.key() && gas_vault.owner==authority.key() && quote.owner==authority.key(),MixError::Binding);
     require!(source.mint==from.mint && perp_vault.mint==perp.mint && gas_vault.mint==gas.mint && quote.mint==from.quote_mint,MixError::Binding);
     let a=sell_count as usize; let b=a+perp_count as usize;
@@ -157,4 +158,57 @@ pub fn swap_fees<'info>(p:&Account<Pool>,authority:&UncheckedAccount<'info>,from
     if gas_quote>0 {leg(p,authority,gas,&gas_vault.to_account_info(),&quote.to_account_info(),program,&accounts[b..],false,gas_quote,min_gas.max(1))?;}
     require!(token_amount(&quote.to_account_info())?>=q0,MixError::Binding);
     Ok((token_amount(&perp_vault.to_account_info())?.checked_sub(p0).ok_or(MixError::Arithmetic)?,token_amount(&gas_vault.to_account_info())?.checked_sub(g0).ok_or(MixError::Arithmetic)?))
+}
+
+/// Exact-in buy of `to` with quote already held by the authority.
+pub fn buy_into<'info>(p:&Account<Pool>,authority:&UncheckedAccount<'info>,to:&Account<Asset>,dest:&InterfaceAccount<'info,TokenAccount>,quote:&InterfaceAccount<'info,TokenAccount>,program:&UncheckedAccount<'info>,accounts:&[AccountInfo<'info>],amount:u64,min_out:u64)->Result<()> {
+    require!(program.key()==ID && program.executable && dest.owner==authority.key() && quote.owner==authority.key()
+        && dest.mint==to.mint && quote.mint==to.quote_mint,MixError::Binding);
+    leg(p,authority,to,&dest.to_account_info(),&quote.to_account_info(),program,accounts,false,amount,min_out)
+}
+
+/// One venue loss conversion. `amount` of `from` is sold into the swap quote
+/// once (or moved, if it already is the quote). The proceeds are divided pro
+/// rata: `perp_part` buys the venue token, `gas_part` buys SOL and
+/// `buyback_part` stays as quote in the venue's SDICE buyback vault.
+/// Returns (venue tokens bought, SOL bought, buyback quote).
+pub fn route_venue<'info>(r:&crate::venue::VenueRoute<'_,'info>,accounts:&[AccountInfo<'info>],sell_count:u8,perp_count:u8,amount:u64,perp_part:u64,gas_part:u64,buyback_part:u64,min_perp:u64,min_gas:u64)->Result<(u64,u64,u64)> {
+    let (p,authority)=(r.pool,r.authority);
+    require!(r.program.key()==ID && r.program.executable && r.gas.mint==anchor_spl::token::spl_token::native_mint::ID && r.gas.token_program==anchor_spl::token::ID,MixError::Binding);
+    require!(r.from.quote_mint==r.perp.quote_mint && r.from.quote_mint==r.gas.quote_mint && r.source.owner==authority.key() && r.perp_vault.owner==authority.key()
+        && r.gas_vault.owner==authority.key() && r.quote.owner==authority.key() && r.buyback.owner==authority.key(),MixError::Binding);
+    require!(r.source.mint==r.from.mint && r.perp_vault.mint==r.perp.mint && r.gas_vault.mint==r.gas.mint && r.quote.mint==r.from.quote_mint
+        && r.buyback.mint==r.from.quote_mint && r.buyback.key()!=r.quote.key(),MixError::Binding);
+    require!(amount>0 && perp_part.checked_add(gas_part).and_then(|n|n.checked_add(buyback_part))==Some(amount),MixError::Amount);
+    let a=sell_count as usize;
+    let b=a+if perp_part>0 {perp_count as usize} else {0};
+    require!((a>0)!=is_quote(r.from) && b<=accounts.len() && (gas_part==0 || b<accounts.len()) && (perp_part==0 || b>a),MixError::Binding);
+    let source0=token_amount(&r.source.to_account_info())?;
+    let q0=token_amount(&r.quote.to_account_info())?;
+    let p0=token_amount(&r.perp_vault.to_account_info())?;
+    let g0=token_amount(&r.gas_vault.to_account_info())?;
+    let token_program=accounts.iter().find(|a|a.key()==anchor_spl::token::ID).ok_or(MixError::Binding)?;
+    if is_quote(r.from) {
+        move_tokens(p,authority,r.source,r.quote,token_program,amount)?;
+    } else {
+        leg(p,authority,r.from,&r.source.to_account_info(),&r.quote.to_account_info(),r.program,&accounts[..a],true,amount,1)?;
+    }
+    require!(token_amount(&r.source.to_account_info())?==source0.checked_sub(amount).ok_or(MixError::Arithmetic)?,MixError::Binding);
+    let received=token_amount(&r.quote.to_account_info())?.checked_sub(q0).ok_or(MixError::Arithmetic)?;
+    let perp_quote=math::div(received as u128,perp_part as u128,amount as u128)?;
+    let gas_quote=math::div(received as u128,gas_part as u128,amount as u128)?;
+    let buyback_quote=math::div(received as u128,buyback_part as u128,amount as u128)?;
+    if perp_quote>0 {leg(p,authority,r.perp,&r.perp_vault.to_account_info(),&r.quote.to_account_info(),r.program,&accounts[a..b],false,perp_quote,min_perp.max(1))?;}
+    if gas_quote>0 {leg(p,authority,r.gas,&r.gas_vault.to_account_info(),&r.quote.to_account_info(),r.program,&accounts[b..],false,gas_quote,min_gas.max(1))?;}
+    if buyback_quote>0 {move_tokens(p,authority,r.quote,r.buyback,token_program,buyback_quote)?;}
+    // Quote rounding stays in the intermediate; existing dust is never spent.
+    require!(token_amount(&r.quote.to_account_info())?>=q0,MixError::Binding);
+    // When the venue token is itself the collateral, the source is the token
+    // vault and nothing is bought into it.
+    let perp_out=if perp_part>0 {
+        require_keys_neq!(r.source.key(),r.perp_vault.key(),MixError::Binding);
+        token_amount(&r.perp_vault.to_account_info())?.checked_sub(p0).ok_or(MixError::Arithmetic)?
+    } else {0};
+    let gas_out=token_amount(&r.gas_vault.to_account_info())?.checked_sub(g0).ok_or(MixError::Arithmetic)?;
+    Ok((perp_out,gas_out,buyback_quote))
 }

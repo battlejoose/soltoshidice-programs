@@ -202,3 +202,49 @@ pub fn redeem_usdc<'info>(ctx:Context<'info,crate::RedeemUsdc<'info>>)->Result<(
     emit!(crate::Redeemed{position:x.key(),asset:ctx.accounts.asset.key(),amount:lo,debit_usd:debit,converted_out:out});
     Ok(())
 }
+
+/// Buy from the canonical SOL-denominated pool, spending only the supplied
+/// quote amount. The adapter validates the pool, mint, vaults and CPI programs.
+pub fn buy_into<'info>(p:&Account<Pool>,authority:&UncheckedAccount<'info>,to:&Account<Asset>,dest:&InterfaceAccount<'info,TokenAccount>,quote:&InterfaceAccount<'info,TokenAccount>,program:&UncheckedAccount<'info>,accounts:&[AccountInfo<'info>],amount:u64,min_out:u64)->Result<()> {
+    require!(amount>0 && min_out>0 && dest.owner==authority.key() && quote.owner==authority.key()
+        && dest.mint==to.mint && quote.mint==live::SOL && to.quote_mint==live::SOL,MixError::Binding);
+    let before=token_amount(&quote.to_account_info())?;
+    leg(p,to,dest.key(),quote.key(),program,accounts,true,amount,min_out)?;
+    require!(token_amount(&quote.to_account_info())?==before.checked_sub(amount).ok_or(MixError::Arithmetic)?,MixError::Binding);
+    Ok(())
+}
+/// One collateral sale, with SOL proceeds isolated from pre-existing quote.
+/// 98:1:1 normally; 99:1:0 while the venue owes FIFO claims. Native SOL's gas
+/// share is retained by the caller, so that path arrives with gas_part=0.
+pub fn route_venue<'info>(r:&crate::venue::VenueRoute<'_,'info>,accounts:&[AccountInfo<'info>],sell_count:u8,perp_count:u8,amount:u64,perp_part:u64,gas_part:u64,buyback_part:u64,min_perp:u64,min_gas:u64)->Result<(u64,u64,u64)> {
+    let (p,authority)=(r.pool,r.authority);
+    require!(r.program.key()==ID && r.program.executable && is_sol(r.gas) && r.perp.quote_mint==live::SOL,MixError::Binding);
+    require!(r.source.owner==authority.key() && r.perp_vault.owner==authority.key() && r.gas_vault.owner==authority.key()
+        && r.quote.owner==authority.key() && r.buyback.owner==authority.key(),MixError::Binding);
+    require!(r.source.mint==r.from.mint && r.perp_vault.mint==r.perp.mint && r.gas_vault.mint==live::SOL
+        && r.quote.mint==live::SOL && r.buyback.mint==live::SOL,MixError::Binding);
+    require!(r.source.key()!=r.quote.key() && r.quote.key()!=r.gas_vault.key() && r.buyback.key()!=r.quote.key()
+        && r.buyback.key()!=r.source.key() && r.buyback.key()!=r.gas_vault.key(),MixError::Binding);
+    require!(amount>0 && perp_part.checked_add(gas_part).and_then(|n|n.checked_add(buyback_part))==Some(amount),MixError::Amount);
+    let count=sell_count as usize;
+    require!(count+perp_count as usize==accounts.len() && (perp_part>0)==(perp_count>0)
+        && (count==0)==is_sol(r.from),MixError::Binding);
+    let q0=token_amount(&r.quote.to_account_info())?;
+    let token_program=sol_program(accounts)?;
+    let received=if is_sol(r.from) {
+        move_tokens(p,authority,r.source,r.quote,token_program,amount)?;amount
+    } else {leg(p,r.from,r.source.key(),r.quote.key(),r.program,&accounts[..count],false,amount,1)?};
+    let gas_out=math::div(received as u128,gas_part as u128,amount as u128)?;
+    let buyback_out=math::div(received as u128,buyback_part as u128,amount as u128)?;
+    if gas_out>0 {move_tokens(p,authority,r.quote,r.gas_vault,token_program,gas_out)?;}
+    if gas_part>0 {require!(gas_out>=min_gas,MixError::Quote);}
+    if buyback_out>0 {move_tokens(p,authority,r.quote,r.buyback,token_program,buyback_out)?;}
+    let token_quote=received.checked_sub(gas_out).and_then(|n|n.checked_sub(buyback_out)).ok_or(MixError::Arithmetic)?;
+    let perp_out=if perp_part>0 {
+        require_keys_neq!(r.source.key(),r.perp_vault.key(),MixError::Binding);
+        leg(p,r.perp,r.perp_vault.key(),r.quote.key(),r.program,&accounts[count..],true,token_quote,min_perp.max(1))?
+    } else {0};
+    // When only fees are sold, at most one atom of split rounding remains.
+    require!(token_amount(&r.quote.to_account_info())?>=q0,MixError::Binding);
+    Ok((perp_out,gas_out,buyback_out))
+}

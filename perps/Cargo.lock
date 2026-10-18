@@ -25,6 +25,8 @@ dependencies = [
  "anchor-lang",
  "anchor-spl",
  "base64 0.22.1",
+ "bs58",
+ "curve25519-dalek",
  "ephemeral-rollups-sdk",
  "litesvm",
  "serde_json",
@@ -2029,6 +2031,14 @@ dependencies = [
  "solana-transaction-context",
  "solana-transaction-error 3.4.0",
  "thiserror 2.0.21",
+]
+
+[[package]]
+name = "localnet-oracle"
+version = "0.1.0"
+dependencies = [
+ "anchor-lang",
+ "ephemeral-rollups-sdk",
 ]
 
 [[package]]

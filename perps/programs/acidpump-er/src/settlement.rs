@@ -26,14 +26,21 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
             token_pnl
         };
         let returned = x.margin - loss;
-        let (mut acid_input,mut gas_share)=math::loss_split(loss)?;
+        // A queued venue retains all post-gas proceeds: neither burn is funded.
+        let root = crate::venue::is_root(&ctx.accounts.bridge.config.key());
+        let pool_before=&ctx.accounts.pool_accounts.pool;
+        let queued=math::queue_pending(pool_before.queue_usd,pool_before.queue_head,pool_before.queue_tail)?;
+        let (mut acid_input,mut gas_share,mut buyback_share)=if root || queued {
+            let (acid,gas)=math::loss_split(loss)?;(acid,gas,0)
+        } else {math::venue_loss_split(loss)?};
         // Tiny unswappable allocations stay in the pool, with no reward or burn.
         let small_loss=loss>0 && pump::sell_value(loss,&ctx.accounts.asset,&ctx.accounts.pool_accounts.valuation)?<1000;
-        if small_loss {acid_input=loss;gas_share=0;}
+        if small_loss {acid_input=loss;gas_share=0;buyback_share=0;}
+        let backing = crate::stake_backing::Backing::new(ctx.accounts.pool_accounts.pool.settlement, ctx.accounts.bridge.config.quote_mint);
         let coverage = {
             sol_quote.validate(Clock::get()?.unix_timestamp)?;
             let current = pump::collateral_value(x.margin, &ctx.accounts.asset, &ctx.accounts.pool_accounts.valuation, sol_quote.price)?;
-            let target = if crate::stake_backing::requires_backing(ctx.accounts.asset.key()) {
+            let target = if backing.requires(ctx.accounts.asset.key()) {
                 crate::stake_backing::loss_shortfall(x.entry_value, current, loss, x.margin)?
             } else { 0 };
             let curve = pump::collateral_curve(&ctx.accounts.settlement, &ctx.accounts.ownership.settlement_valuation, sol_quote.price)?;
@@ -48,7 +55,15 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
             x.close_value = x.entry_value.min(current);
             coverage
         };
-        let profit = if win && !liquidated { math::pnl(x.close_value, x.entry, intent.exit, x.leverage, x.long)?.1 } else { 0 };
+        #[cfg(feature="mainnet")]
+        let profit = if win && !liquidated {
+            ctx.accounts.economics.profit(x.opened_at,x.close_value,x.entry,intent.exit,x.leverage,x.long)?
+        } else { 0 };
+        #[cfg(not(feature="mainnet"))]
+        let profit = if win && !liquidated {math::pnl(x.close_value,x.entry,intent.exit,x.leverage,x.long)?.1} else {0};
+        #[cfg(feature="mainnet")]
+        emit!(ProfitPolicyApplied{position:x.key(),version:if x.opened_at<ctx.accounts.economics.activated_at {0}else{1},
+            deadband:if x.opened_at<ctx.accounts.economics.activated_at {true}else{ctx.accounts.economics.deadband},net_profit:profit});
         let inv = &mut ctx.accounts.inventory;
         inv.locked = inv
             .locked
@@ -63,13 +78,30 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
         // Preserve the instruction layout, but reject the obsolete separate 90% route.
         require!(sell_count==0 && market_accounts==0 && min_swap_out>0,MixError::Binding);
         let fees=&mut ctx.accounts.fees;
-        require!(ctx.accounts.pool_accounts.pool.id==0 && fees.perp.id==102 && fees.gas_asset.mint==anchor_spl::token::spl_token::native_mint::ID, MixError::Binding);
+        require!(ctx.accounts.pool_accounts.pool.id==0 && fees.gas_asset.mint==anchor_spl::token::spl_token::native_mint::ID, MixError::Binding);
+        #[cfg(feature="mainnet")]
+        require!(!root || fees.perp.id==102, MixError::Binding);
         require!(fees.main_pool.is_none() && fees.main_inventory.is_none() && fees.main_vault.is_none() && fees.main_ownership_pool.is_none(),MixError::Binding);
         require_keys_eq!(ctx.accounts.settlement.key(),fees.perp.key(),MixError::Binding);
         require_keys_eq!(fees.perp_vault.key(),Pubkey::find_program_address(&[b"vault",ctx.accounts.pool_accounts.pool.key().as_ref(),fees.perp.key().as_ref()],&crate::ID).0,MixError::Binding);
         require_keys_eq!(fees.gas_vault.key(),Pubkey::find_program_address(&[b"gas-vault",ctx.accounts.pool_accounts.pool.key().as_ref()],&crate::ID).0,MixError::Binding);
-        let (acid_out,gas_out)=if loss==0 {(0,0)} else if same {
-            // ACIDPUMP collateral stays ACIDPUMP. Only its 2% gas share is sold.
+        if root {
+            require!(fees.venue.is_none() && fees.buyback_vault.is_none(),MixError::Binding);
+        } else {
+            let v=fees.venue.as_ref().ok_or(MixError::Binding)?;
+            require!(v.config==ctx.accounts.bridge.config.key() && v.pool==ctx.accounts.pool_accounts.pool.key(),MixError::Binding);
+            require_keys_eq!(fees.buyback_vault.as_ref().ok_or(MixError::Binding)?.key(),
+                Pubkey::find_program_address(&[b"buyback",ctx.accounts.pool_accounts.pool.key().as_ref()],&crate::ID).0,MixError::Binding);
+        }
+        let (acid_out,gas_out,buyback_out)=if loss==0 {(0,0,0)} else if !root {
+            let route=crate::venue::VenueRoute{pool:&ctx.accounts.pool_accounts.pool,authority:&ctx.accounts.pool_accounts.authority,
+                from:&ctx.accounts.asset,perp:&fees.perp,gas:&fees.gas_asset,source:&ctx.accounts.vault,perp_vault:&fees.perp_vault,
+                gas_vault:&fees.gas_vault,quote:&ctx.accounts.quote_vault,buyback:fees.buyback_vault.as_ref().ok_or(MixError::Binding)?,
+                program:&ctx.accounts.pump_program};
+            venue_conversion(&route,ctx.remaining_accounts,&mut inv.dust,&ctx.accounts.pool_accounts.valuation,&fees.gas_program,
+                same,loss,acid_input,gas_share,buyback_share,fee_sell_count,perp_buy_count,min_perp,min_gas)?
+        } else {let (acid,gas)=if same {
+            // Primary collateral stays primary. Only its 1% gas share is sold.
             require!(perp_buy_count==0,MixError::Binding);
             let gas=if gas_share>0 {
                 pump::swap_loss(&ctx.accounts.pool_accounts.pool,&ctx.accounts.pool_accounts.authority,&ctx.accounts.asset,&fees.gas_asset,
@@ -81,7 +113,7 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
             inv.dust=inv.dust.checked_add(loss).ok_or(MixError::Arithmetic)?;
             (0,0)
         }else if ctx.accounts.asset.mint==anchor_spl::token::spl_token::native_mint::ID {
-            // Retain native SOL for gas, and convert the other 98% only once.
+            // Retain native SOL for gas, and convert the other 99% only once.
             require!(perp_buy_count>0 && fee_sell_count as usize+perp_buy_count as usize==ctx.remaining_accounts.len(),MixError::Binding);
             let bought=pump::swap_loss(&ctx.accounts.pool_accounts.pool,&ctx.accounts.pool_accounts.authority,&ctx.accounts.asset,&fees.perp,
                 &ctx.accounts.vault,&fees.perp_vault,&ctx.accounts.quote_vault,&ctx.accounts.pump_program,
@@ -92,8 +124,11 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
             pump::swap_fees(&ctx.accounts.pool_accounts.pool,&ctx.accounts.pool_accounts.authority,&ctx.accounts.asset,&fees.perp,&fees.gas_asset,
                 &ctx.accounts.vault,&fees.perp_vault,&fees.gas_vault,&ctx.accounts.quote_vault,&ctx.accounts.pump_program,
                 ctx.remaining_accounts,fee_sell_count,perp_buy_count,loss,gas_share,min_perp,min_gas)?
-        };
-        let (payout_receipts,staker_out,burn_out)=if small_loss {(acid_out,0,0)} else {math::acid_split(acid_out)?};
+        };(acid,gas,0)};
+        let fees=&mut ctx.accounts.fees;
+        let inv = &mut ctx.accounts.inventory;
+        let (payout_receipts,staker_out,burn_out)=if small_loss || queued {(acid_out,0,0)}
+            else if root {math::acid_split(acid_out)?} else {math::venue_token_split(acid_out)?};
         if same {inv.treasury=inv.treasury.checked_add(payout_receipts).ok_or(MixError::Arithmetic)?;}
         else {
             let target=ctx.accounts.settlement_inventory.as_mut().ok_or(MixError::Binding)?;
@@ -115,13 +150,18 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
             unwrap_gas(&ctx.accounts.pool_accounts.pool,&ctx.accounts.pool_accounts.authority,&fees.gas_vault,&fees.gas_mint,&fees.gas_reserve,&fees.gas_program,&fees.system_program)?;
             fees.gas_reserve.sol_received=fees.gas_reserve.sol_received.checked_add(gas_out).ok_or(MixError::Arithmetic)?;
         }
+        if let Some(v)=fees.venue.as_mut() {
+            v.buyback_received=v.buyback_received.checked_add(buyback_out).ok_or(MixError::Arithmetic)?;
+            emit!(crate::venue::VenueLossSplit{position:x.key(),venue:v.key(),loss,token_tokens:acid_input,gas_tokens:gas_share,
+                buyback_tokens:buyback_share,token_bought:acid_out,sol_received:gas_out,buyback_quote:buyback_out});
+        }
         // Keep the old event decodable for historical fee-reserve receipts.
         emit!(LossSplit{position:x.key(),loss,market_tokens:acid_input,gas_tokens:gas_share,perp_tokens:0,perp_bought:acid_out,sol_received:gas_out});
         emit!(RevenueSplit{position:x.key(),acid_received:acid_out,pool_tokens:payout_receipts,staker_tokens:staker_out,burned_tokens:burn_out});
         // Both the loss swap and the trader's consumed backing fund the payout
         // pool. Award their combined contribution once, under the same curve.
         let settlement_inventory = if same { &mut ctx.accounts.inventory } else { ctx.accounts.settlement_inventory.as_mut().ok_or(MixError::Binding)? };
-        crate::stake_backing::allocate_coverage(&mut ctx.accounts.bridge.custody, &trader, settlement_inventory, coverage)?;
+        crate::stake_backing::allocate_coverage(&mut ctx.accounts.bridge.custody, &trader, settlement_inventory, coverage, backing.core)?;
         emit!(CoreCoverageApplied { position: x.key(), owner: x.owner, closing_usd: x.collateral_close_value,
             core_tokens: coverage.tokens, covered_usd: x.coverage_usd, uncovered_usd: coverage.uncovered_usd });
         let ownership_tokens = payout_receipts.checked_add(coverage.tokens).ok_or(MixError::Arithmetic)?;
@@ -129,7 +169,6 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
         let basis_usd = pump::sell_value(ownership_tokens,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)?;
         let advance = (tracked_after-tracked_before).max(0).min(basis_usd as i128) as u64;
         ownership::award_scaled(&mut ctx.accounts.ownership.ownership_pool, &mut ctx.accounts.ownership.ownership_trader, &mut ctx.accounts.ownership.ownership_receipt, ownership_tokens,basis_usd,tracked_before,advance)?;
-        ownership::sweep_surplus(&mut ctx.accounts.ownership.ownership_pool,settlement_inventory,ctx.accounts.pool_accounts.pool.queue_usd,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)?;
         x.swapped_out = payout_receipts;
         x.state = if liquidated { 2 } else { 1 };
         x.closed_at = intent.closed_at;
@@ -147,6 +186,11 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
                 .checked_add(profit)
                 .ok_or(MixError::Arithmetic)?;
         }
+        // Include this close's new claim before considering a reward sweep.
+        if pool.queue_head == pool.queue_tail {
+            ownership::sweep_surplus(&mut ctx.accounts.ownership.ownership_pool,settlement_inventory,
+                pool.queue_usd,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)?;
+        }
         basebridge::finish_trade(&mut ctx.accounts.bridge.custody, x.er_slot, &intent, x.key(), loss)?;
         if intent.close_seq > 0 {
             ctx.accounts.bridge.config.next_settlement_seq = ctx.accounts.bridge.config.next_settlement_seq.checked_add(1).ok_or(MixError::Arithmetic)?;
@@ -161,3 +205,31 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
         });
         Ok(())
     }
+
+/// Created-venue loss conversion: 98% to the venue token, 1% SOL gas and 1%
+/// swap quote into the SDICE buyback vault. Returns (token, SOL, buyback quote).
+#[allow(clippy::too_many_arguments)]
+fn venue_conversion<'info>(route:&crate::venue::VenueRoute<'_,'info>,accounts:&[AccountInfo<'info>],dust:&mut u64,
+    valuation:&Valuation<'info>,gas_program:&Program<'info,anchor_spl::token::Token>,same:bool,loss:u64,acid_input:u64,gas_share:u64,
+    buyback_share:u64,fee_sell_count:u8,perp_buy_count:u8,min_perp:u64,min_gas:u64)->Result<(u64,u64,u64)> {
+    if same {
+        // The venue token stays the venue token; only its 2% fee share is sold.
+        require!(perp_buy_count==0,MixError::Binding);
+        let fee=gas_share+buyback_share;
+        if fee==0 {return Ok((acid_input,0,0));}
+        let (_,gas,buyback)=pump::route_venue(route,accounts,fee_sell_count,0,fee,0,gas_share,buyback_share,1,min_gas)?;
+        return Ok((acid_input,gas,buyback));
+    }
+    if (pump::is_quote(route.from) && loss<100) || pump::sell_value(loss,route.from,valuation)?==0 {
+        *dust=dust.checked_add(loss).ok_or(MixError::Arithmetic)?;
+        return Ok((0,0,0));
+    }
+    if route.from.mint==anchor_spl::token::spl_token::native_mint::ID {
+        // Keep native SOL for gas; convert the remaining 99% once.
+        require!(perp_buy_count>0,MixError::Binding);
+        if gas_share>0 {pump::move_tokens(route.pool,route.authority,route.source,route.gas_vault,&gas_program.to_account_info(),gas_share)?;}
+        let (bought,_,buyback)=pump::route_venue(route,accounts,fee_sell_count,perp_buy_count,acid_input+buyback_share,acid_input,0,buyback_share,min_perp,1)?;
+        return Ok((bought,gas_share,buyback));
+    }
+    pump::route_venue(route,accounts,fee_sell_count,perp_buy_count,loss,acid_input,gas_share,buyback_share,min_perp,min_gas)
+}

@@ -57,24 +57,40 @@ pub fn exempt_assets() -> [Pubkey;3] {
 }
 pub fn requires_backing(asset:Pubkey)->bool { !exempt_assets().contains(&asset) }
 
-pub fn positions(trader: &ErTrader) -> Vec<BackedPosition> {
-    let exempt=exempt_assets();
-    trader.slots.iter().filter(|s| s.kind == ER_TRADE && s.state != ER_FREE && !exempt.contains(&s.asset))
+/// The backing identity of one venue: its pool's settlement token is the core
+/// stake, and SOL, the deployment's USD and that core token need no backing.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Backing {
+    pub core: Pubkey,
+    pub exempt: [Pubkey; 3],
+}
+impl Backing {
+    pub fn new(core: Pubkey, quote_mint: Pubkey) -> Self {
+        let usd = Pubkey::find_program_address(&[b"asset", quote_mint.as_ref()], &crate::ID).0;
+        Self { core, exempt: [core, crate::engine::sol_collateral_asset(), usd] }
+    }
+    pub fn requires(&self, asset: Pubkey) -> bool { !self.exempt.contains(&asset) }
+}
+/// Compiled root identities; mainnet roots and historical tests use these.
+pub fn root_backing() -> Backing { Backing { core: core_asset(), exempt: exempt_assets() } }
+
+pub fn positions(trader: &ErTrader, backing: &Backing) -> Vec<BackedPosition> {
+    trader.slots.iter().filter(|s| s.kind == ER_TRADE && s.state != ER_FREE && backing.requires(s.asset))
         .map(|s| BackedPosition { nonce: s.nonce, opened_at: s.opened_at,
             entry_usd: s.entry_value, closing_usd: if s.state == crate::engine::ER_OPEN { None } else { Some(0) } }).collect()
 }
 
-pub fn check_entry(trader: &ErTrader, core: &crate::engine::ErQuote, value: u64, now: i64) -> Result<()> {
-    require!(core.asset == core_asset() && core.config == trader.config && !core.is_quote, MixError::Binding);
-    check_open(core.value(trader.core_stake.tokens, now)?, &positions(trader), value, trader.core_stake.uncovered_usd()?)
+pub fn check_entry(trader: &ErTrader, core: &crate::engine::ErQuote, value: u64, now: i64, backing: &Backing) -> Result<()> {
+    require!(core.asset == backing.core && crate::venue::shared(trader.config, core.config) && !core.is_quote, MixError::Binding);
+    check_open(core.value(trader.core_stake.tokens, now)?, &positions(trader, backing), value, trader.core_stake.uncovered_usd()?)
 }
 
 /// Force one oldest close, then reconcile its real base charge before forcing
 /// another. Pending entry reservations must not trigger a cascade of unnecessary
 /// closes, and estimated shortfalls must never release backing.
-pub fn check_forced_close(trader: &ErTrader, core: &crate::engine::ErQuote, slot: u8, now: i64) -> Result<()> {
-    require!(core.asset == core_asset() && core.config == trader.config && !core.is_quote, MixError::Binding);
-    let positions = positions(trader);
+pub fn check_forced_close(trader: &ErTrader, core: &crate::engine::ErQuote, slot: u8, now: i64, backing: &Backing) -> Result<()> {
+    require!(core.asset == backing.core && crate::venue::shared(trader.config, core.config) && !core.is_quote, MixError::Binding);
+    let positions = positions(trader, backing);
     require!(!positions.iter().any(|p| p.closing_usd.is_some()), MixError::Closed);
     let oldest = trader.slots.iter().enumerate().filter(|(_,s)| s.state == crate::engine::ER_OPEN && positions.iter().any(|p|p.nonce==s.nonce))
         .min_by_key(|(_,s)| (s.opened_at, s.nonce)).map(|(i,_)| i).ok_or(MixError::Closed)?;
@@ -91,11 +107,11 @@ pub fn available_stake(custody: &ErCustody, committed: &ErTrader) -> Result<u64>
 
 /// Tokens are already held in base custody. Reserving them on the canonical ER
 /// trader removes them from spendable collateral without issuing new credits.
-pub fn change_stake(trader: &mut ErTrader, amount: u64, unstake: bool) -> Result<()> {
+pub fn change_stake(trader: &mut ErTrader, amount: u64, unstake: bool, backing: &Backing) -> Result<()> {
     require!(amount > 0, MixError::Amount);
-    let index = trader.asset_index(core_asset())?;
+    let index = trader.asset_index(backing.core)?;
     if unstake {
-        require!(positions(trader).is_empty(), MixError::Closed);
+        require!(positions(trader, backing).is_empty(), MixError::Closed);
         let staked = trader.core_stake.tokens.checked_sub(amount).ok_or(MixError::Inventory)?;
         let available = trader.assets[index].available.checked_add(amount).ok_or(MixError::Arithmetic)?;
         trader.core_stake.tokens = staked;
@@ -114,17 +130,17 @@ pub fn change_stake(trader: &mut ErTrader, amount: u64, unstake: bool) -> Result
 /// Caller must authenticate the committed ER trader and consume the position's
 /// settlement receipt in the SAME instruction; this is not a public entrypoint.
 pub fn allocate_coverage(custody: &mut ErCustody, committed: &ErTrader, inventory: &mut Inventory,
-    debit: Coverage) -> Result<()> {
+    debit: Coverage, core: Pubkey) -> Result<()> {
     require!(custody.owner == committed.owner && custody.config == committed.config
         && custody.pool == committed.pool && inventory.pool == custody.pool, MixError::Binding);
     if debit.tokens==0 {
         custody.core_coverage.incurred_usd=custody.core_coverage.incurred_usd.checked_add(debit.uncovered_usd).ok_or(MixError::Arithmetic)?;
         return Ok(());
     }
-    require!(inventory.asset == core_asset(),MixError::Binding);
+    require!(inventory.asset == core,MixError::Binding);
     let available = available_stake(custody, committed)?;
     require!(debit.tokens <= available, MixError::Inventory);
-    let index = custody.assets.iter().position(|a| a.asset == core_asset()).ok_or(MixError::Inventory)?;
+    let index = custody.assets.iter().position(|a| a.asset == core).ok_or(MixError::Inventory)?;
     let balance = custody.assets[index].available.checked_sub(debit.tokens).ok_or(MixError::Inventory)?;
     let locked = inventory.locked.checked_sub(debit.tokens).ok_or(MixError::Inventory)?;
     let treasury = inventory.treasury.checked_add(debit.tokens).ok_or(MixError::Arithmetic)?;
@@ -302,25 +318,25 @@ mod tests {
     fn exempt_assets_never_reserve_backing_or_prevent_unlock() {
         use crate::engine::*;
         let (mut trader, _, _, _) = ledger();
-        change_stake(&mut trader, 100, false).unwrap();
+        change_stake(&mut trader, 100, false, &root_backing()).unwrap();
         for (index, asset) in exempt_assets().into_iter().enumerate() {
             assert!(!requires_backing(asset));
             trader.slots[index] = ErSlot {asset, state: if index==0 {ER_PENDING} else {ER_OPEN},
                 kind:ER_TRADE, nonce:index as u64+1,entry_value:100*USD,opened_at:100+index as i64,..ErSlot::default()};
         }
-        assert!(positions(&trader).is_empty());
-        change_stake(&mut trader, 100, true).unwrap();
+        assert!(positions(&trader, &root_backing()).is_empty());
+        change_stake(&mut trader, 100, true, &root_backing()).unwrap();
         let asset=Pubkey::new_unique();assert!(requires_backing(asset));
         trader.slots[3]=ErSlot{asset,state:ER_OPEN,kind:ER_TRADE,nonce:4,entry_value:USD,opened_at:104,..ErSlot::default()};
-        assert_eq!(reserved_usd(&positions(&trader)).unwrap(),USD);
+        assert_eq!(reserved_usd(&positions(&trader, &root_backing())).unwrap(),USD);
         let core=ErQuote{config:trader.config,asset:core_asset(),source_slot:1,publish_time:110,
             base_reserve:1_000,quote_reserve:1_000,
             #[cfg(feature="mainnet")]
             mainnet:crate::MainnetCollateralContext{real_quote_reserve:1_000,usd_per_quote_atom_e21:100_000_000_000_000,conversion_publish_time:110,conversion_source_slot:1,pool_source_slot:1},..ErQuote::default()};
-        check_forced_close(&trader,&core,3,110).unwrap();
-        assert!(check_forced_close(&trader,&core,1,110).is_err());
-        change_stake(&mut trader, 100, false).unwrap();
-        assert!(change_stake(&mut trader, 100, true).is_err());
+        check_forced_close(&trader,&core,3,110,&root_backing()).unwrap();
+        assert!(check_forced_close(&trader,&core,1,110,&root_backing()).is_err());
+        change_stake(&mut trader, 100, false, &root_backing()).unwrap();
+        assert!(change_stake(&mut trader, 100, true, &root_backing()).is_err());
     }
 
     #[test]
@@ -336,13 +352,13 @@ mod tests {
     fn stake_is_removed_from_spendable_collateral_and_withdrawals() {
         use crate::engine::*;
         let (mut trader, custody, mut risk, _) = ledger();
-        change_stake(&mut trader, 60, false).unwrap();
+        change_stake(&mut trader, 60, false, &root_backing()).unwrap();
         assert_eq!((trader.core_stake.tokens, trader.assets[0].available), (60, 40));
         assert!(withdraw_slot(&mut trader, &mut risk, core_asset(), 0, 1, 41, 110, 100).is_err());
         sync_custody(&mut trader, &mut risk, &custody).unwrap();
         assert_eq!(trader.assets[0].available, 40, "base custody cannot credit staked tokens again");
-        assert!(change_stake(&mut trader, 41, false).is_err());
-        change_stake(&mut trader, 60, true).unwrap();
+        assert!(change_stake(&mut trader, 41, false, &root_backing()).is_err());
+        change_stake(&mut trader, 60, true, &root_backing()).unwrap();
         assert_eq!((trader.core_stake.tokens, trader.assets[0].available), (0, 100));
     }
 
@@ -350,24 +366,24 @@ mod tests {
     fn both_open_and_pending_trades_block_actual_stake_unlocking() {
         use crate::engine::*;
         let (mut trader, _, _, _) = ledger();
-        change_stake(&mut trader, 100, false).unwrap();
+        change_stake(&mut trader, 100, false, &root_backing()).unwrap();
         for state in [ER_OPEN, ER_PENDING] {
             trader.slots[0] = ErSlot { state, kind: ER_TRADE, nonce: 1, ..ErSlot::default() };
-            assert!(change_stake(&mut trader, 1, true).is_err());
+            assert!(change_stake(&mut trader, 1, true, &root_backing()).is_err());
             assert_eq!((trader.core_stake.tokens, trader.assets[0].available), (100, 0));
         }
         trader.slots[0] = ErSlot::default();
-        change_stake(&mut trader, 100, true).unwrap();
+        change_stake(&mut trader, 100, true, &root_backing()).unwrap();
     }
 
     #[test]
     fn base_coverage_moves_locked_tokens_to_pool_and_syncs_once() {
         use crate::engine::sync_custody;
         let (mut trader, mut custody, mut risk, mut inventory) = ledger();
-        change_stake(&mut trader, 60, false).unwrap();
+        change_stake(&mut trader, 60, false, &root_backing()).unwrap();
         let old = custody.core_coverage;
         allocate_coverage(&mut custody, &trader, &mut inventory,
-            Coverage { tokens: 20, quoted_usd: 20 * USD, uncovered_usd: 0 }).unwrap();
+            Coverage { tokens: 20, quoted_usd: 20 * USD, uncovered_usd: 0 }, core_asset()).unwrap();
         assert_eq!((custody.assets[0].available, inventory.locked, inventory.treasury), (80, 80, 70));
         assert_eq!(inventory.locked + inventory.treasury, 150);
         let latest = custody.core_coverage;
@@ -378,35 +394,35 @@ mod tests {
             sync_custody(&mut trader, &mut risk, &custody).unwrap();
             assert_eq!((trader.core_stake.tokens, trader.assets[0].available), (40, 40));
         }
-        change_stake(&mut trader, 40, true).unwrap();
+        change_stake(&mut trader, 40, true, &root_backing()).unwrap();
         assert_eq!(trader.assets[0].available, 80);
     }
 
     #[test]
     fn concurrent_settlements_cannot_reuse_stake_from_an_old_commit() {
         let (mut trader, mut custody, _, mut inventory) = ledger();
-        change_stake(&mut trader, 60, false).unwrap();
+        change_stake(&mut trader, 60, false, &root_backing()).unwrap();
         allocate_coverage(&mut custody, &trader, &mut inventory,
-            Coverage { tokens: 40, quoted_usd: 40 * USD, uncovered_usd: 0 }).unwrap();
+            Coverage { tokens: 40, quoted_usd: 40 * USD, uncovered_usd: 0 }, core_asset()).unwrap();
         assert!(allocate_coverage(&mut custody, &trader, &mut inventory,
-            Coverage { tokens: 21, quoted_usd: 21 * USD, uncovered_usd: 0 }).is_err());
+            Coverage { tokens: 21, quoted_usd: 21 * USD, uncovered_usd: 0 }, core_asset()).is_err());
         assert_eq!((custody.assets[0].available, inventory.treasury), (60, 90));
         allocate_coverage(&mut custody, &trader, &mut inventory,
-            Coverage { tokens: 20, quoted_usd: 20 * USD, uncovered_usd: 0 }).unwrap();
+            Coverage { tokens: 20, quoted_usd: 20 * USD, uncovered_usd: 0 }, core_asset()).unwrap();
         assert_eq!((custody.core_coverage.debited_tokens, inventory.locked, inventory.treasury), (60, 40, 110));
     }
 
     #[test]
     fn recorded_pool_shortfall_survives_old_snapshots_without_user_debt() {
         let (mut trader, mut custody, mut risk, mut inventory) = ledger();
-        change_stake(&mut trader, 20, false).unwrap();
+        change_stake(&mut trader, 20, false, &root_backing()).unwrap();
         allocate_coverage(&mut custody, &trader, &mut inventory,
-            Coverage { tokens: 20, quoted_usd: 20 * USD, uncovered_usd: 10 * USD }).unwrap();
+            Coverage { tokens: 20, quoted_usd: 20 * USD, uncovered_usd: 10 * USD }, core_asset()).unwrap();
         crate::engine::sync_custody(&mut trader, &mut risk, &custody).unwrap();
         trader.core_stake.sync(CoreCoverageState::default()).unwrap();
         assert_eq!(trader.core_stake.uncovered_usd().unwrap(), 10 * USD);
-        change_stake(&mut trader, 5, false).unwrap();
-        change_stake(&mut trader, 5, true).unwrap();
+        change_stake(&mut trader, 5, false, &root_backing()).unwrap();
+        change_stake(&mut trader, 5, true, &root_backing()).unwrap();
         assert!(trader.core_stake.sync(CoreCoverageState { debited_tokens: 26, ..custody.core_coverage }).is_err());
         assert_eq!(trader.core_stake.tokens, 0);
     }
@@ -414,13 +430,13 @@ mod tests {
     #[test]
     fn coverage_cannot_charge_another_trader_or_another_vault() {
         let (mut trader, mut custody, _, mut inventory) = ledger();
-        change_stake(&mut trader, 50, false).unwrap();
+        change_stake(&mut trader, 50, false, &root_backing()).unwrap();
         inventory.asset = Pubkey::new_unique();
         assert!(allocate_coverage(&mut custody, &trader, &mut inventory,
-            Coverage { tokens: 1, ..Coverage::default() }).is_err());
+            Coverage { tokens: 1, ..Coverage::default() }, core_asset()).is_err());
         inventory.asset = core_asset(); custody.owner = Pubkey::new_unique();
         assert!(allocate_coverage(&mut custody, &trader, &mut inventory,
-            Coverage { tokens: 1, ..Coverage::default() }).is_err());
+            Coverage { tokens: 1, ..Coverage::default() }, core_asset()).is_err());
         assert_eq!(inventory.locked, 100);
     }
 

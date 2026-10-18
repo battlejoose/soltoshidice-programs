@@ -2,10 +2,19 @@
 //! quote initialization and platform/DEX SBF; ER commit transport is injected.
 use super::*;
 
+fn fixture_path(root:&Path)->std::path::PathBuf {
+    root.join(std::env::var("ACIDPUMP_USDC_TEST_FIXTURE")
+        .unwrap_or_else(|_|".cache/production-remediation-candidate/usdc-settlement.json".into()))
+}
+fn receipt_path(root:&Path,name:&str)->std::path::PathBuf {
+    root.join(std::env::var("ACIDPUMP_TEST_REPORT_DIR").unwrap_or_else(|_|"reports".into()))
+        .join(format!("{name}.json"))
+}
+
 #[test]
 fn usdc_registration_fee_covers_delegation_and_complete_lookup_reserve() {
     let root=Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
-    let file=root.join(".cache/production-remediation-candidate/usdc-settlement.json");
+    let file=fixture_path(&root);
     let fixture:Value=serde_json::from_slice(&std::fs::read(&file).unwrap()).unwrap();
     let dlp:Value=serde_json::from_slice(&std::fs::read(root.join("reports/acidpump-50-slot-dlp-fixture.json")).unwrap()).unwrap();
     let binary=root.join(dlp["binary"].as_str().unwrap());assert_eq!(hash(&binary),dlp["sha256"].as_str().unwrap());
@@ -43,7 +52,7 @@ fn usdc_registration_fee_covers_delegation_and_complete_lookup_reserve() {
         receipts.push(json!({"name":row["name"],"setupLamports":setup_cost,"lookupReserveLamports":lookup,
             "remainingLamports":50_000_000-setup_cost-lookup,"registrationBytes":row["registrationBytes"],"operations":h.receipts}));
     }
-    std::fs::write(root.join("reports/acidpump-usdc-registration.json"),serde_json::to_vec_pretty(&json!({
+    std::fs::write(receipt_path(&root,"acidpump-usdc-registration"),serde_json::to_vec_pretty(&json!({
         "status":"passed-local-paid-registration","candidateSha256":hash(root.join(candidate_binary())),"fixtureSha256":hash(file),
         "dlpSha256":hash(binary),"transactionsSubmitted":0,"scope":"Actual client payment and seven setup instructions with captured DLP SBF; signatures simulated; no asynchronous validator transport", "receipts":receipts})).unwrap()).unwrap();
 }
@@ -51,7 +60,7 @@ fn usdc_registration_fee_covers_delegation_and_complete_lookup_reserve() {
 #[test]
 fn usdc_collateral_settles_atomically_without_spending_other_usdc() {
     let root=Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
-    let file=root.join(".cache/production-remediation-candidate/usdc-settlement.json");
+    let file=fixture_path(&root);
     let fixture:Value=serde_json::from_slice(&std::fs::read(&file).unwrap()).unwrap();
     assert_eq!(key(&fixture,"program"),p::ID);
     assert_eq!(fixture["sourceSha256"].as_str().unwrap(),hash(root.join(fixture["source"].as_str().unwrap())));
@@ -147,7 +156,7 @@ fn usdc_collateral_settles_atomically_without_spending_other_usdc() {
     }
     assert_eq!(fixture["cases"].as_array().unwrap().len(),4);
     assert_eq!(receipts.len(),16);
-    std::fs::write(root.join("reports/acidpump-usdc-settlement.json"),serde_json::to_vec_pretty(&json!({
+    std::fs::write(receipt_path(&root,"acidpump-usdc-settlement"),serde_json::to_vec_pretty(&json!({
         "status":"passed-local-full-base-settlement","candidateSha256":hash(root.join(candidate_binary())),"fixtureSha256":hash(file),
         "transactionsSubmitted":0,"scope":"Actual client registration, quote initialization and platform/PumpSwap SBF with graduated USDC pools; ER commit boundary injected; delegation/live rollout pending","receipts":receipts})).unwrap()).unwrap();
 }

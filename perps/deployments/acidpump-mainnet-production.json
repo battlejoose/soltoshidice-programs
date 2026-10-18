@@ -52,11 +52,12 @@
   "gasReserveSol": null,
   "sponsoredBaseDailySol": 0.5,
   "sponsoredAddFinalizedIncomeLast24h": true,
+  "economicsVersion": 1,
   "lossAllocationPercent": {
     "pool": 90,
-    "gas": 2,
+    "gas": 1,
     "stakers": 7,
-    "burn": 1
+    "burn": 2
   },
   "maximumLeverage": 1000,
   "collateralBacking": {

@@ -122,6 +122,10 @@ fn returned_legacy_records_cannot_be_redelegated_before_migration(){
     let(trader,tb)=pda(&[b"er-trader",owner.as_ref()]);let(guard,gb)=pda(&[b"er-collateral-guard",owner.as_ref()]);
     let t=ErTrader{owner,config,pool,bump:tb,..ErTrader::default()};
     let g=p::CollateralGuard{owner,config,floors:p::CollateralGuard::empty_floors(),bump:gb};
+    // Delegation contexts bind the trader's config (root or created market).
+    let config_bump=pda(&[b"config"]).1;
+    let cfg=p::Config{admin:Pubkey::new_unique(),publisher:Pubkey::new_unique(),quote_mint:Pubkey::new_unique(),paused:true,bump:config_bump,next_settlement_seq:1};
+    s.set_account(config,Account{lamports:s.minimum_balance_for_rent_exemption(bytes(&cfg).len()),data:bytes(&cfg),owner:p::ID,executable:false,rent_epoch:0}).unwrap();
     let old_trader=legacy_ledger(&bytes(&t),8+96+16,ErSlot::INIT_SPACE,33);
     let old_guard=legacy(bytes(&g),8+64,p::CollateralFloor::INIT_SPACE);
     let delegation=p::basebridge::DELEGATION_OWNER;
@@ -132,11 +136,11 @@ fn returned_legacy_records_cannot_be_redelegated_before_migration(){
         Pubkey::find_program_address(&[b"delegation",key.as_ref()],&delegation).0,
         Pubkey::find_program_address(&[b"delegation-metadata",key.as_ref()],&delegation).0);
     let(buffer,record,metadata)=aux(trader);
-    let trader_ix=Instruction{program_id:p::ID,accounts:p::accounts::DelegateErTrader{payer:owner,owner,er_trader:trader,
+    let trader_ix=Instruction{program_id:p::ID,accounts:p::accounts::DelegateErTrader{payer:owner,owner,config,er_trader:trader,
         buffer_er_trader:buffer,delegation_record_er_trader:record,delegation_metadata_er_trader:metadata,
         owner_program:p::ID,delegation_program:delegation,system_program:Pubkey::default()}.to_account_metas(None),data:p::instruction::ErDelegateTrader{}.data()};
     let(buffer,record,metadata)=aux(guard);
-    let guard_ix=Instruction{program_id:p::ID,accounts:p::accounts::DelegateCollateralGuard{payer:owner,owner,guard,
+    let guard_ix=Instruction{program_id:p::ID,accounts:p::accounts::DelegateCollateralGuard{payer:owner,owner,config,guard,
         buffer_guard:buffer,delegation_record_guard:record,delegation_metadata_guard:metadata,
         owner_program:p::ID,delegation_program:delegation,system_program:Pubkey::default()}.to_account_metas(None),data:p::instruction::ErDelegateCollateralGuard{}.data()};
     for(key,old,full,ix) in [(trader,old_trader,bytes(&t),trader_ix),(guard,old_guard,bytes(&g),guard_ix)] {

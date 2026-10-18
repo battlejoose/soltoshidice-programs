@@ -2,6 +2,12 @@
 use anchor_lang::prelude::*;
 use ephemeral_rollups_sdk::anchor::ephemeral;
 
+/// Venue namespace seed: empty for the root venue, the venue config otherwise.
+/// Being a macro keeps it out of the IDL's static PDA descriptions, which
+/// cannot express it; clients derive these addresses explicitly.
+macro_rules! vns { ($config:expr) => { crate::venue::ns($config).as_ref() }; }
+/// Position namespace seed, derived from the pool where only the pool is known.
+macro_rules! pns { ($pool:expr) => { crate::venue::pool_ns($pool).as_ref() }; }
 mod heap;
 // Allocate from the bottom: small SDK callbacks also work in the default
 // 32 KiB frame. Large financial calls still request 128 KiB explicitly.
@@ -40,16 +46,20 @@ pub mod engine;
 pub mod oracle;
 pub mod basebridge;
 pub mod settlement;
+pub mod economics;
+pub use economics::*;
+pub mod fee_surplus;
+pub use fee_surplus::*;
 pub mod collateral_floor;
 pub use collateral_floor::*;
 pub use engine::*;
 pub use basebridge::*;
 pub use ownership::{OwnershipPool, OwnershipTrader, OwnershipReceipt, OwnershipAwarded};
+pub mod venue;
+pub use venue::*;
 #[cfg(all(feature="mainnet",feature="devnet"))]
 compile_error!("mainnet and devnet builds must be isolated");
-#[cfg(not(feature="mainnet"))]
-declare_id!("8TwyqkVNZTHzBF6JC3k91KvWac6862K81TAzfiuiSfxc");
-#[cfg(feature="mainnet")]
+// Program ID, root config and root pool are generated together by build.rs.
 include!(concat!(env!("OUT_DIR"), "/program_identity.rs"));
 
 // Keep the retired PUMP feed and accounts valid for closing old positions.
@@ -60,6 +70,9 @@ pub const ACTIVE_MARKET_COUNT: u16 = 4;
 #[program]
 pub mod acidpump_er {
     use super::*;
+pub fn withdraw_gas_surplus(ctx: Context<WithdrawGasSurplus>, amount:u64) -> Result<()> { fee_surplus::withdraw(ctx,amount) }
+pub fn deposit_gas_revenue(ctx: Context<DepositGasRevenue>, amount:u64) -> Result<()> { fee_surplus::deposit_revenue(ctx,amount) }
+pub fn initialize_economics_v1(ctx: Context<InitializeEconomicsV1>, deadband:bool) -> Result<()> { economics::initialize(ctx,deadband) }
 pub fn er_initialize_collateral_history(ctx: Context<InitializeCollateralHistory>) -> Result<()> { collateral_floor::initialize_history(ctx) }
 pub fn er_initialize_collateral_guard(ctx: Context<InitializeCollateralGuard>) -> Result<()> { collateral_floor::initialize_guard(ctx) }
 pub fn er_delegate_collateral_history(ctx: Context<DelegateCollateralHistory>) -> Result<()> { collateral_floor::delegate_history(ctx) }
@@ -330,7 +343,7 @@ pub fn er_commit(ctx: Context<CommitErTrader>) -> Result<()> { engine::commit_tr
             && ctx.accounts.next_receipt.data_is_empty() && ctx.accounts.next_receipt.lamports() == 0, MixError::Binding);
         let owner = ctx.accounts.owner.key();
         let executor = ctx.accounts.executor.key();
-        let next_position = Pubkey::find_program_address(&[b"position", owner.as_ref(), &new_nonce.to_le_bytes()], &crate::ID).0;
+        let next_position = Pubkey::find_program_address(&[b"position", venue::pool_ns(ctx.accounts.pool.key()).as_ref(), owner.as_ref(), &new_nonce.to_le_bytes()], &crate::ID).0;
         require!(next_position != x.key(), MixError::Binding);
         let sysvar = ctx.accounts.instructions.to_account_info();
         let index = load_current_index_checked(&sysvar)? as usize;
@@ -486,6 +499,7 @@ pub fn er_commit(ctx: Context<CommitErTrader>) -> Result<()> { engine::commit_tr
         ownership::change_stake(&mut ctx.accounts.ownership_pool, &mut ctx.accounts.ownership_trader, &mut ctx.accounts.inventory, amount, unstake)
     }
     pub fn sweep_surplus(ctx: Context<SweepSurplus>) -> Result<()> {
+        if ctx.accounts.pool.queue_head < ctx.accounts.pool.queue_tail { return Ok(()); }
         ownership::sweep_surplus(&mut ctx.accounts.ownership_pool,&mut ctx.accounts.inventory,ctx.accounts.pool.queue_usd,&ctx.accounts.settlement,&ctx.accounts.valuation)?;
         Ok(())
     }
@@ -508,6 +522,10 @@ pub fn er_commit(ctx: Context<CommitErTrader>) -> Result<()> { engine::commit_tr
         ctx.accounts.ownership_pool.dev_fees = 0;
         pay(&ctx.accounts.pool, &ctx.accounts.vault, &ctx.accounts.destination, &ctx.accounts.mint, &ctx.accounts.token_program, &ctx.accounts.authority, amount)
     }
+    /// "Create a market": a new venue backed by a registered pump.fun token.
+    pub fn create_venue(ctx: Context<CreateVenue>) -> Result<()> { venue::create_venue(ctx) }
+    /// Buy and burn SDICE with a venue's 1% allocation, without spending root inventory.
+    pub fn route_buyback<'info>(ctx: Context<'info, RouteBuyback<'info>>, amount: u64, min_out: u64) -> Result<()> { venue::route_buyback(ctx, amount, min_out) }
     pub fn pause(ctx: Context<Admin>, paused: bool) -> Result<()> {
         ctx.accounts.config.paused = paused;
         Ok(())
@@ -676,7 +694,8 @@ pub struct RefillSponsor<'info> {
 #[derive(Accounts)]
 pub struct LossRouting<'info> {
     #[account(mut,seeds=[b"gas-reserve"],bump=gas_reserve.bump)] pub gas_reserve:Box<Account<'info,GasReserve>>,
-    #[account(constraint=perp.id==102 @ MixError::Binding)] pub perp:Box<Account<'info,Asset>>,
+    /// Bound to the pool's own settlement token in the handler.
+    pub perp:Box<Account<'info,Asset>>,
     #[account(mut,address=perp.mint)] pub perp_mint:Box<InterfaceAccount<'info,Mint>>,
     #[account(address=perp.token_program)] pub perp_program:Interface<'info,TokenInterface>,
     // The core pool uses this same SPL vault as its settlement vault. SPL
@@ -691,6 +710,9 @@ pub struct LossRouting<'info> {
     #[account(mut)] pub gas_vault:Box<InterfaceAccount<'info,TokenAccount>>,
     pub gas_program:Program<'info,anchor_spl::token::Token>,
     pub system_program:Program<'info,System>,
+    /// Created venues only: the venue record and its SDICE buyback vault.
+    #[account(mut)] pub venue:Option<Box<Account<'info,Venue>>>,
+    #[account(mut)] pub buyback_vault:Option<Box<InterfaceAccount<'info,TokenAccount>>>,
 }
 #[event]
 pub struct LossSplit {
@@ -866,7 +888,8 @@ pub struct Initialize<'info> {
 #[derive(Accounts)]
 pub struct Admin<'info> {
     pub admin: Signer<'info>,
-    #[account(mut,seeds=[b"config"],bump=config.bump,has_one=admin)]
+    /// The root or any venue config; each venue pauses independently.
+    #[account(mut,has_one=admin)]
     pub config: Box<Account<'info, Config>>,
 }
 #[derive(Accounts)]
@@ -955,11 +978,12 @@ pub struct CreatePool<'info> {
 pub struct CreateMarket<'info> {
     #[account(mut)]
     pub admin: Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump,has_one=admin)]
+    #[account(has_one=admin)]
     pub config: Box<Account<'info, Config>>,
+    #[account(seeds=[b"pool",vns!(config.key()),&0u16.to_le_bytes()],bump=pool.bump)]
     pub pool: Box<Account<'info, Pool>>,
     pub feed: Box<Account<'info, Feed>>,
-    #[account(init,payer=admin,space=8+Market::INIT_SPACE,seeds=[b"market",feed.key().as_ref()],bump)]
+    #[account(init,payer=admin,space=8+Market::INIT_SPACE,seeds=[b"market",vns!(config.key()),feed.key().as_ref()],bump)]
     pub market: Box<Account<'info, Market>>,
     pub system_program: Program<'info, System>,
 }
@@ -1039,7 +1063,7 @@ pub struct RecyclePosition<'info> {
     #[account(mut, close=executor, seeds=[b"ownership-receipt",position.key().as_ref()], bump=ownership_receipt.bump, has_one=owner, has_one=pool, has_one=position)]
     pub ownership_receipt: Box<Account<'info, OwnershipReceipt>>,
     /// CHECK: Must be a fresh canonical PDA; following prepare buys the same rent.
-    #[account(seeds=[b"position",owner.key().as_ref(),&new_nonce.to_le_bytes()],bump)]
+    #[account(seeds=[b"position",pns!(pool.key()),owner.key().as_ref(),&new_nonce.to_le_bytes()],bump)]
     pub next_position: UncheckedAccount<'info>,
     /// CHECK: Must be a fresh canonical PDA; following initializer buys the same rent.
     #[account(seeds=[b"ownership-receipt",next_position.key().as_ref()],bump)]
@@ -1088,8 +1112,16 @@ pub struct Close<'info> {
     /// CHECK: Fixed executable program address, also enforced inside CPI.
     #[account(address=pump::ID,executable)]
     pub pump_program: UncheckedAccount<'info>,
-    #[account(mut,constraint=market.pool==pool_accounts.pool.key() @ MixError::Binding,has_one=feed)]
+    #[account(mut,constraint=market.pool==pool_accounts.pool.key() @ MixError::Binding)]
     pub market: Box<Account<'info, Market>>,
+    // Replaces the unused live-price feed: exits are authenticated frozen ER
+    // intents. One read-only account replaces another, preserving lock limits.
+    #[cfg(feature="mainnet")]
+    #[account(seeds=[b"economics-v1"],bump=economics.bump)]
+    pub economics: Box<Account<'info, EconomicsV1>>,
+    // Preserve the independent devnet settlement ABI until its own rollout.
+    #[cfg(not(feature="mainnet"))]
+    #[account(address=market.feed)]
     pub feed: Box<Account<'info, Feed>>,
     pub asset: Box<Account<'info, Asset>>,
     #[cfg(not(feature="mainnet"))]
@@ -1169,7 +1201,7 @@ pub struct Redeem<'info> {
 #[derive(Accounts)]
 pub struct RedeemUsdc<'info> {
     pub caller: Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump)]
+    /// Any config: every venue shares the root's USD quote mint.
     pub config: Box<Account<'info,Config>>,
     #[account(mut)]
     pub pool: Box<Account<'info,Pool>>,

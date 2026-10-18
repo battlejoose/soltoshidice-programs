@@ -6,6 +6,8 @@ use ephemeral_rollups_sdk::anchor::{commit, delegate};
 use ephemeral_rollups_sdk::cpi::DelegateConfig;
 use ephemeral_rollups_sdk::ephem::{FoldableIntentBuilder, MagicIntentBundleBuilder};
 use crate::{math, oracle, pump, risk, Asset, Config, MixError, Pool, CollateralGuard, CollateralHistory};
+use crate::venue::{ns, shared};
+use crate::stake_backing::Backing;
 use crate::{BaseExecution,BaseExecutionBumps,__client_accounts_base_execution,__cpi_client_accounts_base_execution};
 
 #[cfg(feature="mainnet")]
@@ -25,7 +27,7 @@ pub const ER_PENDING: u8 = 2;
 pub const ER_TRADE: u8 = 1;
 pub const ER_WITHDRAW: u8 = 2;
 #[cfg(not(feature="mainnet"))]
-pub const ER_VALIDATOR: Pubkey = pubkey!("MUS3hc9TCw4cGC12vHNoYcCGzJG1txjgQLZWVoeNHNd");
+pub const ER_VALIDATOR: Pubkey = crate::BUILD_ER_VALIDATOR;
 #[cfg(feature="mainnet")]
 pub const ER_VALIDATOR: Pubkey = crate::deployment_config::VALIDATOR;
 
@@ -367,7 +369,7 @@ pub fn open_slot(trader: &mut ErTrader, engine: &mut ErRisk, quote: &ErQuote, re
     let slot = free_slot(trader, request.slot, request.nonce)?;
     require!((request.market as usize) < ER_MARKETS, MixError::Binding);
     require!(request.amount > 0 && request.amount <= 1_000_000_000_000_000, MixError::Amount);
-    require!(quote.config == trader.config && engine.config == trader.config, MixError::Binding);
+    require!(shared(trader.config, quote.config) && engine.config == trader.config, MixError::Binding);
     let asset_index = trader.asset_index(quote.asset)?;
     require!(trader.assets[asset_index].available >= request.amount, MixError::Inventory);
     let market = &engine.markets[request.market as usize];
@@ -418,7 +420,7 @@ pub fn close_slot(trader: &mut ErTrader, engine: &mut ErRisk, quote: &ErQuote, s
 }
 fn close_slot_authorized(trader: &mut ErTrader, engine: &mut ErRisk, quote: &ErQuote, slot: u8, nonce: u64, expires: i64, caller: Pubkey, now: i64, forced: bool) -> Result<()> {
     valid_expiry(expires, now)?;
-    require!(trader.config == engine.config && trader.config == quote.config, MixError::Binding);
+    require!(trader.config == engine.config && shared(trader.config, quote.config), MixError::Binding);
     let position = trader.slots.get_mut(slot as usize).ok_or(MixError::Binding)?;
     require!(position.state == ER_OPEN && position.kind == ER_TRADE, MixError::Closed);
     require!(position.nonce == nonce, MixError::Replay);
@@ -629,16 +631,18 @@ pub fn sync(ctx: Context<SyncErTrader>) -> Result<()> {
 }
 pub fn change_core_stake(ctx: Context<ChangeErCoreStake>, amount: u64, unstake: bool) -> Result<()> {
     require!(unstake || !ctx.accounts.config.paused, MixError::Paused);
-    require!(ctx.accounts.pool.settlement == crate::stake_backing::core_asset(), MixError::Binding);
-    crate::stake_backing::change_stake(&mut ctx.accounts.er_trader, amount, unstake)
+    // Each venue stakes its own pool settlement token.
+    let backing = Backing::new(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint);
+    crate::stake_backing::change_stake(&mut ctx.accounts.er_trader, amount, unstake, &backing)
 }
 pub fn open(ctx: Context<OpenErPosition>, request: OpenRequest) -> Result<()> {
     require!(!ctx.accounts.config.paused, MixError::Paused);
     require!(ctx.accounts.asset.collateral_enabled, MixError::Binding);
     let now = Clock::get()?.unix_timestamp;
-    if crate::stake_backing::requires_backing(ctx.accounts.asset.key()) {
+    let backing = Backing::new(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint);
+    if backing.requires(ctx.accounts.asset.key()) {
         crate::stake_backing::check_entry(&ctx.accounts.er_trader, &ctx.accounts.core_quote,
-            ctx.accounts.er_quote.value(request.amount,now)?, now)?;
+            ctx.accounts.er_quote.value(request.amount,now)?, now, &backing)?;
     }
     open_slot(&mut ctx.accounts.er_trader, &mut ctx.accounts.er_risk, &ctx.accounts.er_quote, request, now)
 }
@@ -651,7 +655,8 @@ pub fn close(ctx: Context<CloseErPosition>, slot: u8, nonce: u64, expires: i64) 
 }
 pub fn force_core_close(ctx: Context<CloseErPosition>, slot: u8, nonce: u64, expires: i64) -> Result<()> {
     let now = Clock::get()?.unix_timestamp;
-    crate::stake_backing::check_forced_close(&ctx.accounts.er_trader, &ctx.accounts.core_quote, slot, now)?;
+    let backing = Backing::new(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint);
+    crate::stake_backing::check_forced_close(&ctx.accounts.er_trader, &ctx.accounts.core_quote, slot, now, &backing)?;
     close_slot_authorized(&mut ctx.accounts.er_trader, &mut ctx.accounts.er_risk, &ctx.accounts.er_quote,
         slot, nonce, expires, ctx.accounts.caller.key(), now, true)
 }
@@ -703,11 +708,15 @@ pub fn delegate_trader(ctx: Context<DelegateErTrader>) -> Result<()> {
     // capacity migration. Typed ER instructions require the current layout.
     require!(ctx.accounts.er_trader.data_len()==8+ErTrader::INIT_SPACE,MixError::Binding);
     let owner = ctx.accounts.owner.key();
-    ctx.accounts.delegate_er_trader(&ctx.accounts.payer, &[b"er-trader", owner.as_ref()], delegation_config())?;
+    let n = ns(ctx.accounts.config.key());
+    let seeds = crate::venue::ns_seeds(b"er-trader", &n, &[owner.as_ref()]);
+    ctx.accounts.delegate_er_trader(&ctx.accounts.payer, &seeds, delegation_config())?;
     Ok(())
 }
 pub fn delegate_risk(ctx: Context<DelegateErRisk>) -> Result<()> {
-    ctx.accounts.delegate_er_risk(&ctx.accounts.admin, &[b"er-risk"], delegation_config())?;
+    let n = ns(ctx.accounts.config.key());
+    let seeds = crate::venue::ns_seeds(b"er-risk", &n, &[]);
+    ctx.accounts.delegate_er_risk(&ctx.accounts.admin, &seeds, delegation_config())?;
     Ok(())
 }
 pub fn delegate_quote(ctx: Context<DelegateErQuote>) -> Result<()> {
@@ -739,10 +748,12 @@ pub fn commit_trader(ctx: Context<CommitErTrader>) -> Result<()> {
 pub fn commit_prepaid_trader(ctx:Context<CommitPrepaidErTrader>)->Result<()> {
     let a=&ctx.accounts;
     a.er_trader.exit(&crate::ID)?;
+    let (n,bump)=(ns(a.er_trader.config),[a.er_trader.bump]);
+    let seeds=crate::venue::ns_seeds(b"er-trader",&n,&[a.er_trader.owner.as_ref(),&bump]);
     MagicIntentBundleBuilder::new(a.er_trader.to_account_info(),a.magic_context.to_account_info(),a.magic_program.to_account_info())
         .magic_fee_vault(a.magic_fee_vault.to_account_info())
         .commit(&[a.er_trader.to_account_info()])
-        .build_and_invoke_signed(&[&[b"er-trader",a.er_trader.owner.as_ref(),&[a.er_trader.bump]]])?;
+        .build_and_invoke_signed(&[&seeds])?;
     Ok(())
 }
 
@@ -753,10 +764,12 @@ pub fn release_prepaid_trader(ctx:Context<ReleasePrepaidErTrader>)->Result<()> {
     crate::recovery::idle(&a.er_trader)?;
     require!(a.er_trader.assets.iter().all(|asset|asset.available==0),MixError::Inventory);
     a.er_trader.exit(&crate::ID)?;
+    let (n,bump,owner)=(ns(a.er_trader.config),[a.er_trader.bump],a.owner.key());
+    let seeds=crate::venue::ns_seeds(b"er-trader",&n,&[owner.as_ref(),&bump]);
     MagicIntentBundleBuilder::new(a.er_trader.to_account_info(),a.magic_context.to_account_info(),a.magic_program.to_account_info())
         .magic_fee_vault(a.magic_fee_vault.to_account_info())
         .commit_and_undelegate(&[a.er_trader.to_account_info()])
-        .build_and_invoke_signed(&[&[b"er-trader",a.owner.key().as_ref(),&[a.er_trader.bump]]])?;
+        .build_and_invoke_signed(&[&seeds])?;
     Ok(())
 }
 pub fn withdraw_prepaid_gas(ctx:Context<WithdrawPrepaidGas>)->Result<()> {
@@ -776,8 +789,9 @@ pub fn withdraw_prepaid_gas(ctx:Context<WithdrawPrepaidGas>)->Result<()> {
 #[derive(Accounts)]
 pub struct InitializeErRisk<'info> {
     #[account(mut)] pub admin: Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump,has_one=admin)] pub config: Account<'info, Config>,
-    #[account(init,payer=admin,space=8+ErRisk::INIT_SPACE,seeds=[b"er-risk"],bump)] pub er_risk: Box<Account<'info, ErRisk>>,
+    // Any program config: the root, or a venue created by create_venue.
+    #[account(has_one=admin)] pub config: Account<'info, Config>,
+    #[account(init,payer=admin,space=8+ErRisk::INIT_SPACE,seeds=[b"er-risk",vns!(config.key())],bump)] pub er_risk: Box<Account<'info, ErRisk>>,
     pub system_program: Program<'info, System>,
 }
 #[derive(Accounts)]
@@ -793,10 +807,10 @@ pub struct InitializeErQuote<'info> {
 pub struct InitializeErTrader<'info> {
     #[account(mut)] pub payer: Signer<'info>,
     pub owner: Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump)] pub config: Account<'info, Config>,
-    #[account(seeds=[b"pool",&0u16.to_le_bytes()],bump=pool.bump)] pub pool: Account<'info, Pool>,
-    #[account(init,payer=payer,space=8+ErTrader::INIT_SPACE,seeds=[b"er-trader",owner.key().as_ref()],bump)] pub er_trader: Box<Account<'info, ErTrader>>,
-    #[account(seeds=[b"er-custody",owner.key().as_ref()],bump=er_custody.bump,has_one=owner,has_one=config,has_one=pool)] pub er_custody: Box<Account<'info, ErCustody>>,
+    pub config: Account<'info, Config>,
+    #[account(seeds=[b"pool",vns!(config.key()),&0u16.to_le_bytes()],bump=pool.bump)] pub pool: Account<'info, Pool>,
+    #[account(init,payer=payer,space=8+ErTrader::INIT_SPACE,seeds=[b"er-trader",vns!(config.key()),owner.key().as_ref()],bump)] pub er_trader: Box<Account<'info, ErTrader>>,
+    #[account(seeds=[b"er-custody",vns!(config.key()),owner.key().as_ref()],bump=er_custody.bump,has_one=owner,has_one=config,has_one=pool)] pub er_custody: Box<Account<'info, ErCustody>>,
     pub system_program: Program<'info, System>,
 }
 #[derive(Accounts)]
@@ -810,8 +824,8 @@ pub struct PublishErQuote<'info> {
 #[derive(Accounts)]
 pub struct SampleErPrices<'info> {
     pub publisher: Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump,has_one=publisher)] pub config: Account<'info, Config>,
-    #[account(mut,seeds=[b"er-risk"],bump=er_risk.bump,has_one=config)] pub er_risk: Box<Account<'info, ErRisk>>,
+    #[account(has_one=publisher)] pub config: Account<'info, Config>,
+    #[account(mut,seeds=[b"er-risk",vns!(config.key())],bump=er_risk.bump,has_one=config)] pub er_risk: Box<Account<'info, ErRisk>>,
     /// CHECK: Strict owner/PDA/discriminator/verification/source freshness in oracle::read_oracle.
     pub btc_oracle: UncheckedAccount<'info>,
     /// CHECK: Strict oracle validation in handler.
@@ -828,64 +842,71 @@ pub struct SampleErPrices<'info> {
 }
 #[derive(Accounts)]
 pub struct SyncErTrader<'info> {
-    #[account(mut,seeds=[b"er-trader",er_trader.owner.as_ref()],bump=er_trader.bump)] pub er_trader: Box<Account<'info, ErTrader>>,
-    #[account(mut,seeds=[b"er-risk"],bump=er_risk.bump)] pub er_risk: Box<Account<'info, ErRisk>>,
-    #[account(seeds=[b"er-custody",er_trader.owner.as_ref()],bump=er_custody.bump)] pub er_custody: Box<Account<'info, ErCustody>>,
+    #[account(mut,seeds=[b"er-trader",vns!(er_trader.config),er_trader.owner.as_ref()],bump=er_trader.bump)] pub er_trader: Box<Account<'info, ErTrader>>,
+    #[account(mut,seeds=[b"er-risk",vns!(er_trader.config)],bump=er_risk.bump)] pub er_risk: Box<Account<'info, ErRisk>>,
+    #[account(seeds=[b"er-custody",vns!(er_trader.config),er_trader.owner.as_ref()],bump=er_custody.bump)] pub er_custody: Box<Account<'info, ErCustody>>,
     pub execution: ErExecution<'info>,
 }
 #[derive(Accounts)]
 pub struct ChangeErCoreStake<'info> {
     pub owner: Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump)] pub config: Account<'info, Config>,
-    #[account(seeds=[b"pool",&0u16.to_le_bytes()],bump=pool.bump)] pub pool: Account<'info, Pool>,
-    #[account(mut,seeds=[b"er-trader",owner.key().as_ref()],bump=er_trader.bump,has_one=owner,has_one=config,has_one=pool)]
+    pub config: Account<'info, Config>,
+    #[account(seeds=[b"pool",vns!(config.key()),&0u16.to_le_bytes()],bump=pool.bump)] pub pool: Account<'info, Pool>,
+    #[account(mut,seeds=[b"er-trader",vns!(config.key()),owner.key().as_ref()],bump=er_trader.bump,has_one=owner,has_one=config,has_one=pool)]
     pub er_trader: Box<Account<'info, ErTrader>>,
     pub execution: ErExecution<'info>,
 }
 #[derive(Accounts)]
 pub struct OpenErPosition<'info> {
     pub owner: Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump)] pub config: Account<'info, Config>,
-    #[account(mut,seeds=[b"er-trader",owner.key().as_ref()],bump=er_trader.bump,has_one=owner,has_one=config)] pub er_trader: Box<Account<'info, ErTrader>>,
-    #[account(mut,seeds=[b"er-risk"],bump=er_risk.bump,has_one=config)] pub er_risk: Box<Account<'info, ErRisk>>,
+    pub config: Account<'info, Config>,
+    #[account(mut,seeds=[b"er-trader",vns!(config.key()),owner.key().as_ref()],bump=er_trader.bump,has_one=owner,has_one=config)] pub er_trader: Box<Account<'info, ErTrader>>,
+    #[account(mut,seeds=[b"er-risk",vns!(config.key())],bump=er_risk.bump,has_one=config)] pub er_risk: Box<Account<'info, ErRisk>>,
     pub asset: Account<'info, Asset>,
-    #[account(seeds=[b"er-quote",asset.key().as_ref()],bump=er_quote.bump,has_one=asset,has_one=config)] pub er_quote: Account<'info, ErQuote>,
-    #[account(seeds=[b"er-collateral-history",asset.key().as_ref()],bump=history.bump,has_one=asset,has_one=config)] pub history: Account<'info,CollateralHistory>,
-    #[account(mut,seeds=[b"er-collateral-guard",owner.key().as_ref()],bump=guard.bump,has_one=owner,has_one=config)] pub guard: Box<Account<'info,CollateralGuard>>,
+    #[account(seeds=[b"er-quote",asset.key().as_ref()],bump=er_quote.bump,has_one=asset,constraint=shared(config.key(),er_quote.config) @ MixError::Binding)] pub er_quote: Account<'info, ErQuote>,
+    #[account(seeds=[b"er-collateral-history",asset.key().as_ref()],bump=history.bump,has_one=asset,constraint=shared(config.key(),history.config) @ MixError::Binding)] pub history: Account<'info,CollateralHistory>,
+    #[account(mut,seeds=[b"er-collateral-guard",vns!(config.key()),owner.key().as_ref()],bump=guard.bump,has_one=owner,has_one=config)] pub guard: Box<Account<'info,CollateralGuard>>,
     pub execution: ErExecution<'info>,
-    #[account(seeds=[b"er-quote",crate::stake_backing::core_asset().as_ref()],bump=core_quote.bump,has_one=config)]
+    #[account(seeds=[b"er-quote",pool.settlement.as_ref()],bump=core_quote.bump,constraint=shared(config.key(),core_quote.config) @ MixError::Binding)]
     pub core_quote: Account<'info, ErQuote>,
     // Admission co-signature protects prepaid settlement funding even when an
     // owner submits directly to ER instead of using the public HTTP endpoint.
     #[cfg(feature="mainnet")]
     #[account(address=config.publisher @ MixError::Unauthorized)]
     pub gas_authority: Signer<'info>,
+    /// The venue pool; its settlement token is this venue's core stake.
+    #[account(seeds=[b"pool",vns!(config.key()),&0u16.to_le_bytes()],bump=pool.bump,constraint=er_trader.pool==pool.key() @ MixError::Binding)]
+    pub pool: Box<Account<'info, Pool>>,
 }
 #[derive(Accounts)]
 pub struct ObserveErTrader<'info> {
-    #[account(mut,seeds=[b"er-trader",er_trader.owner.as_ref()],bump=er_trader.bump)] pub er_trader: Box<Account<'info, ErTrader>>,
-    #[account(seeds=[b"er-risk"],bump=er_risk.bump)] pub er_risk: Box<Account<'info, ErRisk>>,
+    #[account(mut,seeds=[b"er-trader",vns!(er_trader.config),er_trader.owner.as_ref()],bump=er_trader.bump)] pub er_trader: Box<Account<'info, ErTrader>>,
+    #[account(seeds=[b"er-risk",vns!(er_trader.config)],bump=er_risk.bump)] pub er_risk: Box<Account<'info, ErRisk>>,
     pub execution: ErExecution<'info>,
 }
 #[derive(Accounts)]
 pub struct CloseErPosition<'info> {
     pub caller: Signer<'info>,
-    #[account(mut,seeds=[b"er-trader",er_trader.owner.as_ref()],bump=er_trader.bump)] pub er_trader: Box<Account<'info, ErTrader>>,
-    #[account(mut,seeds=[b"er-risk"],bump=er_risk.bump)] pub er_risk: Box<Account<'info, ErRisk>>,
+    #[account(mut,seeds=[b"er-trader",vns!(er_trader.config),er_trader.owner.as_ref()],bump=er_trader.bump)] pub er_trader: Box<Account<'info, ErTrader>>,
+    #[account(mut,seeds=[b"er-risk",vns!(er_trader.config)],bump=er_risk.bump)] pub er_risk: Box<Account<'info, ErRisk>>,
     #[account(seeds=[b"er-quote",er_quote.asset.as_ref()],bump=er_quote.bump)] pub er_quote: Account<'info, ErQuote>,
     #[account(seeds=[b"er-collateral-history",er_quote.asset.as_ref()],bump=history.bump)] pub history: Account<'info,CollateralHistory>,
-    #[account(mut,seeds=[b"er-collateral-guard",er_trader.owner.as_ref()],bump=guard.bump)] pub guard: Box<Account<'info,CollateralGuard>>,
+    #[account(mut,seeds=[b"er-collateral-guard",vns!(er_trader.config),er_trader.owner.as_ref()],bump=guard.bump)] pub guard: Box<Account<'info,CollateralGuard>>,
     pub execution: ErExecution<'info>,
-    #[account(seeds=[b"er-quote",crate::stake_backing::core_asset().as_ref()],bump=core_quote.bump)]
+    #[account(seeds=[b"er-quote",pool.settlement.as_ref()],bump=core_quote.bump)]
     pub core_quote: Account<'info, ErQuote>,
+    #[account(address=er_trader.config)]
+    pub config: Box<Account<'info, Config>>,
+    #[account(seeds=[b"pool",vns!(er_trader.config),&0u16.to_le_bytes()],bump=pool.bump,constraint=er_trader.pool==pool.key() @ MixError::Binding)]
+    pub pool: Box<Account<'info, Pool>>,
 }
 #[derive(Accounts)]
 pub struct ForfeitErHistoryGap<'info> {
     pub owner: Signer<'info>,
-    #[account(mut,seeds=[b"er-trader",owner.key().as_ref()],bump=er_trader.bump,has_one=owner)]
+    #[account(mut,seeds=[b"er-trader",vns!(er_trader.config),owner.key().as_ref()],bump=er_trader.bump,has_one=owner)]
     pub er_trader: Box<Account<'info, ErTrader>>,
-    #[account(mut,seeds=[b"er-collateral-guard",er_trader.owner.as_ref()],bump=guard.bump)] pub guard: Box<Account<'info,CollateralGuard>>,
-    #[account(seeds=[b"er-risk"],bump=er_risk.bump)] pub er_risk: Box<Account<'info, ErRisk>>,
+    #[account(mut,seeds=[b"er-collateral-guard",vns!(er_trader.config),er_trader.owner.as_ref()],bump=guard.bump)] pub guard: Box<Account<'info,CollateralGuard>>,
+    #[account(seeds=[b"er-risk",vns!(er_trader.config)],bump=er_risk.bump)] pub er_risk: Box<Account<'info, ErRisk>>,
     /// CHECK: Canonical native feed, owner, discriminator and freshness checked for the selected slot's market.
     pub oracle: UncheckedAccount<'info>,
     pub execution: ErExecution<'info>,
@@ -893,8 +914,8 @@ pub struct ForfeitErHistoryGap<'info> {
 #[derive(Accounts)]
 pub struct WithdrawErTrader<'info> {
     pub owner: Signer<'info>,
-    #[account(mut,seeds=[b"er-trader",owner.key().as_ref()],bump=er_trader.bump,has_one=owner)] pub er_trader: Box<Account<'info, ErTrader>>,
-    #[account(mut,seeds=[b"er-risk"],bump=er_risk.bump)] pub er_risk: Box<Account<'info, ErRisk>>,
+    #[account(mut,seeds=[b"er-trader",vns!(er_trader.config),owner.key().as_ref()],bump=er_trader.bump,has_one=owner)] pub er_trader: Box<Account<'info, ErTrader>>,
+    #[account(mut,seeds=[b"er-risk",vns!(er_trader.config)],bump=er_risk.bump)] pub er_risk: Box<Account<'info, ErRisk>>,
     pub asset: Account<'info, Asset>,
     pub execution: ErExecution<'info>,
 }
@@ -903,16 +924,17 @@ pub struct WithdrawErTrader<'info> {
 pub struct DelegateErTrader<'info> {
     #[account(mut)] pub payer: Signer<'info>,
     pub owner: Signer<'info>,
+    pub config: Account<'info, Config>,
     /// CHECK: Only this owner's canonical account can be delegated; DLP verifies current program ownership.
-    #[account(mut,del,seeds=[b"er-trader",owner.key().as_ref()],bump)] pub er_trader: UncheckedAccount<'info>,
+    #[account(mut,del,seeds=[b"er-trader",vns!(config.key()),owner.key().as_ref()],bump)] pub er_trader: UncheckedAccount<'info>,
 }
 #[delegate]
 #[derive(Accounts)]
 pub struct DelegateErRisk<'info> {
     #[account(mut)] pub admin: Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump,has_one=admin)] pub config: Account<'info, Config>,
+    #[account(has_one=admin)] pub config: Account<'info, Config>,
     /// CHECK: Canonical engine account; DLP verifies current program ownership.
-    #[account(mut,del,seeds=[b"er-risk"],bump)] pub er_risk: UncheckedAccount<'info>,
+    #[account(mut,del,seeds=[b"er-risk",vns!(config.key())],bump)] pub er_risk: UncheckedAccount<'info>,
 }
 #[delegate]
 #[derive(Accounts)]
@@ -928,10 +950,11 @@ pub struct DelegateErQuote<'info> {
 #[derive(Accounts)]
 pub struct CommitErTrader<'info> {
     pub publisher: Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump,has_one=publisher)] pub config: Account<'info, Config>,
-    #[account(mut,seeds=[b"er-fee-payer"],bump=er_fee_payer.bump,has_one=config)] pub er_fee_payer: Account<'info, ErFeePayer>,
-    #[account(mut,seeds=[b"er-trader",er_trader.owner.as_ref()],bump=er_trader.bump)] pub er_trader: Box<Account<'info, ErTrader>>,
-    #[account(mut,seeds=[b"er-collateral-guard",er_trader.owner.as_ref()],bump=guard.bump,has_one=config)] pub guard: Box<Account<'info,CollateralGuard>>,
+    #[account(has_one=publisher)] pub config: Account<'info, Config>,
+    // One shared commit fee payer, owned by the root config, serves every venue.
+    #[account(mut,seeds=[b"er-fee-payer"],bump=er_fee_payer.bump,constraint=er_fee_payer.config==crate::ROOT_CONFIG @ MixError::Binding)] pub er_fee_payer: Account<'info, ErFeePayer>,
+    #[account(mut,seeds=[b"er-trader",vns!(config.key()),er_trader.owner.as_ref()],bump=er_trader.bump,has_one=config)] pub er_trader: Box<Account<'info, ErTrader>>,
+    #[account(mut,seeds=[b"er-collateral-guard",vns!(config.key()),er_trader.owner.as_ref()],bump=guard.bump,has_one=config)] pub guard: Box<Account<'info,CollateralGuard>>,
     /// CHECK: MagicBlock validates the validator-specific delegated fee vault during the commit.
     #[account(mut,address=ephemeral_rollups_sdk::pda::magic_fee_vault_pda_from_validator(&ER_VALIDATOR))] pub magic_fee_vault: UncheckedAccount<'info>,
 }
@@ -940,8 +963,8 @@ pub struct CommitErTrader<'info> {
 #[derive(Accounts)]
 pub struct CommitPrepaidErTrader<'info> {
     pub publisher:Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump,has_one=publisher)] pub config:Account<'info,Config>,
-    #[account(mut,seeds=[b"er-trader",er_trader.owner.as_ref()],bump=er_trader.bump,has_one=config)] pub er_trader:Box<Account<'info,ErTrader>>,
+    #[account(has_one=publisher)] pub config:Account<'info,Config>,
+    #[account(mut,seeds=[b"er-trader",vns!(config.key()),er_trader.owner.as_ref()],bump=er_trader.bump,has_one=config)] pub er_trader:Box<Account<'info,ErTrader>>,
     /// CHECK: Validator-specific fee vault, additionally validated by MagicBlock.
     #[account(mut,address=ephemeral_rollups_sdk::pda::magic_fee_vault_pda_from_validator(&ER_VALIDATOR))] pub magic_fee_vault:UncheckedAccount<'info>,
 }
@@ -951,8 +974,8 @@ pub struct CommitPrepaidErTrader<'info> {
 pub struct ReleasePrepaidErTrader<'info> {
     pub owner:Signer<'info>,
     pub publisher:Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump,has_one=publisher)] pub config:Account<'info,Config>,
-    #[account(mut,seeds=[b"er-trader",owner.key().as_ref()],bump=er_trader.bump,has_one=config,has_one=owner)] pub er_trader:Box<Account<'info,ErTrader>>,
+    #[account(has_one=publisher)] pub config:Account<'info,Config>,
+    #[account(mut,seeds=[b"er-trader",vns!(config.key()),owner.key().as_ref()],bump=er_trader.bump,has_one=config,has_one=owner)] pub er_trader:Box<Account<'info,ErTrader>>,
     /// CHECK: Validator-specific fee vault, additionally validated by MagicBlock.
     #[account(mut,address=ephemeral_rollups_sdk::pda::magic_fee_vault_pda_from_validator(&ER_VALIDATOR))] pub magic_fee_vault:UncheckedAccount<'info>,
     pub execution:ErExecution<'info>,
@@ -961,10 +984,10 @@ pub struct ReleasePrepaidErTrader<'info> {
 pub struct WithdrawPrepaidGas<'info> {
     #[account(mut)] pub owner:Signer<'info>,
     pub publisher:Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump,has_one=publisher)] pub config:Account<'info,Config>,
+    #[account(has_one=publisher)] pub config:Account<'info,Config>,
     // Account<T> rejects a still-delegated base account. Only the committed,
     // returned ledger may release excess lamports, preserving its rent floor.
-    #[account(mut,seeds=[b"er-trader",owner.key().as_ref()],bump=er_trader.bump,has_one=config,has_one=owner)] pub er_trader:Box<Account<'info,ErTrader>>,
+    #[account(mut,seeds=[b"er-trader",vns!(config.key()),owner.key().as_ref()],bump=er_trader.bump,has_one=config,has_one=owner)] pub er_trader:Box<Account<'info,ErTrader>>,
     pub execution:BaseExecution<'info>,
 }
 

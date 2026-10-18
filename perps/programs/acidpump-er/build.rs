@@ -1,8 +1,47 @@
 use std::{env,fs,path::PathBuf};
 use serde_json::Value;
+use sha2::{Digest,Sha256};
+
+/// Host-side copy of Solana's PDA search. The program compares venue configs
+/// against the root config constantly, so the root PDAs are compiled in.
+fn find_program_address(seeds:&[&[u8]],program:&[u8;32])->[u8;32] {
+    for bump in (0..=255u8).rev() {
+        let mut hash=Sha256::new();
+        for seed in seeds {hash.update(seed);}
+        hash.update([bump]);hash.update(program);hash.update(b"ProgramDerivedAddress");
+        let key:[u8;32]=hash.finalize().into();
+        if curve25519_dalek::edwards::CompressedEdwardsY(key).decompress().is_none() {return key;}
+    }
+    panic!("no program address");
+}
+fn decode_key(text:&str)->[u8;32] {
+    bs58::decode(text).into_vec().ok().and_then(|v|v.try_into().ok()).unwrap_or_else(||panic!("invalid program id {text}"))
+}
+/// Every build, including devnet and localnet, compiles its own identity.
+/// Venue namespacing depends on the exact root config of that identity.
+fn write_identity(out:&PathBuf,program:&str,validator:&str) {
+    let id=decode_key(program);
+    decode_key(validator);
+    let root_config=find_program_address(&[b"config"],&id);
+    let root_pool=find_program_address(&[b"pool",&0u16.to_le_bytes()],&id);
+    let text=format!("declare_id!({program:?});\npub const ROOT_CONFIG: Pubkey = pubkey!({:?});\npub const ROOT_POOL: Pubkey = pubkey!({:?});\npub const BUILD_ER_VALIDATOR: Pubkey = pubkey!({validator:?});\n",
+        bs58::encode(root_config).into_string(),bs58::encode(root_pool).into_string());
+    fs::write(out.join("program_identity.rs"),text).unwrap();
+}
 
 fn main() {
     println!("cargo:rerun-if-env-changed=ACIDPUMP_BUILD_MANIFEST");
+    println!("cargo:rerun-if-env-changed=ACIDPUMP_PROGRAM_ID");
+    println!("cargo:rerun-if-env-changed=ACIDPUMP_ER_VALIDATOR");
+    let out=PathBuf::from(env::var("OUT_DIR").unwrap());
+    if env::var_os("CARGO_FEATURE_MAINNET").is_none() {
+        // Fresh devnet/localnet deployments supply their own program keypair;
+        // a localnet ER runs under its own validator identity. The defaults keep
+        // historical fixtures, the existing devnet ID and MagicBlock devnet-us.
+        let program=env::var("ACIDPUMP_PROGRAM_ID").unwrap_or_else(|_|"8TwyqkVNZTHzBF6JC3k91KvWac6862K81TAzfiuiSfxc".into());
+        let validator=env::var("ACIDPUMP_ER_VALIDATOR").unwrap_or_else(|_|"MUS3hc9TCw4cGC12vHNoYcCGzJG1txjgQLZWVoeNHNd".into());
+        write_identity(&out,&program,&validator);
+    }
     let root=PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("../..");
     let mainnet=env::var_os("CARGO_FEATURE_MAINNET").is_some();
     let legacy_test=env::var_os("CARGO_FEATURE_MAINNET_TEST").is_some();
@@ -64,7 +103,6 @@ fn main() {
     }
     code.push_str(&format!("pub const ROLLING_CAPACITY: bool = {production};\n"));
     code.push_str(&format!("pub const REQUIRE_WALLET_ADMISSION: bool = {admission};\npub const MANIFEST_JSON: &str = {raw:?};\n"));
-    let out=PathBuf::from(env::var("OUT_DIR").unwrap());
     fs::write(out.join("launch_constants.rs"),code).unwrap();
-    if mainnet {fs::write(out.join("program_identity.rs"),format!("declare_id!({:?});\n",text("programId"))).unwrap();}
+    if mainnet {write_identity(&out,text("programId"),m["er"]["validator"].as_str().expect("validator"));}
 }

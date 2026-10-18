@@ -108,12 +108,14 @@ pub fn redelegate(ctx:Context<RedelegateCoreTrader>)->Result<()> {
 #[derive(Accounts)]
 pub struct ReleaseLegacyTrader<'info> {
     pub admin:Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump,has_one=admin)] pub config:Account<'info,Config>,
+    // Legacy migrations stay root-only through their pool check; paused venue
+    // exits share this context.
+    #[account(has_one=admin)] pub config:Account<'info,Config>,
     /// CHECK: Identity only; admin may only migrate a paused, idle ledger.
     pub owner:UncheckedAccount<'info>,
     /// CHECK: Canonical program-owned ledger decoded and checked without changing bytes.
-    #[account(mut,seeds=[b"er-trader",owner.key().as_ref()],bump,owner=crate::ID)] pub er_trader:UncheckedAccount<'info>,
-    #[account(mut,seeds=[b"er-fee-payer"],bump=er_fee_payer.bump,has_one=config)] pub er_fee_payer:Account<'info,ErFeePayer>,
+    #[account(mut,seeds=[b"er-trader",vns!(config.key()),owner.key().as_ref()],bump,owner=crate::ID)] pub er_trader:UncheckedAccount<'info>,
+    #[account(mut,seeds=[b"er-fee-payer"],bump=er_fee_payer.bump,constraint=er_fee_payer.config==crate::ROOT_CONFIG @ MixError::Binding)] pub er_fee_payer:Account<'info,ErFeePayer>,
     /// CHECK: SDK validates the fixed validator fee vault.
     #[account(mut,address=ephemeral_rollups_sdk::pda::magic_fee_vault_pda_from_validator(&ER_VALIDATOR))] pub magic_fee_vault:UncheckedAccount<'info>,
     pub execution:ErExecution<'info>,
@@ -133,11 +135,11 @@ pub struct RequestCoreUndelegation<'info> {
     pub admin:Signer<'info>,
     /// DLP verifies this is the original delegation rent payer.
     #[account(mut)] pub payer:Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump,has_one=admin)] pub config:Account<'info,Config>,
+    #[account(has_one=admin)] pub config:Account<'info,Config>,
     /// CHECK: Identity checked against the preserved idle ledger.
     pub owner:UncheckedAccount<'info>,
     /// CHECK: Canonical DLP-owned ledger; checked without rewriting it.
-    #[account(mut,seeds=[b"er-trader",owner.key().as_ref()],bump,owner=ephemeral_rollups_sdk::id())] pub er_trader:UncheckedAccount<'info>,
+    #[account(mut,seeds=[b"er-trader",vns!(config.key()),owner.key().as_ref()],bump,owner=ephemeral_rollups_sdk::id())] pub er_trader:UncheckedAccount<'info>,
     /// CHECK: Fixed owner program.
     #[account(address=crate::ID)] pub owner_program:UncheckedAccount<'info>,
     /// CHECK: Canonical PDA checked by the SDK instruction and DLP.

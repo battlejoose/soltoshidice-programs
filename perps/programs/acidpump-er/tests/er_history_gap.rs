@@ -50,7 +50,10 @@ fn sol_collateral_is_sampled_from_magicblock_and_stored_at_open_by_actual_sbf() 
     config_data.paused=false;put(&mut svm,config,&config_data);
     let (trader_key,trader_bump)=derive(&[b"er-trader",owner.pubkey().as_ref()]);
     let (guard_key,guard_bump)=derive(&[b"er-collateral-guard",owner.pubkey().as_ref()]);
-    let mut trader=ErTrader {owner:owner.pubkey(),config,next_nonce:1,bump:trader_bump,..ErTrader::default()};
+    // Each venue's core stake is its pool's settlement token; this is the root pool.
+    let (pool,pool_bump)=derive(&[b"pool",&0u16.to_le_bytes()]);
+    put(&mut svm,pool,&program::Pool {id:0,settlement:program::stake_backing::core_asset(),authority_bump:0,queue_head:0,queue_tail:0,queue_usd:0,trades:0,bump:pool_bump});
+    let mut trader=ErTrader {owner:owner.pubkey(),config,pool,next_nonce:1,bump:trader_bump,..ErTrader::default()};
     trader.assets[0]=ErBalance {asset,available:2_000_000_000,..ErBalance::default()};put(&mut svm,trader_key,&trader);
     put(&mut svm,guard_key,&program::CollateralGuard {owner:owner.pubkey(),config,floors:program::CollateralGuard::empty_floors(),bump:guard_bump});
     put(&mut svm,asset,&program::Asset {id:103,feed:Pubkey::default(),mint:anchor_spl::token::spl_token::native_mint::ID,
@@ -65,6 +68,7 @@ fn sol_collateral_is_sampled_from_magicblock_and_stored_at_open_by_actual_sbf() 
         owner:owner.pubkey(),config,er_trader:trader_key,er_risk:risk_key,asset,er_quote:quote_key,history:history_key,guard:guard_key,core_quote,
         execution:program::accounts::ErExecution {magic_program:magic},
         #[cfg(feature="mainnet")] gas_authority:publisher.pubkey(),
+        pool,
     }.to_account_metas(None),data:program::instruction::ErOpen {slot:0,nonce:1,market:2,amount:2_000_000_000,leverage:1000,long:true,limit_price:u64::MAX,min_value:1,max_value:u64::MAX,expires:NOW+20}.data()};
     send(&mut svm,&payer,&owner,open,None);
     let stored=svm.get_account(&trader_key).unwrap();let trader=ErTrader::try_deserialize(&mut &stored.data[..]).unwrap();

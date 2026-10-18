@@ -31,6 +31,9 @@ solana-instructions-sysvar = "3.0.1"
 
 [build-dependencies]
 serde_json = "1"
+sha2 = "0.10"
+bs58 = "0.5"
+curve25519-dalek = "4"
 
 [dev-dependencies]
 base64 = "0.22"

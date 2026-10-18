@@ -5,7 +5,7 @@ Solana mainnet programs behind [SoltoshiDICE](https://soltoshidice.wtf).
 This is a release-source export, not the application development repository.
 It contains no deployment keys, private RPC credentials or application history.
 
-## Status — October 17, 2026
+## Status — October 18, 2026
 
 | Program | Scope | Local Docker reproduction | Public registry |
 | --- | --- | --- | --- |
@@ -13,18 +13,31 @@ It contains no deployment keys, private RPC credentials or application history.
 | `3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ` | Hold'em and tournaments | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ) |
 | `5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q` | Street Fights | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q) |
 | `96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG` | Rock Paper Scissors | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG) |
-| `7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7` | SDICE Perps | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7) |
+| `7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7` | SDICE Perps, modular economics upgrade | Exact deployed bytes reproduced | [Refresh pending](https://verify.osec.io/status/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7) |
 
 No deployed program, authority, custody account or game state was changed to
 produce this evidence. Verification metadata belongs to a separate verification
 program. Local reproduction is distinct from remote verifier acceptance.
 
-All five independent verifier jobs completed successfully. Finalized registration
+The October 17 verification covered all five programs. Perps was subsequently
+upgraded at mainnet slot **458267056**; the old Perps verification no longer
+matches. This export contains the upgraded source from release commit
+`4bdf1057c95ee5e701b41452c4aa356ae60ad506`. The current full executable SHA-256 is
+`f539733115c02fc778b9c081b5e4fb12ddd0b989f3089343dfbb23f7f53170da`
+(1,935,848 bytes); its zero-trimmed verifier hash is
+`c3e105266b4a9a2d74487bf799c775c88b78fd7bfad615aa3602ec2ff6ac3b94`.
+The clean pinned Docker build matches every deployed byte.
+The new registration and remote rebuild are pending; do not treat the historical
+Perps receipt as verification of the new executable. Other program sources are
+unchanged. See [the current Perps chain snapshot](evidence/perps-upgrade-snapshot-2026-10-18.json).
+
+Historical finalized registration
 transactions, exact verified commits, costs and unchanged deployment checks are
 in [`evidence/verification-receipts.json`](evidence/verification-receipts.json).
-Bank verifies commit `e875a74a72af04b0bb203ac2952401e2eb0cef0c`; the other four
-verify `d2c0b0b7fd14b727d925b137f64ee910261c9f3c`. Later documentation-only commits
+The historical bank verification uses commit `e875a74a72af04b0bb203ac2952401e2eb0cef0c`; the other four historical jobs verified `d2c0b0b7fd14b727d925b137f64ee910261c9f3c`. Later documentation-only commits
 do not replace the precise source commit recorded by the verifier.
+
+Current upgrade evidence: [`evidence/perps-upgrade-verification-2026-10-18.json`](evidence/perps-upgrade-verification-2026-10-18.json).
 
 ## Reproduce independently
 
@@ -49,6 +62,15 @@ in `programs.json`: Solana CLI 3.1.10 / SBF platform-tools v1.52 / Rust 1.89.0.
 recorded full-file SHA-256 and binary length are also supplied. Poker's allocated
 program account is larger than its executable; all remaining bytes are zero.
 Compare current chain state: upgrades after this snapshot can invalidate it.
+
+## Perps upgrade source
+
+The October 18 Perps export includes modular token venues, the shared ETH-based
+winnings haircut curve, queue-first loss allocation, 1% SOL fee funding, 2%
+total burns (split between the venue token and SDICE for non-root venues), and
+admin fee-surplus withdrawal with a protected reserve minimum. The activated
+economics policy has no deadband. This is contract source only; application
+servers, credentials and private state are excluded.
 
 ## Source provenance and build details
 

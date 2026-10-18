@@ -2,14 +2,39 @@ use crate::{Feed, MixError};
 use anchor_lang::prelude::*;
 pub const PX: u128 = 1_000_000_000_000;
 pub fn loss_split(loss:u64)->Result<(u64,u64)> {
-    let gas=loss/50;
+    let gas=loss/100;
     Ok((loss-gas,gas))
 }
-/// Split the single 98% ACIDPUMP receipt, retaining all rounding in the pool.
+/// Created venues convert 98% into their token, 1% into SOL gas, and 1% into
+/// quote for a later SDICE buy-and-burn. Returns
+/// (token conversion, gas, buyback); rounding stays with the token conversion.
+pub fn venue_loss_split(loss:u64)->Result<(u64,u64,u64)> {
+    let gas=loss/100;
+    let buyback=loss/100;
+    Ok((loss-gas-buyback,gas,buyback))
+}
+/// Split the root's 99% receipt: 90% pool, 7% stakers, 2% SDICE burn.
+/// Integer dust remains in the pool. Existing accrued rewards are unaffected.
 pub fn acid_split(received:u64)->Result<(u64,u64,u64)> {
-    let stakers=(received as u128*7/98) as u64;
-    let burn=received/98;
+    let stakers=(received as u128*7/99) as u64;
+    let burn=(received as u128*2/99) as u64;
     Ok((received-stakers-burn,stakers,burn))
+}
+/// All realizable post-gas receipts fund claims while any FIFO debt exists.
+pub fn queued_acid_split(received:u64,queue_usd:u64,head:u64,tail:u64,small:bool)->Result<(u64,u64,u64)> {
+    require!(head<=tail,MixError::QueueOrder);
+    if small || queue_usd>0 || head<tail {Ok((received,0,0))} else {acid_split(received)}
+}
+/// Created-venue receipt: 90% pool, 7% stakers, 1% native token burn.
+/// The separate 1% SDICE buy-and-burn is withheld before this conversion.
+pub fn venue_token_split(received:u64)->Result<(u64,u64,u64)> {
+    let stakers=(received as u128*7/98) as u64;
+    let burn=(received as u128/98) as u64;
+    Ok((received-stakers-burn,stakers,burn))
+}
+pub fn queue_pending(queue_usd:u64,head:u64,tail:u64)->Result<bool> {
+    require!(head<=tail,MixError::QueueOrder);
+    Ok(queue_usd>0 || head<tail)
 }
 pub fn div(a: u128, b: u128, d: u128) -> Result<u64> {
     require!(d > 0, MixError::Arithmetic);
@@ -108,17 +133,35 @@ mod tests {
     use super::*;
     #[test]
     fn loss_allocation_conserves_every_atom() {
-        assert_eq!(loss_split(10_000).unwrap(), (9_800, 200));
-        assert_eq!(acid_split(9_800).unwrap(), (9_000, 700, 100));
+        assert_eq!(loss_split(10_000).unwrap(), (9_900, 100));
+        assert_eq!(acid_split(9_900).unwrap(), (9_000, 700, 200));
         for loss in [0,1,9,10,11,99,100,101,999,10_000_000,u64::MAX] {
             let (acid,gas)=loss_split(loss).unwrap();
             assert_eq!(acid as u128+gas as u128,loss as u128);
-            assert_eq!(gas,loss/50);
+            assert_eq!(gas,loss/100);
             let (market,stakers,burn)=acid_split(acid).unwrap();
             assert_eq!(market as u128+stakers as u128+burn as u128,acid as u128);
-            assert_eq!(stakers as u128,acid as u128*7/98);
-            assert_eq!(burn as u128,acid as u128/98);
-            assert!(market as u128*98>=acid as u128*90);
+            assert_eq!(stakers as u128,acid as u128*7/99);
+            assert_eq!(burn as u128,acid as u128*2/99);
+            assert!(market as u128*99>=acid as u128*90);
+            for (usd,head,tail,small) in [(1,1,2,false),(0,1,2,false),(1,2,2,false),(0,2,2,true)] {
+                assert_eq!(queued_acid_split(acid,usd,head,tail,small).unwrap(),(acid,0,0));
+            }
+            assert_eq!(queued_acid_split(acid,0,2,2,false).unwrap(),(market,stakers,burn));
+        }
+        assert!(queued_acid_split(99,0,2,1,false).is_err());
+    }
+    #[test]
+    fn venue_allocation_is_90_7_1_burn_1_gas_1_buyback() {
+        let (token,gas,buyback)=venue_loss_split(10_000).unwrap();
+        assert_eq!((token,gas,buyback),(9_800,100,100));
+        assert_eq!(venue_token_split(token).unwrap(),(9_000,700,100));
+        for loss in [0,1,99,100,101,199,10_000_000,u64::MAX] {
+            let (token,gas,buyback)=venue_loss_split(loss).unwrap();
+            assert_eq!(token as u128+gas as u128+buyback as u128,loss as u128);
+            assert_eq!((gas,buyback),(loss/100,loss/100));
+            let (pool,stakers,burn)=venue_token_split(token).unwrap();
+            assert_eq!(pool as u128+stakers as u128+burn as u128,token as u128);
         }
     }
     #[test]

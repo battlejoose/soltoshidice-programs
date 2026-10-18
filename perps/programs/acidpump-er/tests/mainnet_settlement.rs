@@ -22,11 +22,15 @@ const UNIT:u64=1_000_000;
 const PX:u64=1_000_000_000_000;
 fn candidate_binary()->String {std::env::var("ACIDPUMP_TEST_BINARY").unwrap_or_else(|_|".cache/acidpump-mainnet-candidate/acidpump_er.so".into())}
 fn client_fixture_path()->String {std::env::var("ACIDPUMP_TEST_CLIENT_FIXTURE").unwrap_or_else(|_|".cache/acidpump-mainnet-client-instructions.json".into())}
-fn report_path(name:&str)->String {if cfg!(feature="mainnet") {format!("reports/acidpump-production-{name}.json")}else{format!("reports/acidpump-mainnet-{name}.json")}}
+fn report_path(name:&str)->String {if let Ok(dir)=std::env::var("ACIDPUMP_TEST_REPORT_DIR") {format!("{dir}/{name}.json")}else if cfg!(feature="mainnet") {format!("reports/acidpump-production-{name}.json")}else{format!("reports/acidpump-mainnet-{name}.json")}}
 #[path="support/mainnet_bootstrap.rs"]
 mod bootstrap;
 #[path="support/mainnet_usdc_settlement.rs"]
 mod usdc_settlement;
+#[path="support/mainnet_economics.rs"]
+mod economics;
+#[path="support/mainnet_venues.rs"]
+mod venues;
 fn pk(s:&str)->Pubkey {Pubkey::from_str(s).unwrap()}
 fn key(v:&Value,n:&str)->Pubkey {pk(v[n].as_str().unwrap())}
 fn pda(s:&[&[u8]])->Pubkey {Pubkey::find_program_address(s,&p::ID).0}
@@ -129,6 +133,10 @@ impl Bank {
                 "stranger cannot initialize"|"wallet cannot admit itself"=>Some("Unauthorized"),
                 "wrong publisher rejected"|"wrong quote rejected"|"wrong source rejected"|"wrong primary rejected"=>Some("Binding"),
                 "missing administrator signature rejected"=>Some("AccountNotSigner"),
+                "non-admin cannot withdraw fee surplus"=>Some("ConstraintHasOne"),
+                "missing surplus authority signature rejected"=>Some("AccountNotSigner"),
+                "surplus cannot take seed funding or operating floor"|"zero surplus withdrawal rejected"|
+                "cannot repeat a withdrawal beyond remaining earned surplus"=>Some("GasBudget"),
                 "ER bank cannot initialize base config"=>Some("Unauthorized"),
                 "deposit rejected while paused"=>Some("Paused"),
                 _=>None,
@@ -181,9 +189,9 @@ impl Bank {
             entry:100*PX,bust:90*PX,leverage:10,long:true,opened_at:now-10,opened_source_slot:1,cursor:1,bust_observed:liquidated,
             exit:if winning {101*PX}else if liquidated {89*PX}else{99*PX},closed_at:now,close_seq:if winning {get::<Config>(&self.svm,self.config).next_settlement_seq}else{0},liquidated};
         let mut trader=ErTrader{owner:self.signer.pubkey(),config:self.config,pool:self.pool,next_nonce:nonce+1,
-            bump:bump(&[b"er-trader",self.signer.pubkey().as_ref()]),..ErTrader::default()};trader.slots[0]=intent;
+            bump:bump(&[b"er-trader",p::venue::ns(self.config).as_ref(),self.signer.pubkey().as_ref()]),..ErTrader::default()};trader.slots[0]=intent;
         put(&mut self.svm,self.trader,&trader,p::basebridge::DELEGATION_OWNER);
-        let mut guard=CollateralGuard{owner:self.signer.pubkey(),config:self.config,floors:CollateralGuard::empty_floors(),bump:bump(&[b"er-collateral-guard",self.signer.pubkey().as_ref()])};
+        let mut guard=CollateralGuard{owner:self.signer.pubkey(),config:self.config,floors:CollateralGuard::empty_floors(),bump:bump(&[b"er-collateral-guard",p::venue::ns(self.config).as_ref(),self.signer.pubkey().as_ref()])};
         guard.floors[0]=CollateralFloor{nonce,value:intent.entry_value,cursor:1,incomplete:false,closed_at:now,exit:intent.exit,covered_at:now+1,entry_price:1_000_000_000_000};
         put(&mut self.svm,self.guard,&guard,p::basebridge::DELEGATION_OWNER);intent
     }
@@ -269,11 +277,14 @@ impl Bank {
             quote_publisher:p::mainnet_config::PUBLISHER,
             pool_accounts:p::accounts::ClosePoolAccounts{caller:owner,pool:self.pool,authority:self.authority,valuation:self.valuation(a)},
             settlement:primary.asset,settlement_inventory:if same {None}else{Some(primary.inventory)},settlement_vault:if same {None}else{Some(primary.vault)},
-            quote_vault:self.sol_vault,pump_program:p::pump::ID,market:self.market,feed:self.market_feed,asset:a.asset,position,
+            quote_vault:self.sol_vault,pump_program:p::pump::ID,market:self.market,
+            #[cfg(feature="mainnet")] economics:pda(&[b"economics-v1"]),
+            #[cfg(not(feature="mainnet"))] feed:self.feed,
+            asset:a.asset,position,
             ownership:p::accounts::CloseOwnership{exposure:pda(&[b"exposure",owner.as_ref()]),ownership_pool:self.ownership,ownership_trader:trader,ownership_receipt:receipt,settlement_valuation:self.valuation(primary)},
             mint:a.mint,token_program:a.program,inventory:a.inventory,vault:a.vault,
             fees:p::accounts::LossRouting{gas_reserve:self.gas,perp:primary.asset,perp_mint:primary.mint,perp_program:primary.program,perp_vault:primary.vault,
-                main_pool:None,main_ownership_pool:None,main_inventory:None,main_vault:None,gas_asset:self.tokens[2].asset,gas_mint:SOL,gas_vault:self.gas_vault,gas_program:anchor_spl::token::ID,system_program:Pubkey::default()},
+                main_pool:None,main_ownership_pool:None,main_inventory:None,main_vault:None,gas_asset:self.tokens[2].asset,gas_mint:SOL,gas_vault:self.gas_vault,gas_program:anchor_spl::token::ID,system_program:Pubkey::default(),venue:None,buyback_vault:None},
             bridge:p::accounts::ErCloseBridge{config:self.config,custody:self.custody,trader:self.trader,guard:self.guard},
         },p::instruction::CloseBacked{sell_count:0,min_swap_out:1,market_accounts:0,fee_sell_count:sell_count,perp_buy_count:buy_count,min_perp,min_gas:0,
             sol_quote:p::SolUsdQuote{price:110*PX,publish_time:self.f["now"].as_i64().unwrap()}});
@@ -283,6 +294,9 @@ impl Bank {
         let mut built=Self::client_instructions(&row["instructions"]);
         // Mutate only the explicit minimum used by the atomic-failure test.
         built.last_mut().unwrap().data[20..28].copy_from_slice(&min_perp.to_le_bytes());
+        // A warped offline bank uses its current authenticated SOL quote time.
+        let end=built.last().unwrap().data.len();
+        built.last_mut().unwrap().data[end-8..].copy_from_slice(&self.f["now"].as_i64().unwrap().to_le_bytes());
         assert_eq!(built[0],prepare,"client prepare instruction differs from Rust ABI");
         assert_eq!(built[1],ownership,"client ownership instruction differs from Rust ABI");
         if loss>0 {assert_eq!(*built.last().unwrap(),close,"client loss route differs from the independently built Rust instruction");}
@@ -339,7 +353,7 @@ fn fifo_payouts_support_primary_pool_modes_and_old_layouts() {
         h.send("mode payout cannot replay",vec![h.payout_raw(position)],true);
         cases.push(json!({"mode":case["name"],"paidUsdc":paid,"claimUsdc":original.profit,"treasuryTokensSpent":capital-remaining,"receipts":h.receipts}));
     }
-    std::fs::write(root.join("reports/acidpump-production-mode-payouts.json"),serde_json::to_vec_pretty(&json!({
+    std::fs::write(root.join(report_path("mode-payouts")),serde_json::to_vec_pretty(&json!({
         "scope":"Actual production SBF FIFO payout with real Pump programs, synthetic treasury and injected ER commit boundary",
         "localSimulation":true,"mainnetTransactionsSubmitted":0,"binarySha256":hash(root.join(candidate_binary())),"cases":cases
     })).unwrap()).unwrap();
@@ -530,7 +544,7 @@ fn drained_non_primary_collateral_closes_and_awards_consumed_backing_once() {
             sync_custody(&mut trader,&mut risk,&before_custody).unwrap();
             assert_eq!(trader.slots[0].state,ER_FREE);assert_eq!(trader.notional,0);assert_eq!(trader.core_stake.tokens,staked-x.coverage_tokens);
             assert_eq!(trader.assets[trader.asset_index(a.asset).unwrap()].available,margin-loss);
-            p::stake_backing::check_unlock(&p::stake_backing::positions(&trader),trader.core_stake.uncovered_usd().unwrap()).unwrap();
+            p::stake_backing::check_unlock(&p::stake_backing::positions(&trader,&p::stake_backing::root_backing()),trader.core_stake.uncovered_usd().unwrap()).unwrap();
         }
     }
 }
@@ -659,7 +673,7 @@ fn complete_base_loss_routes_rewards_fifo_payout_and_withdrawal() {
         let burned=supply_before-supply(&h.svm,primary.mint);let reward=get::<OwnershipPool>(&h.svm,h.ownership).fee_pending-reward_before;
         let pool_added=get::<Inventory>(&h.svm,primary.inventory).treasury-pool_before;let total=pool_added+reward+burned;
         assert_eq!((pool_added,reward,burned),p::math::acid_split(total).unwrap());assert!(burned>0&&reward>0);
-        if a.mint==primary.mint {assert_eq!(total,x.loss-x.loss/50);}
+        if a.mint==primary.mint {assert_eq!(total,x.loss-x.loss/100);}
         let gas_delta=get::<GasReserve>(&h.svm,h.gas).sol_received-gas_before;assert!(gas_delta>0);
         assert_eq!(h.svm.get_account(&h.gas).unwrap().lamports-lamports_before,gas_delta);assert_eq!(token(&h.svm,h.gas_vault),0);
         assert!(token(&h.svm,h.sol_vault)>=10_000);assert_eq!(token(&h.svm,h.usd_vault),100);

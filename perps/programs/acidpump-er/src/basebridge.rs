@@ -2,13 +2,14 @@
 //! Custody.available includes reserved collateral: only losses and withdrawals
 //! remove backing, while cumulative returned credits release ER reservations.
 use crate::*;
+use crate::venue::{ns, pool_ns};
 
 pub const DELEGATION_OWNER: Pubkey = pubkey!("DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh");
 
 #[inline(never)]
 pub fn committed_trader(info: &AccountInfo, owner: Pubkey, config: Pubkey, pool: Pubkey) -> Result<Box<ErTrader>> {
     require_keys_eq!(*info.owner, DELEGATION_OWNER, MixError::Unauthorized);
-    require_keys_eq!(info.key(), Pubkey::find_program_address(&[b"er-trader", owner.as_ref()], &crate::ID).0, MixError::Binding);
+    require_keys_eq!(info.key(), Pubkey::find_program_address(&[b"er-trader", ns(config).as_ref(), owner.as_ref()], &crate::ID).0, MixError::Binding);
     let data = info.try_borrow_data()?;
     let trader = decode_trader(&data)?;
     require!(trader.owner == owner && trader.config == config && trader.pool == pool, MixError::Binding);
@@ -23,7 +24,7 @@ fn decode_trader(data: &[u8]) -> Result<Box<ErTrader>> {
 
 pub fn committed_collateral_floor(info: &AccountInfo, trader: &ErTrader, slot: u8) -> Result<u64> {
     require_keys_eq!(*info.owner, DELEGATION_OWNER, MixError::Unauthorized);
-    require_keys_eq!(info.key(), Pubkey::find_program_address(&[b"er-collateral-guard", trader.owner.as_ref()], &crate::ID).0, MixError::Binding);
+    require_keys_eq!(info.key(), Pubkey::find_program_address(&[b"er-collateral-guard", ns(trader.config).as_ref(), trader.owner.as_ref()], &crate::ID).0, MixError::Binding);
     let data = info.try_borrow_data()?;
     let guard = CollateralGuard::try_deserialize(&mut &data[..])?;
     guard.settled_value(trader, slot)
@@ -41,9 +42,10 @@ pub struct BaseExecution<'info> {
 
 #[derive(Accounts)]
 pub struct ErCloseBridge<'info> {
-    #[account(mut,seeds=[b"config"],bump=config.bump)]
+    /// The root config or a venue config; it owns this venue's settlement sequence.
+    #[account(mut)]
     pub config: Box<Account<'info, Config>>,
-    #[account(mut,seeds=[b"er-custody",custody.owner.as_ref()],bump=custody.bump,has_one=config)]
+    #[account(mut,seeds=[b"er-custody",vns!(config.key()),custody.owner.as_ref()],bump=custody.bump,has_one=config)]
     pub custody: Box<Account<'info, ErCustody>>,
     /// CHECK: Canonical PDA, DLP owner, position owner, pool and intent checked in handler.
     pub trader: UncheckedAccount<'info>,
@@ -189,9 +191,9 @@ pub fn settle_withdrawal(ctx: Context<SettleWithdrawal>, nonce: u64, slot: u8) -
 pub struct InitializeCustody<'info> {
     #[account(mut)] pub payer: Signer<'info>,
     pub owner: Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump)] pub config: Box<Account<'info, Config>>,
-    #[account(seeds=[b"pool",&0u16.to_le_bytes()],bump=pool.bump,constraint=pool.id==0 @ MixError::Binding)] pub pool: Box<Account<'info, Pool>>,
-    #[account(init,payer=payer,space=8+ErCustody::INIT_SPACE,seeds=[b"er-custody",owner.key().as_ref()],bump)] pub custody: Box<Account<'info, ErCustody>>,
+    pub config: Box<Account<'info, Config>>,
+    #[account(seeds=[b"pool",vns!(config.key()),&0u16.to_le_bytes()],bump=pool.bump,constraint=pool.id==0 @ MixError::Binding)] pub pool: Box<Account<'info, Pool>>,
+    #[account(init,payer=payer,space=8+ErCustody::INIT_SPACE,seeds=[b"er-custody",vns!(config.key()),owner.key().as_ref()],bump)] pub custody: Box<Account<'info, ErCustody>>,
     pub system_program: Program<'info, System>,
     pub execution: BaseExecution<'info>,
 }
@@ -199,9 +201,9 @@ pub struct InitializeCustody<'info> {
 #[derive(Accounts)]
 pub struct DepositCollateral<'info> {
     pub owner: Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump)] pub config: Box<Account<'info, Config>>,
+    pub config: Box<Account<'info, Config>>,
     pub pool: Box<Account<'info, Pool>>,
-    #[account(mut,seeds=[b"er-custody",owner.key().as_ref()],bump=custody.bump,has_one=owner,has_one=config,has_one=pool)] pub custody: Box<Account<'info, ErCustody>>,
+    #[account(mut,seeds=[b"er-custody",vns!(config.key()),owner.key().as_ref()],bump=custody.bump,has_one=owner,has_one=config,has_one=pool)] pub custody: Box<Account<'info, ErCustody>>,
     pub asset: Box<Account<'info, Asset>>,
     #[account(address=asset.mint,mint::token_program=token_program)] pub mint: Box<InterfaceAccount<'info, Mint>>,
     #[account(address=asset.token_program)] pub token_program: Interface<'info, TokenInterface>,
@@ -219,23 +221,23 @@ pub struct PrepareSettlement<'info> {
     #[account(mut)] pub payer: Signer<'info>,
     /// CHECK: Bound to canonical committed trader and custody; no owner signature is needed.
     pub owner: UncheckedAccount<'info>,
-    #[account(seeds=[b"config"],bump=config.bump)] pub config: Box<Account<'info, Config>>,
+    pub config: Box<Account<'info, Config>>,
     pub pool: Box<Account<'info, Pool>>,
     #[account(has_one=pool)] pub market: Box<Account<'info, Market>>,
     pub asset: Box<Account<'info, Asset>>,
     /// CHECK: Canonical PDA, DLP owner, discriminator and all identity bindings checked in handler.
     pub trader: UncheckedAccount<'info>,
-    #[account(seeds=[b"er-custody",owner.key().as_ref()],bump=custody.bump,has_one=owner,has_one=config,has_one=pool)] pub custody: Box<Account<'info, ErCustody>>,
-    #[account(init_if_needed,payer=payer,space=8+Position::INIT_SPACE,seeds=[b"position",owner.key().as_ref(),&nonce.to_le_bytes()],bump)] pub position: Box<Account<'info, Position>>,
+    #[account(seeds=[b"er-custody",vns!(config.key()),owner.key().as_ref()],bump=custody.bump,has_one=owner,has_one=config,has_one=pool)] pub custody: Box<Account<'info, ErCustody>>,
+    #[account(init_if_needed,payer=payer,space=8+Position::INIT_SPACE,seeds=[b"position",pns!(pool.key()),owner.key().as_ref(),&nonce.to_le_bytes()],bump)] pub position: Box<Account<'info, Position>>,
     pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
 pub struct SettleWithdrawal<'info> {
     pub caller: Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump)] pub config: Box<Account<'info, Config>>,
+    pub config: Box<Account<'info, Config>>,
     pub pool: Box<Account<'info, Pool>>,
-    #[account(mut,seeds=[b"er-custody",custody.owner.as_ref()],bump=custody.bump,has_one=config,has_one=pool)] pub custody: Box<Account<'info, ErCustody>>,
+    #[account(mut,seeds=[b"er-custody",vns!(config.key()),custody.owner.as_ref()],bump=custody.bump,has_one=config,has_one=pool)] pub custody: Box<Account<'info, ErCustody>>,
     /// CHECK: Canonical committed intent validation in handler.
     pub trader: UncheckedAccount<'info>,
     pub asset: Box<Account<'info, Asset>>,
@@ -267,7 +269,7 @@ mod tests {
     #[test]
     fn authenticates_canonical_committed_state_not_supplied_bytes() {
         let (trader, _) = fixture();
-        let canonical = Pubkey::find_program_address(&[b"er-trader", trader.owner.as_ref()], &crate::ID).0;
+        let canonical = Pubkey::find_program_address(&[b"er-trader", ns(trader.config).as_ref(), trader.owner.as_ref()], &crate::ID).0;
         let fake = Pubkey::new_unique();
         let mut data = Vec::new();
         trader.try_serialize(&mut data).unwrap();
