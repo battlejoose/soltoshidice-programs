@@ -13,7 +13,7 @@ It contains no deployment keys, private RPC credentials or application history.
 | `3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ` | Hold'em and tournaments | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ) |
 | `5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q` | Street Fights | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q) |
 | `96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG` | Rock Paper Scissors | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG) |
-| `7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7` | SDICE Perps, modular economics upgrade | Exact deployed bytes reproduced | [Refresh pending](https://verify.osec.io/status/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7) |
+| `7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7` | SDICE Perps, modular economics upgrade | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7) |
 
 No deployed program, authority, custody account or game state was changed to
 produce this evidence. Verification metadata belongs to a separate verification
@@ -27,11 +27,12 @@ matches. This export contains the upgraded source from release commit
 (1,935,848 bytes); its zero-trimmed verifier hash is
 `c3e105266b4a9a2d74487bf799c775c88b78fd7bfad615aa3602ec2ff6ac3b94`.
 The clean pinned Docker build matches every deployed byte.
-The verification metadata now points to public commit
-`a67357f6fe18755b8a33e337bcb8350dc5fd7020`; its independent remote rebuild is
-pending. Do not treat the historical
-Perps receipt as verification of the new executable. Other program sources are
-unchanged. See [the current Perps chain snapshot](evidence/perps-upgrade-snapshot-2026-10-18.json).
+The verification metadata points to public commit
+`a67357f6fe18755b8a33e337bcb8350dc5fd7020`. The independent verifier accepted
+that commit on October 18, 2026, with matching on-chain and executable hashes.
+The metadata update cost 0.000005 SOL and did not modify the deployed program
+or interrupt trading. Other program sources are unchanged. See
+[the current Perps chain snapshot](evidence/perps-upgrade-snapshot-2026-10-18.json).
 
 Historical finalized registration
 transactions, exact verified commits, costs and unchanged deployment checks are
