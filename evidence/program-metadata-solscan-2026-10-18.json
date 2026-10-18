@@ -1,0 +1,46 @@
+{
+  "checkedAt": "2026-10-18T15:18:02.730Z",
+  "method": "Signed-out Solscan browser UI: waited for public Instructions tab to render and read Security.txt badge",
+  "checks": [
+    {
+      "name": "bank",
+      "program": "CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR",
+      "url": "https://solscan.io/account/CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR#programIdl",
+      "publicIdlRendered": true,
+      "format": "CODAMA",
+      "securityTxtBadge": "TRUE"
+    },
+    {
+      "name": "poker",
+      "program": "3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+      "url": "https://solscan.io/account/3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ#programIdl",
+      "publicIdlRendered": true,
+      "format": "ANCHOR V0.30",
+      "securityTxtBadge": "TRUE"
+    },
+    {
+      "name": "fights",
+      "program": "5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q",
+      "url": "https://solscan.io/account/5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q#programIdl",
+      "publicIdlRendered": true,
+      "format": "CODAMA",
+      "securityTxtBadge": "TRUE"
+    },
+    {
+      "name": "rps",
+      "program": "96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG",
+      "url": "https://solscan.io/account/96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG#programIdl",
+      "publicIdlRendered": true,
+      "format": "CODAMA",
+      "securityTxtBadge": "TRUE"
+    },
+    {
+      "name": "perps",
+      "program": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+      "url": "https://solscan.io/account/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7#programIdl",
+      "publicIdlRendered": true,
+      "format": "ANCHOR V0.30",
+      "securityTxtBadge": "TRUE"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "SoltoshiDICE Bank, Cee-lo, Blackjack and Slots",
+  "project_url": "https://soltoshidice.wtf",
+  "contacts": [
+    "link:https://github.com/battlejoose/soltoshidice-programs/security/advisories/new"
+  ],
+  "policy": "https://github.com/battlejoose/soltoshidice-programs/blob/main/SECURITY.md",
+  "preferred_languages": [
+    "en"
+  ],
+  "source_code": "https://github.com/battlejoose/soltoshidice-programs/tree/e875a74a72af04b0bb203ac2952401e2eb0cef0c/games/chain",
+  "source_revision": "e875a74a72af04b0bb203ac2952401e2eb0cef0c",
+  "description": "Report suspected vulnerabilities privately through GitHub. See the policy for responsible disclosure guidance."
+}

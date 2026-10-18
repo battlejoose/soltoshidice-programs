@@ -5,6 +5,13 @@ Solana mainnet programs behind [SoltoshiDICE](https://soltoshidice.wtf).
 This is a release-source export, not the application development repository.
 It contains no deployment keys, private RPC credentials or application history.
 
+## Public IDLs and security reporting
+
+All five programs have canonical on-chain IDLs and security records. See
+[metadata coverage, Solscan links and finalized receipts](metadata/README.md).
+Native IDLs describe decoding; they are not generic transaction-building SDKs.
+Report vulnerabilities privately through our [security policy](SECURITY.md).
+
 ## Status — October 18, 2026
 
 | Program | Scope | Local Docker reproduction | Public registry |

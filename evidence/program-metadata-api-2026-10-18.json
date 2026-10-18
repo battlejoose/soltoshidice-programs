@@ -1,0 +1,85 @@
+{
+  "checkedAt": "2026-10-18T15:16:37.424Z",
+  "checks": [
+    {
+      "name": "bank",
+      "seed": "idl",
+      "url": "https://idl-one.vercel.app/api/idl?programId=CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR",
+      "status": 200,
+      "type": "pmp",
+      "contentMatches": true
+    },
+    {
+      "name": "bank",
+      "seed": "security",
+      "url": "https://idl-one.vercel.app/api/security-txt?programId=CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR",
+      "status": 200,
+      "type": "pmp",
+      "contentMatches": true
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "url": "https://idl-one.vercel.app/api/idl?programId=3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+      "status": 200,
+      "type": "pmp",
+      "contentMatches": true
+    },
+    {
+      "name": "poker",
+      "seed": "security",
+      "url": "https://idl-one.vercel.app/api/security-txt?programId=3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+      "status": 200,
+      "type": "pmp",
+      "contentMatches": true
+    },
+    {
+      "name": "fights",
+      "seed": "idl",
+      "url": "https://idl-one.vercel.app/api/idl?programId=5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q",
+      "status": 200,
+      "type": "pmp",
+      "contentMatches": true
+    },
+    {
+      "name": "fights",
+      "seed": "security",
+      "url": "https://idl-one.vercel.app/api/security-txt?programId=5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q",
+      "status": 200,
+      "type": "pmp",
+      "contentMatches": true
+    },
+    {
+      "name": "rps",
+      "seed": "idl",
+      "url": "https://idl-one.vercel.app/api/idl?programId=96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG",
+      "status": 200,
+      "type": "pmp",
+      "contentMatches": true
+    },
+    {
+      "name": "rps",
+      "seed": "security",
+      "url": "https://idl-one.vercel.app/api/security-txt?programId=96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG",
+      "status": 200,
+      "type": "pmp",
+      "contentMatches": true
+    },
+    {
+      "name": "perps",
+      "seed": "idl",
+      "url": "https://idl-one.vercel.app/api/idl?programId=7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+      "status": 200,
+      "type": "pmp",
+      "contentMatches": true
+    },
+    {
+      "name": "perps",
+      "seed": "security",
+      "url": "https://idl-one.vercel.app/api/security-txt?programId=7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+      "status": 200,
+      "type": "pmp",
+      "contentMatches": true
+    }
+  ]
+}

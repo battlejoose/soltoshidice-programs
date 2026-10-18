@@ -1,0 +1,22 @@
+[
+  {
+    "name": "poker",
+    "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
+    "sourcePath": "game/vendor/holdem/app/chain/riverproof-idl.json",
+    "sourceSha256": "eec348f8b91fe372af21a7fe7ab3ec0fe40494a8bcc1dce4f45c57852bba5177",
+    "idlSha256": "eec348f8b91fe372af21a7fe7ab3ec0fe40494a8bcc1dce4f45c57852bba5177",
+    "instructions": 42,
+    "accounts": 13,
+    "verifiedCommit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c"
+  },
+  {
+    "name": "perps",
+    "sourceCommit": "4bdf1057c95ee5e701b41452c4aa356ae60ad506",
+    "sourcePath": "projects/acidpump-er/idl.mainnet-test.json",
+    "sourceSha256": "385dd82788ec0ecc5013db7850d9b11e353928900f3e853f3ae66e74dff5458b",
+    "idlSha256": "385dd82788ec0ecc5013db7850d9b11e353928900f3e853f3ae66e74dff5458b",
+    "instructions": 81,
+    "accounts": 21,
+    "verifiedCommit": "a67357f6fe18755b8a33e337bcb8350dc5fd7020"
+  }
+]

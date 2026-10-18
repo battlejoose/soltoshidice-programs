@@ -1,0 +1,228 @@
+[
+  {
+    "name": "bank",
+    "verifiedCommit": "e875a74a72af04b0bb203ac2952401e2eb0cef0c",
+    "idlSha256": "bb7a2ce7f048871d643b62b008450d39c4555888b2b91089badaf48e161a0ac2",
+    "sources": [
+      {
+        "path": "games/chain/program/src/lib.rs",
+        "sha256": "3ae82a0c38fcd5cbfa75fe7a09acc140a29bc19318b35e3bd64dfbc16e4fd25f"
+      },
+      {
+        "path": "games/chain/program/src/shared.rs",
+        "sha256": "e68d6c9f8b7f6cddf72727f8c1f44e061c8c0b55f6463372a85a11637d8c8c4c"
+      },
+      {
+        "path": "games/chain/program/src/economy.rs",
+        "sha256": "f7c63665984324e1bf70d6ee9ea63ce8ac4f6dd76dc2e5d557e4e3d6e4f0bedc"
+      },
+      {
+        "path": "games/chain/program/src/economy/locks.rs",
+        "sha256": "4bbfededbce0042d4a6842991078f0d28fea0979f870121d55c1da3fdfd6f732"
+      },
+      {
+        "path": "games/chain/program/src/funding.rs",
+        "sha256": "7825a1c82d8f5075100577dd98925027d71806159152cd7c5b5cd6319fb9a40d"
+      },
+      {
+        "path": "games/chain/program/src/tournament/model.rs",
+        "sha256": "fcf46251fcafbe64b8c7e90a1b9dcecf4a9b23fe5a6f7ba7958491e22d2a1245"
+      },
+      {
+        "path": "games/chain/program/src/blackjack/rules.rs",
+        "sha256": "7f387e93dc3aa8e1bee2e0ea57fc98b91f84a38adeba17e1614518bb3c741169"
+      },
+      {
+        "path": "games/chain/program/src/blackjack/state.rs",
+        "sha256": "08f6d292553a0888fdc64d6c7ec3fba85e2c76fe66ee473a9c77725ef9b15c12"
+      },
+      {
+        "path": "games/chain/program/src/blackjack/sol_funding.rs",
+        "sha256": "883e46ba24823485f1c441c11f5e2e40ec8bebcf13bd468e0d51e103e09a6353"
+      },
+      {
+        "path": "games/chain/program/src/blackjack/magicblock.rs",
+        "sha256": "e5d51d3501a3012a5d44a9fc64236a14c4772bcac1e5a83d1c92ceb0feff70e5"
+      },
+      {
+        "path": "games/chain/program/src/blackjack/network_funding.rs",
+        "sha256": "a7612bc9e09d7ed70235e335570af6ecf0be2547ce96663e83ac030359a1661b"
+      },
+      {
+        "path": "games/chain/program/src/slots/mod.rs",
+        "sha256": "f3c196869f610ab010c9c1b3a9725f75cab1cc579301e17f77a969dcaa3b675c"
+      }
+    ],
+    "accounts": [
+      {
+        "name": "bank",
+        "size": 114
+      },
+      {
+        "name": "round",
+        "size": 193
+      },
+      {
+        "name": "sharedTable",
+        "size": 58
+      },
+      {
+        "name": "sharedSharedRound",
+        "size": 272
+      },
+      {
+        "name": "sharedBet",
+        "size": 93
+      },
+      {
+        "name": "economyProfile",
+        "size": 391
+      },
+      {
+        "name": "economyPool",
+        "size": 275
+      },
+      {
+        "name": "economyFeeReceipt",
+        "size": 172
+      },
+      {
+        "name": "locksLedger",
+        "size": 174
+      },
+      {
+        "name": "locksPosition",
+        "size": 115
+      },
+      {
+        "name": "fundingRoundFunding",
+        "size": 93
+      },
+      {
+        "name": "fundingContribution",
+        "size": 115
+      },
+      {
+        "name": "tournamentSeries",
+        "size": 122
+      },
+      {
+        "name": "tournamentEvent",
+        "size": 654
+      },
+      {
+        "name": "tournamentEntry",
+        "size": 99
+      },
+      {
+        "name": "tournamentReceipt",
+        "size": 147
+      },
+      {
+        "name": "bjTable",
+        "size": 3481
+      },
+      {
+        "name": "bjSolDeposit",
+        "size": 99
+      },
+      {
+        "name": "bjVrfInbox",
+        "size": 178
+      },
+      {
+        "name": "bjNetworkConfig",
+        "size": 117
+      },
+      {
+        "name": "bjNetworkPurse",
+        "size": 537
+      },
+      {
+        "name": "slotsConfig",
+        "size": 50
+      },
+      {
+        "name": "slotsCursor",
+        "size": 82
+      },
+      {
+        "name": "slotsSpin",
+        "size": 261
+      },
+      {
+        "name": "economyPoolLegacy",
+        "size": 259
+      },
+      {
+        "name": "locksLedgerLegacy",
+        "size": 158
+      },
+      {
+        "name": "tournamentEntryLegacy",
+        "size": 94
+      },
+      {
+        "name": "economyGameReceipt",
+        "size": 276
+      }
+    ],
+    "instructions": 94
+  },
+  {
+    "name": "fights",
+    "verifiedCommit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+    "idlSha256": "d52ee8d19b124ccbafc680b13e1fd0417e92db8ce6cb5d6f58e8724ca715c740",
+    "sources": [
+      {
+        "path": "games/fights/fight-program/src/lib.rs",
+        "sha256": "55eb070ae7951cebcf1351057242512c4f94c22f7b7fd21c52faca6002c08d9c"
+      },
+      {
+        "path": "games/fights/fight-program/src/combat.rs",
+        "sha256": "b55c1f8c5f40bf6a476f5ab714fe1163df8fb57aa98a77a1fee2fcb8702264e3"
+      }
+    ],
+    "accounts": [
+      {
+        "name": "config",
+        "size": 99
+      },
+      {
+        "name": "counter",
+        "size": 42
+      },
+      {
+        "name": "fight",
+        "size": 815
+      }
+    ],
+    "instructions": 8
+  },
+  {
+    "name": "rps",
+    "verifiedCommit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+    "idlSha256": "dee5455a19c6c0144598afbab5c6573d35a51fed9235d6053d7fc467a7286ba7",
+    "sources": [
+      {
+        "path": "games/chain/rps-program/src/lib.rs",
+        "sha256": "a398bc4fa0a0ff79b3066343b1f80028af98a8f2a17c48fbcda2dcb2ecda15f3"
+      }
+    ],
+    "accounts": [
+      {
+        "name": "config",
+        "size": 99
+      },
+      {
+        "name": "counter",
+        "size": 42
+      },
+      {
+        "name": "match",
+        "size": 379
+      }
+    ],
+    "instructions": 8
+  }
+]

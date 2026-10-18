@@ -1,0 +1,14 @@
+{
+  "name": "SoltoshiDICE Block Fights",
+  "project_url": "https://soltoshidice.wtf",
+  "contacts": [
+    "link:https://github.com/battlejoose/soltoshidice-programs/security/advisories/new"
+  ],
+  "policy": "https://github.com/battlejoose/soltoshidice-programs/blob/main/SECURITY.md",
+  "preferred_languages": [
+    "en"
+  ],
+  "source_code": "https://github.com/battlejoose/soltoshidice-programs/tree/d2c0b0b7fd14b727d925b137f64ee910261c9f3c/games/fights",
+  "source_revision": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
+  "description": "Report suspected vulnerabilities privately through GitHub. See the policy for responsible disclosure guidance."
+}
