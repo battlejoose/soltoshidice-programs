@@ -27,7 +27,9 @@ matches. This export contains the upgraded source from release commit
 (1,935,848 bytes); its zero-trimmed verifier hash is
 `c3e105266b4a9a2d74487bf799c775c88b78fd7bfad615aa3602ec2ff6ac3b94`.
 The clean pinned Docker build matches every deployed byte.
-The new registration and remote rebuild are pending; do not treat the historical
+The verification metadata now points to public commit
+`a67357f6fe18755b8a33e337bcb8350dc5fd7020`; its independent remote rebuild is
+pending. Do not treat the historical
 Perps receipt as verification of the new executable. Other program sources are
 unchanged. See [the current Perps chain snapshot](evidence/perps-upgrade-snapshot-2026-10-18.json).
 
