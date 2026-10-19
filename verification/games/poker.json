@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "genesisHash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+  "capturedAt": "2026-10-19T06:36:38.396Z",
+  "transactionsSubmitted": 0,
+  "game": "poker",
+  "identity": "3wLqdrAS12RnwPsLCGY7UW3JWR6fJ6eiAxZhcUbrTHwi",
+  "hand": "668",
+  "accounts": {
+    "FTsaRYAkDnALM273GYApSW3TCJ8ebFNmHo1q6CiKuZrU": {
+      "context": {
+        "apiVersion": "4.3.0",
+        "slot": 458734474
+      },
+      "value": {
+        "data": [
+          "VWOJN3j7KCYroytG72qa5U3qqtYenvCPBiJ+b1zZGVmRy+Us1ypaRZwCAAAAAAAABQgAAAAGAAFDAEAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbS4DAAAAAABtLgMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACBOAAAAAAAA/wAAAAAAAAAACBYXHCsFDgEAAwAAAAHaXAYAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB/Q==",
+          "base64"
+        ],
+        "executable": false,
+        "lamports": 2499360,
+        "owner": "3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+        "rentEpoch": 18446744073709552000,
+        "space": 364
+      }
+    },
+    "52roRz6DLbqUwfRM9L2fesrvppjDQVoFNYWxJRhBDfxs": {
+      "context": {
+        "apiVersion": "4.3.0",
+        "slot": 458734474
+      },
+      "value": {
+        "data": [
+          "0u2zI1IT0AsroytG72qa5U3qqtYenvCPBiJ+b1zZGVmRy+Us1ypaRZwCAAAAAAAAAwAB/x0PMykAAAAAAAAAAAAAAAAAAAAA",
+          "base64"
+        ],
+        "executable": false,
+        "lamports": 1016000,
+        "owner": "3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+        "rentEpoch": 18446744073709552000,
+        "space": 72
+      }
+    },
+    "9rD3KbRdG5t59UxJYMM95Fq9K3AwjLqHZY8SfVF11NPU": {
+      "context": {
+        "apiVersion": "4.3.0",
+        "slot": 458734474
+      },
+      "value": {
+        "data": [
+          "BnX6DdDh0twroytG72qa5U3qqtYenvCPBiJ+b1zZGVmRy+Us1ypaRZwCAAAAAAAAAAEG/////////wMCAAIgFc1JLZgMHIqhi1SdqV+wYes4sCXo0vFq0C7mkJVUXsoUg74uyiLx+rFX3M6tzQq252jYYdy0tEfo53sCSODSY+cY8/wLexRhU8m4XlyUkGho4Hbn13ZfnsivF344F7gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbnq91ZJdxK5gWa3PrZb5iZRWoeqVx2ebKWbfnESj5/otuQBrgo1XrJsKIltBOAeZO7BH6yWcYKxD7zN8gu7It0UsYjOXDXl3PXS9cbv2TIc5E7M6PkKyCHA7umTgLXyQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg4H4uC0YY0JLlrCnBAYJ3qmv8Qmj7qNzmVVaBBo5/HwcAHQMACmeHCMLOEeibUyRPG1/HVIKSWHZsHk+Mb1A6qzSjC1wHAA8BAU4QbYIArvARcADBlSy2hZspbVdoGQHCEzBR6JMZUPwiBwAzBAF+97VJ1QGu0lvzcXByrxy6TTRPrtzYf4InYNYzuyRfeQcAKQIGGu/kOy7wwIDainecEuVSowPx9eqnFrF/LAH5tcFwWy4HABoFBm7OhXk5GWg8S4byTgpQxqYyzXVwsT/JLRH7ECpxJYRbBwALB/9Ca7fICQ7HBZnKsKthwPBHt/iK+qOK/v7wiwbGq/N1KQcACAj/ZjCExl7d2WTrQsoM6Y+xAI5RXbzBA44xGATu2zoOCRwHABYJ/+AiOeP6XS77NcuuKyTzNfQzSH9blGlNGn1nkpRWMYEOBwAXC/8k6ApqBnMbcvfGa7BdIPfKsP8z5Clg1nLKSaaSuyDbXgcAHA3/VBFMyZYbcbh5Xvb7pKG3u01d/zsEzylBHDzshBB/4hMHACsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAuYFgJSoQEAAAv+",
+          "base64"
+        ],
+        "executable": false,
+        "lamports": 8971280,
+        "owner": "3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+        "rentEpoch": 18446744073709552000,
+        "space": 1638
+      }
+    }
+  },
+  "records": [
+    {
+      "signature": "5MqEE86P2RPHP6UHmvjM5PAP4LGmr2fJbRDviiz1pN3Dmp641mAbQQq3vKjJnp7rCJz6wT4KXXRTe3eFTWeikSfz",
+      "receipt": {
+        "blockTime": 1792377105,
+        "meta": {
+          "computeUnitsConsumed": 89882,
+          "costUnits": 92781,
+          "err": null,
+          "fee": 5000,
+          "innerInstructions": [],
+          "logMessages": [
+            "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+            "Program ComputeBudget111111111111111111111111111111 success",
+            "Program 3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ invoke [1]",
+            "Program log: Instruction: RevealMentalHole",
+            "Program 3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ consumed 89732 of 299850 compute units",
+            "Program 3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ success"
+          ],
+          "postBalances": [
+            18815000,
+            1016000,
+            8971280,
+            3667760,
+            3510280,
+            2499360,
+            833120,
+            2656840,
+            1,
+            1224280
+          ],
+          "postTokenBalances": [],
+          "preBalances": [
+            18820000,
+            1016000,
+            8971280,
+            3667760,
+            3510280,
+            2499360,
+            833120,
+            2656840,
+            1,
+            1224280
+          ],
+          "preTokenBalances": [],
+          "rewards": [],
+          "status": {
+            "Ok": null
+          }
+        },
+        "slot": 458667967,
+        "transaction": {
+          "message": {
+            "accountKeys": [
+              {
+                "pubkey": "4JVKbbh5M2ZdyvqaU9J93YGeFCxh4usUMy1ce3123voa",
+                "signer": true,
+                "source": "transaction",
+                "writable": true
+              },
+              {
+                "pubkey": "52roRz6DLbqUwfRM9L2fesrvppjDQVoFNYWxJRhBDfxs",
+                "signer": false,
+                "source": "transaction",
+                "writable": true
+              },
+              {
+                "pubkey": "9rD3KbRdG5t59UxJYMM95Fq9K3AwjLqHZY8SfVF11NPU",
+                "signer": false,
+                "source": "transaction",
+                "writable": true
+              },
+              {
+                "pubkey": "AvEDD71Qmz6wcPunscXP4mQSW2NzYAbUWNTNJncHVsNN",
+                "signer": false,
+                "source": "transaction",
+                "writable": true
+              },
+              {
+                "pubkey": "C17YYGTtTgTke1nZdGjaj1EWbnrdLEbVC5iB22zdbob7",
+                "signer": false,
+                "source": "transaction",
+                "writable": true
+              },
+              {
+                "pubkey": "FTsaRYAkDnALM273GYApSW3TCJ8ebFNmHo1q6CiKuZrU",
+                "signer": false,
+                "source": "transaction",
+                "writable": true
+              },
+              {
+                "pubkey": "3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+                "signer": false,
+                "source": "transaction",
+                "writable": false
+              },
+              {
+                "pubkey": "3wLqdrAS12RnwPsLCGY7UW3JWR6fJ6eiAxZhcUbrTHwi",
+                "signer": false,
+                "source": "transaction",
+                "writable": false
+              },
+              {
+                "pubkey": "ComputeBudget111111111111111111111111111111",
+                "signer": false,
+                "source": "transaction",
+                "writable": false
+              },
+              {
+                "pubkey": "DDCPU7LHiCDEJVvuvi6ghqBysz9L9r2y9FF8BF5Ts5Vr",
+                "signer": false,
+                "source": "transaction",
+                "writable": false
+              }
+            ],
+            "instructions": [
+              {
+                "accounts": [],
+                "data": "Kq1GWK",
+                "programId": "ComputeBudget111111111111111111111111111111",
+                "stackHeight": 1
+              },
+              {
+                "accounts": [
+                  "4JVKbbh5M2ZdyvqaU9J93YGeFCxh4usUMy1ce3123voa",
+                  "DDCPU7LHiCDEJVvuvi6ghqBysz9L9r2y9FF8BF5Ts5Vr",
+                  "3wLqdrAS12RnwPsLCGY7UW3JWR6fJ6eiAxZhcUbrTHwi",
+                  "AvEDD71Qmz6wcPunscXP4mQSW2NzYAbUWNTNJncHVsNN",
+                  "FTsaRYAkDnALM273GYApSW3TCJ8ebFNmHo1q6CiKuZrU",
+                  "52roRz6DLbqUwfRM9L2fesrvppjDQVoFNYWxJRhBDfxs",
+                  "9rD3KbRdG5t59UxJYMM95Fq9K3AwjLqHZY8SfVF11NPU",
+                  "C17YYGTtTgTke1nZdGjaj1EWbnrdLEbVC5iB22zdbob7"
+                ],
+                "data": "441pYVR3w7e6U",
+                "programId": "3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+                "stackHeight": 1
+              }
+            ],
+            "recentBlockhash": "8A4oPgTYDAgU3Pp397pFCtcJTfrhQk2iiAfvk8oB6Ykk"
+          },
+          "signatures": [
+            "5MqEE86P2RPHP6UHmvjM5PAP4LGmr2fJbRDviiz1pN3Dmp641mAbQQq3vKjJnp7rCJz6wT4KXXRTe3eFTWeikSfz"
+          ]
+        },
+        "transactionIndex": 842,
+        "version": "legacy"
+      }
+    }
+  ]
+}

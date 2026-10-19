@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/battlejoose/soltoshidice-programs/tree/main/verification",
+  "format": "Public readable JavaScript ES modules, identical to the code shipped in the kit; no private repository access required. Compare file SHA-256 values in source-manifest.json.",
+  "files": [
+    {
+      "path": "games/index.json",
+      "sha256": "509a152017baa7ae1b3c8786072a022b3711c917041c0545a4fa4cc8ce732c6a"
+    },
+    {
+      "path": "games/project-run.json",
+      "sha256": "63498576363567db89e3e2cdeb808115da06b8394f97a3a5d391da2bc9bc853a"
+    },
+    {
+      "path": "games/fights.json",
+      "sha256": "6678973250443eec1e7dbd170bdb5ff21244f42ee56d36e5ac12156fba65085f"
+    },
+    {
+      "path": "games/fights-result.json",
+      "sha256": "c1a23c4f3eeebce91cd0947c80a2c775588107c4c9c637114359e90035cd87ba"
+    },
+    {
+      "path": "games/rps.json",
+      "sha256": "b34384ae46df24b30a44fd0f0fc022a068dd290fdb55bd708f59fb1dc3106d23"
+    },
+    {
+      "path": "games/rps-result.json",
+      "sha256": "03b8e6b5154ace55804ca6811eec3d238383c5848f01223288b57927e777017c"
+    },
+    {
+      "path": "games/slots.json",
+      "sha256": "2e5e2b7e2b927cc79058c3fb44639efdf5c4135765d91148ac5eea9fbe12124e"
+    },
+    {
+      "path": "games/slots-result.json",
+      "sha256": "056a2f58ea6796dc8a6113cfc02c9fc4b0bc86824b3c3c05b4ef280ea756c6c2"
+    },
+    {
+      "path": "games/blackjack.json",
+      "sha256": "29000a45d89e7b04e20e237c085573c7e856df7799918ea180baafc89f8394c1"
+    },
+    {
+      "path": "games/blackjack-result.json",
+      "sha256": "5ca82b81cf9d514f2f1741b8a72cd4ac723d146c77e1b580b22f30e80a681c9c"
+    },
+    {
+      "path": "games/poker.json",
+      "sha256": "578d38e12c3619d460cc1735d75eef0d52c0fcc80d306fb17f9fd5869f550659"
+    },
+    {
+      "path": "games/poker-result.json",
+      "sha256": "f179343b8587a9d061d4d0cc4d3416649b6dd59be7a7c3ad2ca53a96faaf53e1"
+    },
+    {
+      "path": "verify-platform.mjs",
+      "sha256": "4bbcdeebaa7846fd53ffc86852a6d2ae264f7b2ff34b26c3e176fefc35c0f7a6"
+    },
+    {
+      "path": "platform-verifier.mjs",
+      "sha256": "7acac9a2f6ca27c0c896b2a0097aa819218c3abf91ad4ac027e9685a197200ba"
+    },
+    {
+      "path": "verify-fairness.mjs",
+      "sha256": "a44182bf41672ed20d8428d47678f401a55536c5261780456eb14e9d7f3d786a"
+    },
+    {
+      "path": "fairness-example.json",
+      "sha256": "0f10fbe4e806f63cdddb579602a84ab3db64715681c49e1ed9abba240ac2dca4"
+    },
+    {
+      "path": "README.txt",
+      "sha256": "100f11a7542cdff9797f3493e451a3cbea42294af0bffc666d446cfcbc92b4a2"
+    }
+  ]
+}

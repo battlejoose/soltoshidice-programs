@@ -1,0 +1,442 @@
+{
+  "status": "partial",
+  "checkedAt": "2026-10-19T06:42:45.806Z",
+  "transactionsSubmitted": 0,
+  "results": [
+    {
+      "status": "pass",
+      "checkedAt": "2026-10-19T06:42:05.232Z",
+      "cluster": "mainnet-beta",
+      "transactionsSubmitted": 0,
+      "checks": [
+        {
+          "id": "receipts",
+          "status": "pass",
+          "detail": "7 successful transaction receipts; mainnet genesis matches"
+        },
+        {
+          "id": "round-binding",
+          "status": "pass",
+          "detail": "Round 1758: wager locked before request and oracle responses; payment precedes cleanup"
+        },
+        {
+          "id": "request-binding",
+          "status": "pass",
+          "detail": "Bank receipt, ORAO request instruction/event and fulfilled account share seed, client and output"
+        },
+        {
+          "id": "vrf-signatures",
+          "status": "pass",
+          "detail": "3 distinct Ed25519 signatures verified locally; XOR matches ORAO fulfillment and game randomness"
+        },
+        {
+          "id": "game-replay",
+          "status": "pass",
+          "detail": "Bank 4–4–1; automatic result, no player roll; player wins under v4 banker-first rules"
+        },
+        {
+          "id": "payment",
+          "status": "pass",
+          "detail": "Token-2022 stake and winning transfer match; player credit and bank debit equal the calculated payout"
+        }
+      ],
+      "round": "AqQWgDqWcFqZyv44hwtRMoxfgNJHdgrkx1DS2eAVKn5R",
+      "nonce": "1758",
+      "player": "E4VdNqdzHfiiAGZotUQ8WqWff6VVKmBhrS6Zr1mthRu3",
+      "oracle": "83MQL29UvXfvq88pCpTV7s3xoveQThz7BKK3kdHiQPau",
+      "authorities": [
+        "A9iZdgYabRLeAFEwss72eQr8wWQfZ6hLRmDLtWyxKvKj",
+        "9ZTHWWZDpB36UFe1vszf2KEpt83vwi27jDqtHQ7NSXyR",
+        "2VYNr8yMma4KkJLFNiipUxQYbg1fsyao2H6YQfZ1H2Xi"
+      ],
+      "bankDice": [
+        4,
+        4,
+        1
+      ],
+      "playerDice": [
+        0,
+        0,
+        0
+      ],
+      "totals": {
+        "mint": "4nCmpwne7hCoWTSpAd54uENmCgHJrHTyn4DMPCEMpump",
+        "decimals": 6,
+        "wagerBaseUnits": "10000000000",
+        "grossPayoutBaseUnits": "20000000000",
+        "netPlayerTokenChangeBaseUnits": "10000000000"
+      },
+      "receipts": [
+        {
+          "signature": "4S1gyfxfPWFNbxBNnFPkFYehbE87EWUYq46dNY8Ei8qq7r4fk8NnxxfEmBGjkcDYzXA5pvEsVK5KXj8BC1vTDXta",
+          "slot": 458288143,
+          "explorer": "https://solscan.io/tx/4S1gyfxfPWFNbxBNnFPkFYehbE87EWUYq46dNY8Ei8qq7r4fk8NnxxfEmBGjkcDYzXA5pvEsVK5KXj8BC1vTDXta"
+        },
+        {
+          "signature": "2zcMUYtkj6ePkHPfwcHdaMXCb8T3UxtiyctazPyQwXGAUDtN2EADcPk8nh2b162G3dT2GTedf9TpquUG7rCLvvqT",
+          "slot": 458288434,
+          "explorer": "https://solscan.io/tx/2zcMUYtkj6ePkHPfwcHdaMXCb8T3UxtiyctazPyQwXGAUDtN2EADcPk8nh2b162G3dT2GTedf9TpquUG7rCLvvqT"
+        },
+        {
+          "signature": "NcmXBHCWCCJkA9ejXs3DZHrKuygbX3WVM8W5XKcF5DoLc4WnSxRamwjMAo2TQt4Tt2ASwf6aA7SXfd8nW9wjdFY",
+          "slot": 458288440,
+          "explorer": "https://solscan.io/tx/NcmXBHCWCCJkA9ejXs3DZHrKuygbX3WVM8W5XKcF5DoLc4WnSxRamwjMAo2TQt4Tt2ASwf6aA7SXfd8nW9wjdFY"
+        },
+        {
+          "signature": "4y4F2sczFFmKiJL2XurLrKQ65zt8iXqQ6yVaAgyM3CdBnkjaMBaAeQaSUgrHcop398itrpWYZxwChjm5bnpy6G9u",
+          "slot": 458288441,
+          "explorer": "https://solscan.io/tx/4y4F2sczFFmKiJL2XurLrKQ65zt8iXqQ6yVaAgyM3CdBnkjaMBaAeQaSUgrHcop398itrpWYZxwChjm5bnpy6G9u"
+        },
+        {
+          "signature": "3TFNEpUg95orshrPepxUPiwWDPeBrEgykHFXKJJMTGHKxNtSBEDBUifZPXdTAYnhArcW9ywBZZK5WFHQi3Fy5zUB",
+          "slot": 458288441,
+          "explorer": "https://solscan.io/tx/3TFNEpUg95orshrPepxUPiwWDPeBrEgykHFXKJJMTGHKxNtSBEDBUifZPXdTAYnhArcW9ywBZZK5WFHQi3Fy5zUB"
+        },
+        {
+          "signature": "472AaVywiAmCgMva53ktCAVLEXgwmupxbXjgY7ejHEHcLPeT9bA8Fn6dd8L8CEDt36SeVsVuF8sz5s3gX4jQt6yy",
+          "slot": 458288481,
+          "explorer": "https://solscan.io/tx/472AaVywiAmCgMva53ktCAVLEXgwmupxbXjgY7ejHEHcLPeT9bA8Fn6dd8L8CEDt36SeVsVuF8sz5s3gX4jQt6yy"
+        },
+        {
+          "signature": "2e87E5f6Wgf1HtW7xrVvBrhyJsGUbe9oCb2uyvcQDNN22ubB1hUcDCXxXVBqsRsc1SqaRCG9mWxpsBZ48NkYevQD",
+          "slot": 458288519,
+          "explorer": "https://solscan.io/tx/2e87E5f6Wgf1HtW7xrVvBrhyJsGUbe9oCb2uyvcQDNN22ubB1hUcDCXxXVBqsRsc1SqaRCG9mWxpsBZ48NkYevQD"
+        }
+      ],
+      "limits": [
+        "One historical winning Cee-lo round, not all games, all payouts, an RTP audit or a new gameplay test.",
+        "Live mode trusts the selected Solana RPC and consensus for finalized inclusion and transaction/log authenticity. Archived mode checks supplied evidence, not fresh chain inclusion.",
+        "Oracle signatures and XOR are verified independently. Historical authority-set membership/quorum is trusted to the ORAO program that accepted those responses; historical configuration and executable bytes are not reconstructed here.",
+        "PDA seeds and stored bumps are checked; canonical off-curve selection is trusted to the deployed program. Token totals exclude SOL transaction costs and refundable deposits.",
+        "Programs remain upgradeable. This proof does not remove upgrade-authority, oracle, custody or availability risks."
+      ],
+      "game": "cee-lo",
+      "evidenceMode": "live-finalized-rpc"
+    },
+    {
+      "status": "pass",
+      "game": "fights",
+      "checkedAt": "2026-10-19T06:42:18.536Z",
+      "evidenceMode": "live-finalized-rpc",
+      "cluster": "mainnet-beta",
+      "transactionsSubmitted": 0,
+      "identity": "2ydvGQUWgybBMaJtRGPgVZWcYqqNyt1WbfnocvQZdoN8",
+      "checks": [
+        "Both players deposited their agreed stake",
+        "3 ORAO signatures and output verified",
+        "18 strikes replayed through knockout",
+        "Winner and bank transfers reconcile to token balance changes"
+      ],
+      "totals": {
+        "stakePerPlayerBaseUnits": "50000000000",
+        "totalStakesBaseUnits": "100000000000",
+        "grossPayoutBaseUnits": "99000000000",
+        "bankFeeBaseUnits": "1000000000",
+        "winner": "9C1PWdwHRg54S7SzwYNezfwwBDFsLsCw5vJhZL7xcogn",
+        "mint": "4nCmpwne7hCoWTSpAd54uENmCgHJrHTyn4DMPCEMpump",
+        "decimals": 6
+      },
+      "limits": [
+        "Historical ORAO signer membership/quorum is trusted to the accepted oracle program, not reconstructed from historical configuration.",
+        "One historical example; no new gameplay session, aggregate payout audit or guarantee. Archived receipts do not establish fresh chain inclusion. Live RPC verification trusts the selected RPC and finalized Solana consensus. Programs remain upgradeable."
+      ],
+      "receipts": [
+        {
+          "signature": "7x4Y8voMKUhqRMTJzxK7GZJfMs2poa2u19bCKat6U66Q4CDNN94NN2pHudkiKjU2q8UgjGbE9K2TgAJGvMG4L3y",
+          "slot": 456250262,
+          "explorer": "https://solscan.io/tx/7x4Y8voMKUhqRMTJzxK7GZJfMs2poa2u19bCKat6U66Q4CDNN94NN2pHudkiKjU2q8UgjGbE9K2TgAJGvMG4L3y"
+        },
+        {
+          "signature": "5AbC7cL6gGUZPYCkH94F8JfHZiE4bSUKypczDbDHkqF8S7iKuJm6RmZ8tfkmpaam3g6V4xd38HL3tHSGXwVbMB78",
+          "slot": 456250741,
+          "explorer": "https://solscan.io/tx/5AbC7cL6gGUZPYCkH94F8JfHZiE4bSUKypczDbDHkqF8S7iKuJm6RmZ8tfkmpaam3g6V4xd38HL3tHSGXwVbMB78"
+        },
+        {
+          "signature": "bLZ5rnesEHQGqJjXG9GugzMrbNeA2zEhUkp5oNh997WmDV9BAWYabpqcnkmxyMGDv5qzdWLQ2LeMryfvcSWCzf2",
+          "slot": 456250747,
+          "explorer": "https://solscan.io/tx/bLZ5rnesEHQGqJjXG9GugzMrbNeA2zEhUkp5oNh997WmDV9BAWYabpqcnkmxyMGDv5qzdWLQ2LeMryfvcSWCzf2"
+        },
+        {
+          "signature": "2jKkNM4WwrgUucwT2t9to8crskEPhH8RL2FJLv8pL2Y5UZAivTJsXyPsSF3i4bKp9FWF8RReH73zpmSnZNCfRSB5",
+          "slot": 456250747,
+          "explorer": "https://solscan.io/tx/2jKkNM4WwrgUucwT2t9to8crskEPhH8RL2FJLv8pL2Y5UZAivTJsXyPsSF3i4bKp9FWF8RReH73zpmSnZNCfRSB5"
+        },
+        {
+          "signature": "4zenrAHsc6pmfCoifu6Mc7roJYKsv2aCyA7qq6qoRJ53wrz8FM7zXgtvKV3tXHBZq99k8n8uA7xvnfDaLUWmqREL",
+          "slot": 456250747,
+          "explorer": "https://solscan.io/tx/4zenrAHsc6pmfCoifu6Mc7roJYKsv2aCyA7qq6qoRJ53wrz8FM7zXgtvKV3tXHBZq99k8n8uA7xvnfDaLUWmqREL"
+        },
+        {
+          "signature": "VeHsxBg77uMBVu3oX5wLhCPCKmwAPGck1tEuxGxp59N5SDLTFTVbphNmfRKars2c43frx91p6MD8BaPCF9bn853",
+          "slot": 456250760,
+          "explorer": "https://solscan.io/tx/VeHsxBg77uMBVu3oX5wLhCPCKmwAPGck1tEuxGxp59N5SDLTFTVbphNmfRKars2c43frx91p6MD8BaPCF9bn853"
+        },
+        {
+          "signature": "mJRGHgXLL7wgKHD1Jy1aQ648hASrYdfBWbQ5E1oDnFRjz1jJiSKtxqw2fAsxpbXA4n3W9UL13dXHwdzxGFSecSP",
+          "slot": 456250770,
+          "explorer": "https://solscan.io/tx/mJRGHgXLL7wgKHD1Jy1aQ648hASrYdfBWbQ5E1oDnFRjz1jJiSKtxqw2fAsxpbXA4n3W9UL13dXHwdzxGFSecSP"
+        },
+        {
+          "signature": "4P5HwrmYFj427aCWA1TyochUgxV23fjQewzZZbennK9KH7FJCdyP1cHZtFbYLsKrf8PPPWhtM9Ex1WJHy6CxVEda",
+          "slot": 456250788,
+          "explorer": "https://solscan.io/tx/4P5HwrmYFj427aCWA1TyochUgxV23fjQewzZZbennK9KH7FJCdyP1cHZtFbYLsKrf8PPPWhtM9Ex1WJHy6CxVEda"
+        },
+        {
+          "signature": "4pfV1oG29CRNqvaZSYHgqSNJuJfyuum1vrUPeqPNgVVj6wv67vw9947B2MK2a7ngrfCq8eELHRutfSPDjss1eDpg",
+          "slot": 456250799,
+          "explorer": "https://solscan.io/tx/4pfV1oG29CRNqvaZSYHgqSNJuJfyuum1vrUPeqPNgVVj6wv67vw9947B2MK2a7ngrfCq8eELHRutfSPDjss1eDpg"
+        },
+        {
+          "signature": "5eTsZv5UELxFpDDtXgwRUs9rzuMMKWkQKHhFSDUp9jFa9CcRvNmGwx3dF3ABaiLYL5znUcXGKvtj4xcfuUJrMECY",
+          "slot": 456267307,
+          "explorer": "https://solscan.io/tx/5eTsZv5UELxFpDDtXgwRUs9rzuMMKWkQKHhFSDUp9jFa9CcRvNmGwx3dF3ABaiLYL5znUcXGKvtj4xcfuUJrMECY"
+        }
+      ]
+    },
+    {
+      "status": "pass",
+      "game": "rps",
+      "checkedAt": "2026-10-19T06:42:31.435Z",
+      "evidenceMode": "live-finalized-rpc",
+      "cluster": "mainnet-beta",
+      "transactionsSubmitted": 0,
+      "identity": "8bzmhz9GkWaB7webqDUg77dDHae3FG5imsxFuqFbCN7Z",
+      "checks": [
+        "Both stakes transferred to match escrow",
+        "2 rounds: both commitments precede reveals; salted hashes match",
+        "Series score 0–2 and transcript hash match",
+        "Winner receives 99% of pot; bank receives 1%; actual token credits match"
+      ],
+      "totals": {
+        "stakePerPlayerBaseUnits": "10000000000",
+        "totalStakesBaseUnits": "20000000000",
+        "grossPayoutBaseUnits": "19800000000",
+        "bankFeeBaseUnits": "200000000",
+        "winner": "fxR5cDcvKYeyxxYdsS1DZ1BvQmA1Ci1n3PQKuX723gj",
+        "mint": "4nCmpwne7hCoWTSpAd54uENmCgHJrHTyn4DMPCEMpump",
+        "decimals": 6
+      },
+      "limits": [
+        "Player/session signature authorization is trusted to successful onchain validation; this replay independently checks commitment preimages, scoring and transfers. This example does not exercise timeout/forfeit branches.",
+        "One historical example; no new gameplay session, aggregate payout audit or guarantee. Archived receipts do not establish fresh chain inclusion. Live RPC verification trusts the selected RPC and finalized Solana consensus. Programs remain upgradeable."
+      ],
+      "receipts": [
+        {
+          "signature": "3h3jqeBTTQqQNdN4qvpVvQDHP2zQnve5E9AVfB3Jyp8x2BvinDE9dK5umwwGkpJCN79hMo31YDRsGtnvzim1kXJ1",
+          "slot": 447366430,
+          "explorer": "https://solscan.io/tx/3h3jqeBTTQqQNdN4qvpVvQDHP2zQnve5E9AVfB3Jyp8x2BvinDE9dK5umwwGkpJCN79hMo31YDRsGtnvzim1kXJ1"
+        },
+        {
+          "signature": "31uWjAnGjCEMNFg7U75NxLEWwSrKvHHwAi3oCsVLo9aXaXWrT2gcMC7DJxBnrdePRcfKE1kucFwnA8taN5QzR6rH",
+          "slot": 447366480,
+          "explorer": "https://solscan.io/tx/31uWjAnGjCEMNFg7U75NxLEWwSrKvHHwAi3oCsVLo9aXaXWrT2gcMC7DJxBnrdePRcfKE1kucFwnA8taN5QzR6rH"
+        },
+        {
+          "signature": "2PRHWRghfb16JA3XtQxpAnjWQEBA5AB8SC2JuALcVX7qq45randyiHLm9g7aMoXGFGwkw7turTjmF74kyumLwtMt",
+          "slot": 447366502,
+          "explorer": "https://solscan.io/tx/2PRHWRghfb16JA3XtQxpAnjWQEBA5AB8SC2JuALcVX7qq45randyiHLm9g7aMoXGFGwkw7turTjmF74kyumLwtMt"
+        },
+        {
+          "signature": "24A89wiSiBdsPdoB9MrTEBdQci5Cj3kSkt4gYZEvGajNkvsABaHWT8j2FxP4vGQvuo4mxSGecvTvwbxGKPmbZhFa",
+          "slot": 447366512,
+          "explorer": "https://solscan.io/tx/24A89wiSiBdsPdoB9MrTEBdQci5Cj3kSkt4gYZEvGajNkvsABaHWT8j2FxP4vGQvuo4mxSGecvTvwbxGKPmbZhFa"
+        },
+        {
+          "signature": "LPFP9VmRormM9ymsfXbEUFk8w4uN5Cf2dChbzoCmw5WYGNPLdC53mQ3wbpjk1djbSohjUkVarzPneEhxKm3p9Nu",
+          "slot": 447366525,
+          "explorer": "https://solscan.io/tx/LPFP9VmRormM9ymsfXbEUFk8w4uN5Cf2dChbzoCmw5WYGNPLdC53mQ3wbpjk1djbSohjUkVarzPneEhxKm3p9Nu"
+        },
+        {
+          "signature": "4s2uA7oZGdzW76CtpWbR5jiZ277BtfBrTQBgcckVkhhE3edzAHP7H4tuZFEa4RB6eAthjNSbbTrASJfNsVqzHiYn",
+          "slot": 447366531,
+          "explorer": "https://solscan.io/tx/4s2uA7oZGdzW76CtpWbR5jiZ277BtfBrTQBgcckVkhhE3edzAHP7H4tuZFEa4RB6eAthjNSbbTrASJfNsVqzHiYn"
+        },
+        {
+          "signature": "5Hj3Fk4VH8mphozoFTKBXBncqsaWKMjkv8Jp81GrcQLwxU3fR4hjaZ55R4AgFW6xvABaPzotia4WFz8mhsahnAzq",
+          "slot": 447366573,
+          "explorer": "https://solscan.io/tx/5Hj3Fk4VH8mphozoFTKBXBncqsaWKMjkv8Jp81GrcQLwxU3fR4hjaZ55R4AgFW6xvABaPzotia4WFz8mhsahnAzq"
+        },
+        {
+          "signature": "2B524dGYLs8xcUSqSy1j5Ms1urLMA9zPiiho1PirZmsf4tr27F9512fKtpnNkgHPXia2b7pU8tNDpEw4P6LCqK1u",
+          "slot": 447366579,
+          "explorer": "https://solscan.io/tx/2B524dGYLs8xcUSqSy1j5Ms1urLMA9zPiiho1PirZmsf4tr27F9512fKtpnNkgHPXia2b7pU8tNDpEw4P6LCqK1u"
+        },
+        {
+          "signature": "3WYW6zHLa7s3h3YsTj72jLWjLqk7C4mUVrBVdUN5JwHZbUMCfLtXE7Udeoywp68cHPBXZqvLuMCFUQ1B6moLV7ng",
+          "slot": 447366593,
+          "explorer": "https://solscan.io/tx/3WYW6zHLa7s3h3YsTj72jLWjLqk7C4mUVrBVdUN5JwHZbUMCfLtXE7Udeoywp68cHPBXZqvLuMCFUQ1B6moLV7ng"
+        },
+        {
+          "signature": "5rHpasGrTxr2UWy8ARAoLfj7EeB1gyzTFLRFoBnbxDHQMVop7eSSJaF6dyxaxf9mr7GJ4hj1dc2r3uEQE7fPMjJ6",
+          "slot": 447366599,
+          "explorer": "https://solscan.io/tx/5rHpasGrTxr2UWy8ARAoLfj7EeB1gyzTFLRFoBnbxDHQMVop7eSSJaF6dyxaxf9mr7GJ4hj1dc2r3uEQE7fPMjJ6"
+        },
+        {
+          "signature": "2bydrpEJP3vrmS6Lv2e6QR7rCJXV44xpRXMjz83QfwF3CPZCVWYVdtmN2Cn83YGrEz9EnkMpckdi2mf7J17xdAeQ",
+          "slot": 447366605,
+          "explorer": "https://solscan.io/tx/2bydrpEJP3vrmS6Lv2e6QR7rCJXV44xpRXMjz83QfwF3CPZCVWYVdtmN2Cn83YGrEz9EnkMpckdi2mf7J17xdAeQ"
+        },
+        {
+          "signature": "6vpC6C4rBPa4KC32feAJ2pwMVShRAu5wnHUnysVAQtAoMqJ7s4nVh8fAs8gUgTCx1tTMcfQ1kz3XvTd9Mm14Z3T",
+          "slot": 447377960,
+          "explorer": "https://solscan.io/tx/6vpC6C4rBPa4KC32feAJ2pwMVShRAu5wnHUnysVAQtAoMqJ7s4nVh8fAs8gUgTCx1tTMcfQ1kz3XvTd9Mm14Z3T"
+        }
+      ]
+    },
+    {
+      "status": "pass",
+      "game": "slots",
+      "checkedAt": "2026-10-19T06:42:36.662Z",
+      "evidenceMode": "live-finalized-rpc",
+      "cluster": "mainnet-beta",
+      "transactionsSubmitted": 0,
+      "identity": "GX7vjsMPZVjq7aKeiy74GR8RVXCwyceChQnNJ6Yjwafx",
+      "checks": [
+        "Wager, seed and nonce bind to the same player/spin",
+        "MagicBlock Ristretto VRF proof and callback output verified locally",
+        "Rejection-sampled reel stops 15 / 18 / 18 and integer paytable match",
+        "Actual stake debit and gross token payment match"
+      ],
+      "totals": {
+        "wagerBaseUnits": "1000000000",
+        "grossPayoutBaseUnits": "2000000000",
+        "mint": "4nCmpwne7hCoWTSpAd54uENmCgHJrHTyn4DMPCEMpump",
+        "decimals": 6
+      },
+      "limits": [
+        "MagicBlock request-queue acceptance and historical oracle-key assignment are trusted to the successful provider invocation. The proof uses the public oracle account captured with this evidence. This is one spin, not observed aggregate RTP.",
+        "One historical example; no new gameplay session, aggregate payout audit or guarantee. Archived receipts do not establish fresh chain inclusion. Live RPC verification trusts the selected RPC and finalized Solana consensus. Programs remain upgradeable."
+      ],
+      "receipts": [
+        {
+          "signature": "38uqSvZVwgcdLEb1GP5a4AXYm76hobx6Qoek36Lv68sAPEjRy9djKjRrHUtttp7EYCDPZataiBTm7z4fWCMnqNgt",
+          "slot": 456526713,
+          "explorer": "https://solscan.io/tx/38uqSvZVwgcdLEb1GP5a4AXYm76hobx6Qoek36Lv68sAPEjRy9djKjRrHUtttp7EYCDPZataiBTm7z4fWCMnqNgt"
+        },
+        {
+          "signature": "3FyD3U3KHeJwhSMjDzAhFSSPx6xb9JjF16p8JTeBdBNpSZMvP3QsETHuXGeAHwBcWDE1mkz4FJGWjgqXmLp1seXT",
+          "slot": 456526723,
+          "explorer": "https://solscan.io/tx/3FyD3U3KHeJwhSMjDzAhFSSPx6xb9JjF16p8JTeBdBNpSZMvP3QsETHuXGeAHwBcWDE1mkz4FJGWjgqXmLp1seXT"
+        },
+        {
+          "signature": "2AwdujFKnGXzvHWWfsJSBqTTtWWffQMA73UqFDxQEqCS5uApDD2FgYQuFRW21VfGkAqjrPjfyPxcXT8pP8y7yKtD",
+          "slot": 456526744,
+          "explorer": "https://solscan.io/tx/2AwdujFKnGXzvHWWfsJSBqTTtWWffQMA73UqFDxQEqCS5uApDD2FgYQuFRW21VfGkAqjrPjfyPxcXT8pP8y7yKtD"
+        },
+        {
+          "signature": "2LZ5CnKAgB3QFfQUi2sNcnXAtebGyqd2tpM76FyrFmRFMzznjm6ksTVywEvg8EPKMCSR2E1ofYDMkBkiYmqn7NuJ",
+          "slot": 456526776,
+          "explorer": "https://solscan.io/tx/2LZ5CnKAgB3QFfQUi2sNcnXAtebGyqd2tpM76FyrFmRFMzznjm6ksTVywEvg8EPKMCSR2E1ofYDMkBkiYmqn7NuJ"
+        }
+      ]
+    },
+    {
+      "status": "pass",
+      "game": "blackjack",
+      "checkedAt": "2026-10-19T06:42:45.202Z",
+      "evidenceMode": "live-finalized-rpc",
+      "cluster": "mainnet-beta",
+      "transactionsSubmitted": 0,
+      "identity": "7gi41j1CFXTkTjks2m2X6gR6GBNJdm4g4ty7fLnzyWH2",
+      "round": "635",
+      "checks": [
+        "2 authenticated VRF callbacks and Ristretto proofs verified",
+        "4 cards replayed with six-deck depletion and transcript continuity",
+        "Every hand return recalculated from cards and exact rules",
+        "Bank debit and table escrow credit equal total gross returns"
+      ],
+      "totals": {
+        "grossPayoutBaseUnits": "90000000000",
+        "mint": "4nCmpwne7hCoWTSpAd54uENmCgHJrHTyn4DMPCEMpump",
+        "decimals": 6,
+        "destination": "table-escrow"
+      },
+      "limits": [
+        "Payment verified into table escrow, not a later wallet cash-out. Intermediate action/pre-draw snapshots come from the retained archive; draw revisions, native post-draw receipts, shoe and transcript continuity are checked, but every intervening betting action is not independently replayed.",
+        "MagicBlock queue acceptance and historical oracle-key assignment are trusted to the successful provider invocation.",
+        "One historical example; no new gameplay session, aggregate payout audit or guarantee. Archived receipts do not establish fresh chain inclusion. Live RPC verification trusts the selected RPC and finalized Solana consensus. Programs remain upgradeable."
+      ],
+      "receipts": [
+        {
+          "signature": "3PitawNMhVmWQ4vvLSytxWit7esDFF6JfStLibY7yU9Ykdy2gRpGDerEuQcqeB2foMTh2uhsL4TU35eyR7hg7Zas",
+          "slot": 458279587,
+          "explorer": "https://solscan.io/tx/3PitawNMhVmWQ4vvLSytxWit7esDFF6JfStLibY7yU9Ykdy2gRpGDerEuQcqeB2foMTh2uhsL4TU35eyR7hg7Zas"
+        },
+        {
+          "signature": "2gDGodFVziAngkvGkyxX4LzpBHX1vGxWF4ZRuheCdsiuYn1im2SSzqfh5dnE7KM8NDu6aVzZfXwgRdDbRvNU1rYH",
+          "slot": 458279600,
+          "explorer": "https://solscan.io/tx/2gDGodFVziAngkvGkyxX4LzpBHX1vGxWF4ZRuheCdsiuYn1im2SSzqfh5dnE7KM8NDu6aVzZfXwgRdDbRvNU1rYH"
+        },
+        {
+          "signature": "nhp3sdMpMMn9scGpKZBghvXiQvaCzQVNyc2XoPnyP4EvQMRQQ2vhMaSqAys8wXBJVVDMTZGMAyitNFazt3bjGWh",
+          "slot": 458279604,
+          "explorer": "https://solscan.io/tx/nhp3sdMpMMn9scGpKZBghvXiQvaCzQVNyc2XoPnyP4EvQMRQQ2vhMaSqAys8wXBJVVDMTZGMAyitNFazt3bjGWh"
+        },
+        {
+          "signature": "3aYLtg6Rc4vadJ3APaywDsT6XWeqhGNPdHEFHnjBEipEy2iCkXJaZGL3kJ9vFP4p9hgw8t4Vr1fi2JMTZm5kY5Qt",
+          "slot": 458279650,
+          "explorer": "https://solscan.io/tx/3aYLtg6Rc4vadJ3APaywDsT6XWeqhGNPdHEFHnjBEipEy2iCkXJaZGL3kJ9vFP4p9hgw8t4Vr1fi2JMTZm5kY5Qt"
+        },
+        {
+          "signature": "2W4qooAS6bYn8uQWKZUJoXBFj8XybyMQqrEJ2YSPsSUYr88Js5zyB5h1h8SFwVVbHDWn7TUDWsRWUvDtUwMRafGg",
+          "slot": 458279652,
+          "explorer": "https://solscan.io/tx/2W4qooAS6bYn8uQWKZUJoXBFj8XybyMQqrEJ2YSPsSUYr88Js5zyB5h1h8SFwVVbHDWn7TUDWsRWUvDtUwMRafGg"
+        },
+        {
+          "signature": "4ESAeW22qVEVPTeyH3LtXaS8LsYq71xsHq6r6TGhcuko55QfBr1r74hZ4u5xEcemqt6HuPU3xwhcfeU85zfuMzxu",
+          "slot": 458279657,
+          "explorer": "https://solscan.io/tx/4ESAeW22qVEVPTeyH3LtXaS8LsYq71xsHq6r6TGhcuko55QfBr1r74hZ4u5xEcemqt6HuPU3xwhcfeU85zfuMzxu"
+        }
+      ]
+    },
+    {
+      "status": "partial",
+      "game": "poker",
+      "checkedAt": "2026-10-19T06:42:45.806Z",
+      "evidenceMode": "live-finalized-rpc",
+      "cluster": "mainnet-beta",
+      "transactionsSubmitted": 0,
+      "identity": "3wLqdrAS12RnwPsLCGY7UW3JWR6fJ6eiAxZhcUbrTHwi",
+      "hand": "668",
+      "checks": [
+        "Program ownership, canonical accounts and same completed hand checked",
+        "Revealed cards match fully opened Ristretto points",
+        "Seven-card ranks, side pots, tie splits and odd chips recomputed",
+        "Recorded chip awards exactly conserve the contributed pot"
+      ],
+      "totals": {
+        "chipPot": "416986",
+        "awards": [
+          {
+            "seat": 1,
+            "chips": "416986",
+            "category": 1
+          }
+        ],
+        "unit": "table chips; not wallet tokens"
+      },
+      "missing": [
+        "Full shuffle/lock transcript and every unlock share are not retained in this example; encrypted-deal fairness is NOT independently verified.",
+        "Recorded chip awards are not wallet cash-outs or tournament prizes. Buy-ins, fee transfers, all betting actions and withdrawals are not replayed."
+      ],
+      "limits": [
+        "Public account snapshot, not a historical account-state inclusion proof. Table accounts are reused: live mode refuses a different hand. The related reveal receipt does not prove the snapshot was its exact post-state. No hidden player cards or secrets are read.",
+        "One historical example; no new gameplay session, aggregate payout audit or guarantee. Archived receipts do not establish fresh chain inclusion. Live RPC verification trusts the selected RPC and finalized Solana consensus. Programs remain upgradeable."
+      ],
+      "receipts": [
+        {
+          "signature": "5MqEE86P2RPHP6UHmvjM5PAP4LGmr2fJbRDviiz1pN3Dmp641mAbQQq3vKjJnp7rCJz6wT4KXXRTe3eFTWeikSfz",
+          "slot": 458667967,
+          "explorer": "https://solscan.io/tx/5MqEE86P2RPHP6UHmvjM5PAP4LGmr2fJbRDviiz1pN3Dmp641mAbQQq3vKjJnp7rCJz6wT4KXXRTe3eFTWeikSfz"
+        }
+      ]
+    },
+    {
+      "id": "perps",
+      "name": "SDICE Perps",
+      "status": "not-tested",
+      "reason": "Oracle-priced leveraged markets, not a VRF game. Requires entry/close price, haircut, liquidation, venue accounting and paid USDC settlement replay. A queued claim is not a payout.",
+      "documentation": "https://soltoshidice.wtf/agents/perps.md"
+    }
+  ]
+}

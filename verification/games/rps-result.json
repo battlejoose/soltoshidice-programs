@@ -1,0 +1,90 @@
+{
+  "status": "pass",
+  "game": "rps",
+  "checkedAt": "2026-10-19T06:29:49.812Z",
+  "evidenceMode": "supplied-receipts",
+  "cluster": "mainnet-beta",
+  "transactionsSubmitted": 0,
+  "identity": "8bzmhz9GkWaB7webqDUg77dDHae3FG5imsxFuqFbCN7Z",
+  "checks": [
+    "Both stakes transferred to match escrow",
+    "2 rounds: both commitments precede reveals; salted hashes match",
+    "Series score 0–2 and transcript hash match",
+    "Winner receives 99% of pot; bank receives 1%; actual token credits match"
+  ],
+  "totals": {
+    "stakePerPlayerBaseUnits": "10000000000",
+    "totalStakesBaseUnits": "20000000000",
+    "grossPayoutBaseUnits": "19800000000",
+    "bankFeeBaseUnits": "200000000",
+    "winner": "fxR5cDcvKYeyxxYdsS1DZ1BvQmA1Ci1n3PQKuX723gj",
+    "mint": "4nCmpwne7hCoWTSpAd54uENmCgHJrHTyn4DMPCEMpump",
+    "decimals": 6
+  },
+  "limits": [
+    "Player/session signature authorization is trusted to successful onchain validation; this replay independently checks commitment preimages, scoring and transfers. This example does not exercise timeout/forfeit branches.",
+    "One historical example; no new gameplay session, aggregate payout audit or guarantee. Archived receipts do not establish fresh chain inclusion. Live RPC verification trusts the selected RPC and finalized Solana consensus. Programs remain upgradeable."
+  ],
+  "receipts": [
+    {
+      "signature": "3h3jqeBTTQqQNdN4qvpVvQDHP2zQnve5E9AVfB3Jyp8x2BvinDE9dK5umwwGkpJCN79hMo31YDRsGtnvzim1kXJ1",
+      "slot": 447366430,
+      "explorer": "https://solscan.io/tx/3h3jqeBTTQqQNdN4qvpVvQDHP2zQnve5E9AVfB3Jyp8x2BvinDE9dK5umwwGkpJCN79hMo31YDRsGtnvzim1kXJ1"
+    },
+    {
+      "signature": "31uWjAnGjCEMNFg7U75NxLEWwSrKvHHwAi3oCsVLo9aXaXWrT2gcMC7DJxBnrdePRcfKE1kucFwnA8taN5QzR6rH",
+      "slot": 447366480,
+      "explorer": "https://solscan.io/tx/31uWjAnGjCEMNFg7U75NxLEWwSrKvHHwAi3oCsVLo9aXaXWrT2gcMC7DJxBnrdePRcfKE1kucFwnA8taN5QzR6rH"
+    },
+    {
+      "signature": "2PRHWRghfb16JA3XtQxpAnjWQEBA5AB8SC2JuALcVX7qq45randyiHLm9g7aMoXGFGwkw7turTjmF74kyumLwtMt",
+      "slot": 447366502,
+      "explorer": "https://solscan.io/tx/2PRHWRghfb16JA3XtQxpAnjWQEBA5AB8SC2JuALcVX7qq45randyiHLm9g7aMoXGFGwkw7turTjmF74kyumLwtMt"
+    },
+    {
+      "signature": "24A89wiSiBdsPdoB9MrTEBdQci5Cj3kSkt4gYZEvGajNkvsABaHWT8j2FxP4vGQvuo4mxSGecvTvwbxGKPmbZhFa",
+      "slot": 447366512,
+      "explorer": "https://solscan.io/tx/24A89wiSiBdsPdoB9MrTEBdQci5Cj3kSkt4gYZEvGajNkvsABaHWT8j2FxP4vGQvuo4mxSGecvTvwbxGKPmbZhFa"
+    },
+    {
+      "signature": "LPFP9VmRormM9ymsfXbEUFk8w4uN5Cf2dChbzoCmw5WYGNPLdC53mQ3wbpjk1djbSohjUkVarzPneEhxKm3p9Nu",
+      "slot": 447366525,
+      "explorer": "https://solscan.io/tx/LPFP9VmRormM9ymsfXbEUFk8w4uN5Cf2dChbzoCmw5WYGNPLdC53mQ3wbpjk1djbSohjUkVarzPneEhxKm3p9Nu"
+    },
+    {
+      "signature": "4s2uA7oZGdzW76CtpWbR5jiZ277BtfBrTQBgcckVkhhE3edzAHP7H4tuZFEa4RB6eAthjNSbbTrASJfNsVqzHiYn",
+      "slot": 447366531,
+      "explorer": "https://solscan.io/tx/4s2uA7oZGdzW76CtpWbR5jiZ277BtfBrTQBgcckVkhhE3edzAHP7H4tuZFEa4RB6eAthjNSbbTrASJfNsVqzHiYn"
+    },
+    {
+      "signature": "5Hj3Fk4VH8mphozoFTKBXBncqsaWKMjkv8Jp81GrcQLwxU3fR4hjaZ55R4AgFW6xvABaPzotia4WFz8mhsahnAzq",
+      "slot": 447366573,
+      "explorer": "https://solscan.io/tx/5Hj3Fk4VH8mphozoFTKBXBncqsaWKMjkv8Jp81GrcQLwxU3fR4hjaZ55R4AgFW6xvABaPzotia4WFz8mhsahnAzq"
+    },
+    {
+      "signature": "2B524dGYLs8xcUSqSy1j5Ms1urLMA9zPiiho1PirZmsf4tr27F9512fKtpnNkgHPXia2b7pU8tNDpEw4P6LCqK1u",
+      "slot": 447366579,
+      "explorer": "https://solscan.io/tx/2B524dGYLs8xcUSqSy1j5Ms1urLMA9zPiiho1PirZmsf4tr27F9512fKtpnNkgHPXia2b7pU8tNDpEw4P6LCqK1u"
+    },
+    {
+      "signature": "3WYW6zHLa7s3h3YsTj72jLWjLqk7C4mUVrBVdUN5JwHZbUMCfLtXE7Udeoywp68cHPBXZqvLuMCFUQ1B6moLV7ng",
+      "slot": 447366593,
+      "explorer": "https://solscan.io/tx/3WYW6zHLa7s3h3YsTj72jLWjLqk7C4mUVrBVdUN5JwHZbUMCfLtXE7Udeoywp68cHPBXZqvLuMCFUQ1B6moLV7ng"
+    },
+    {
+      "signature": "5rHpasGrTxr2UWy8ARAoLfj7EeB1gyzTFLRFoBnbxDHQMVop7eSSJaF6dyxaxf9mr7GJ4hj1dc2r3uEQE7fPMjJ6",
+      "slot": 447366599,
+      "explorer": "https://solscan.io/tx/5rHpasGrTxr2UWy8ARAoLfj7EeB1gyzTFLRFoBnbxDHQMVop7eSSJaF6dyxaxf9mr7GJ4hj1dc2r3uEQE7fPMjJ6"
+    },
+    {
+      "signature": "2bydrpEJP3vrmS6Lv2e6QR7rCJXV44xpRXMjz83QfwF3CPZCVWYVdtmN2Cn83YGrEz9EnkMpckdi2mf7J17xdAeQ",
+      "slot": 447366605,
+      "explorer": "https://solscan.io/tx/2bydrpEJP3vrmS6Lv2e6QR7rCJXV44xpRXMjz83QfwF3CPZCVWYVdtmN2Cn83YGrEz9EnkMpckdi2mf7J17xdAeQ"
+    },
+    {
+      "signature": "6vpC6C4rBPa4KC32feAJ2pwMVShRAu5wnHUnysVAQtAoMqJ7s4nVh8fAs8gUgTCx1tTMcfQ1kz3XvTd9Mm14Z3T",
+      "slot": 447377960,
+      "explorer": "https://solscan.io/tx/6vpC6C4rBPa4KC32feAJ2pwMVShRAu5wnHUnysVAQtAoMqJ7s4nVh8fAs8gUgTCx1tTMcfQ1kz3XvTd9Mm14Z3T"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "status": "pass",
+  "game": "blackjack",
+  "checkedAt": "2026-10-19T06:29:49.935Z",
+  "evidenceMode": "supplied-receipts",
+  "cluster": "mainnet-beta",
+  "transactionsSubmitted": 0,
+  "identity": "7gi41j1CFXTkTjks2m2X6gR6GBNJdm4g4ty7fLnzyWH2",
+  "round": "635",
+  "checks": [
+    "2 authenticated VRF callbacks and Ristretto proofs verified",
+    "4 cards replayed with six-deck depletion and transcript continuity",
+    "Every hand return recalculated from cards and exact rules",
+    "Bank debit and table escrow credit equal total gross returns"
+  ],
+  "totals": {
+    "grossPayoutBaseUnits": "90000000000",
+    "mint": "4nCmpwne7hCoWTSpAd54uENmCgHJrHTyn4DMPCEMpump",
+    "decimals": 6,
+    "destination": "table-escrow"
+  },
+  "limits": [
+    "Payment verified into table escrow, not a later wallet cash-out. Intermediate action/pre-draw snapshots come from the retained archive; draw revisions, native post-draw receipts, shoe and transcript continuity are checked, but every intervening betting action is not independently replayed.",
+    "MagicBlock queue acceptance and historical oracle-key assignment are trusted to the successful provider invocation.",
+    "One historical example; no new gameplay session, aggregate payout audit or guarantee. Archived receipts do not establish fresh chain inclusion. Live RPC verification trusts the selected RPC and finalized Solana consensus. Programs remain upgradeable."
+  ],
+  "receipts": [
+    {
+      "signature": "3PitawNMhVmWQ4vvLSytxWit7esDFF6JfStLibY7yU9Ykdy2gRpGDerEuQcqeB2foMTh2uhsL4TU35eyR7hg7Zas",
+      "slot": 458279587,
+      "explorer": "https://solscan.io/tx/3PitawNMhVmWQ4vvLSytxWit7esDFF6JfStLibY7yU9Ykdy2gRpGDerEuQcqeB2foMTh2uhsL4TU35eyR7hg7Zas"
+    },
+    {
+      "signature": "2gDGodFVziAngkvGkyxX4LzpBHX1vGxWF4ZRuheCdsiuYn1im2SSzqfh5dnE7KM8NDu6aVzZfXwgRdDbRvNU1rYH",
+      "slot": 458279600,
+      "explorer": "https://solscan.io/tx/2gDGodFVziAngkvGkyxX4LzpBHX1vGxWF4ZRuheCdsiuYn1im2SSzqfh5dnE7KM8NDu6aVzZfXwgRdDbRvNU1rYH"
+    },
+    {
+      "signature": "nhp3sdMpMMn9scGpKZBghvXiQvaCzQVNyc2XoPnyP4EvQMRQQ2vhMaSqAys8wXBJVVDMTZGMAyitNFazt3bjGWh",
+      "slot": 458279604,
+      "explorer": "https://solscan.io/tx/nhp3sdMpMMn9scGpKZBghvXiQvaCzQVNyc2XoPnyP4EvQMRQQ2vhMaSqAys8wXBJVVDMTZGMAyitNFazt3bjGWh"
+    },
+    {
+      "signature": "3aYLtg6Rc4vadJ3APaywDsT6XWeqhGNPdHEFHnjBEipEy2iCkXJaZGL3kJ9vFP4p9hgw8t4Vr1fi2JMTZm5kY5Qt",
+      "slot": 458279650,
+      "explorer": "https://solscan.io/tx/3aYLtg6Rc4vadJ3APaywDsT6XWeqhGNPdHEFHnjBEipEy2iCkXJaZGL3kJ9vFP4p9hgw8t4Vr1fi2JMTZm5kY5Qt"
+    },
+    {
+      "signature": "2W4qooAS6bYn8uQWKZUJoXBFj8XybyMQqrEJ2YSPsSUYr88Js5zyB5h1h8SFwVVbHDWn7TUDWsRWUvDtUwMRafGg",
+      "slot": 458279652,
+      "explorer": "https://solscan.io/tx/2W4qooAS6bYn8uQWKZUJoXBFj8XybyMQqrEJ2YSPsSUYr88Js5zyB5h1h8SFwVVbHDWn7TUDWsRWUvDtUwMRafGg"
+    },
+    {
+      "signature": "4ESAeW22qVEVPTeyH3LtXaS8LsYq71xsHq6r6TGhcuko55QfBr1r74hZ4u5xEcemqt6HuPU3xwhcfeU85zfuMzxu",
+      "slot": 458279657,
+      "explorer": "https://solscan.io/tx/4ESAeW22qVEVPTeyH3LtXaS8LsYq71xsHq6r6TGhcuko55QfBr1r74hZ4u5xEcemqt6HuPU3xwhcfeU85zfuMzxu"
+    }
+  ]
+}

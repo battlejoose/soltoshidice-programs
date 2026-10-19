@@ -1,0 +1,47 @@
+{
+  "status": "pass",
+  "game": "slots",
+  "checkedAt": "2026-10-19T06:31:00.965Z",
+  "evidenceMode": "supplied-receipts",
+  "cluster": "mainnet-beta",
+  "transactionsSubmitted": 0,
+  "identity": "GX7vjsMPZVjq7aKeiy74GR8RVXCwyceChQnNJ6Yjwafx",
+  "checks": [
+    "Wager, seed and nonce bind to the same player/spin",
+    "MagicBlock Ristretto VRF proof and callback output verified locally",
+    "Rejection-sampled reel stops 15 / 18 / 18 and integer paytable match",
+    "Actual stake debit and gross token payment match"
+  ],
+  "totals": {
+    "wagerBaseUnits": "1000000000",
+    "grossPayoutBaseUnits": "2000000000",
+    "mint": "4nCmpwne7hCoWTSpAd54uENmCgHJrHTyn4DMPCEMpump",
+    "decimals": 6
+  },
+  "limits": [
+    "MagicBlock request-queue acceptance and historical oracle-key assignment are trusted to the successful provider invocation. The proof uses the public oracle account captured with this evidence. This is one spin, not observed aggregate RTP.",
+    "One historical example; no new gameplay session, aggregate payout audit or guarantee. Archived receipts do not establish fresh chain inclusion. Live RPC verification trusts the selected RPC and finalized Solana consensus. Programs remain upgradeable."
+  ],
+  "receipts": [
+    {
+      "signature": "38uqSvZVwgcdLEb1GP5a4AXYm76hobx6Qoek36Lv68sAPEjRy9djKjRrHUtttp7EYCDPZataiBTm7z4fWCMnqNgt",
+      "slot": 456526713,
+      "explorer": "https://solscan.io/tx/38uqSvZVwgcdLEb1GP5a4AXYm76hobx6Qoek36Lv68sAPEjRy9djKjRrHUtttp7EYCDPZataiBTm7z4fWCMnqNgt"
+    },
+    {
+      "signature": "3FyD3U3KHeJwhSMjDzAhFSSPx6xb9JjF16p8JTeBdBNpSZMvP3QsETHuXGeAHwBcWDE1mkz4FJGWjgqXmLp1seXT",
+      "slot": 456526723,
+      "explorer": "https://solscan.io/tx/3FyD3U3KHeJwhSMjDzAhFSSPx6xb9JjF16p8JTeBdBNpSZMvP3QsETHuXGeAHwBcWDE1mkz4FJGWjgqXmLp1seXT"
+    },
+    {
+      "signature": "2AwdujFKnGXzvHWWfsJSBqTTtWWffQMA73UqFDxQEqCS5uApDD2FgYQuFRW21VfGkAqjrPjfyPxcXT8pP8y7yKtD",
+      "slot": 456526744,
+      "explorer": "https://solscan.io/tx/2AwdujFKnGXzvHWWfsJSBqTTtWWffQMA73UqFDxQEqCS5uApDD2FgYQuFRW21VfGkAqjrPjfyPxcXT8pP8y7yKtD"
+    },
+    {
+      "signature": "2LZ5CnKAgB3QFfQUi2sNcnXAtebGyqd2tpM76FyrFmRFMzznjm6ksTVywEvg8EPKMCSR2E1ofYDMkBkiYmqn7NuJ",
+      "slot": 456526776,
+      "explorer": "https://solscan.io/tx/2LZ5CnKAgB3QFfQUi2sNcnXAtebGyqd2tpM76FyrFmRFMzznjm6ksTVywEvg8EPKMCSR2E1ofYDMkBkiYmqn7NuJ"
+    }
+  ]
+}

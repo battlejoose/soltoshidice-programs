@@ -1,0 +1,42 @@
+{
+  "status": "partial",
+  "game": "poker",
+  "checkedAt": "2026-10-19T06:36:38.428Z",
+  "evidenceMode": "supplied-receipts",
+  "cluster": "mainnet-beta",
+  "transactionsSubmitted": 0,
+  "identity": "3wLqdrAS12RnwPsLCGY7UW3JWR6fJ6eiAxZhcUbrTHwi",
+  "hand": "668",
+  "checks": [
+    "Program ownership, canonical accounts and same completed hand checked",
+    "Revealed cards match fully opened Ristretto points",
+    "Seven-card ranks, side pots, tie splits and odd chips recomputed",
+    "Recorded chip awards exactly conserve the contributed pot"
+  ],
+  "totals": {
+    "chipPot": "416986",
+    "awards": [
+      {
+        "seat": 1,
+        "chips": "416986",
+        "category": 1
+      }
+    ],
+    "unit": "table chips; not wallet tokens"
+  },
+  "missing": [
+    "Full shuffle/lock transcript and every unlock share are not retained in this example; encrypted-deal fairness is NOT independently verified.",
+    "Recorded chip awards are not wallet cash-outs or tournament prizes. Buy-ins, fee transfers, all betting actions and withdrawals are not replayed."
+  ],
+  "limits": [
+    "Public account snapshot, not a historical account-state inclusion proof. Table accounts are reused: live mode refuses a different hand. The related reveal receipt does not prove the snapshot was its exact post-state. No hidden player cards or secrets are read.",
+    "One historical example; no new gameplay session, aggregate payout audit or guarantee. Archived receipts do not establish fresh chain inclusion. Live RPC verification trusts the selected RPC and finalized Solana consensus. Programs remain upgradeable."
+  ],
+  "receipts": [
+    {
+      "signature": "5MqEE86P2RPHP6UHmvjM5PAP4LGmr2fJbRDviiz1pN3Dmp641mAbQQq3vKjJnp7rCJz6wT4KXXRTe3eFTWeikSfz",
+      "slot": 458667967,
+      "explorer": "https://solscan.io/tx/5MqEE86P2RPHP6UHmvjM5PAP4LGmr2fJbRDviiz1pN3Dmp641mAbQQq3vKjJnp7rCJz6wT4KXXRTe3eFTWeikSfz"
+    }
+  ]
+}

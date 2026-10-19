@@ -5,6 +5,19 @@ Solana mainnet programs behind [SoltoshiDICE](https://soltoshidice.wtf).
 This is a release-source export, not the application development repository.
 It contains no deployment keys, private RPC credentials or application history.
 
+## Read-only game verification kit
+
+[Read the public verifier source and evidence](verification/README.txt), then run
+`node verification/verify-platform.mjs --all --live` with Node 22+. No install,
+wallet, wager or private repository access is needed. These readable JavaScript
+modules are the code distributed by the site's kit; compare each file against
+[the SHA-256 source manifest](verification/source-manifest.json).
+
+Five games have scoped proof/outcome/payment checks. Poker remains partial and
+Perps is not tested by this kit; exit code 2 preserves those limits. Offchain
+Workers provide coordination/transport; native program enforcement and the
+client/rollup exceptions are described in [the coverage index](verification/games/index.json).
+
 ## Public IDLs and security reporting
 
 All five programs have canonical on-chain IDLs and security records. See

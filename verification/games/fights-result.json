@@ -1,0 +1,80 @@
+{
+  "status": "pass",
+  "game": "fights",
+  "checkedAt": "2026-10-19T06:29:49.807Z",
+  "evidenceMode": "supplied-receipts",
+  "cluster": "mainnet-beta",
+  "transactionsSubmitted": 0,
+  "identity": "2ydvGQUWgybBMaJtRGPgVZWcYqqNyt1WbfnocvQZdoN8",
+  "checks": [
+    "Both players deposited their agreed stake",
+    "3 ORAO signatures and output verified",
+    "18 strikes replayed through knockout",
+    "Winner and bank transfers reconcile to token balance changes"
+  ],
+  "totals": {
+    "stakePerPlayerBaseUnits": "50000000000",
+    "totalStakesBaseUnits": "100000000000",
+    "grossPayoutBaseUnits": "99000000000",
+    "bankFeeBaseUnits": "1000000000",
+    "winner": "9C1PWdwHRg54S7SzwYNezfwwBDFsLsCw5vJhZL7xcogn",
+    "mint": "4nCmpwne7hCoWTSpAd54uENmCgHJrHTyn4DMPCEMpump",
+    "decimals": 6
+  },
+  "limits": [
+    "Historical ORAO signer membership/quorum is trusted to the accepted oracle program, not reconstructed from historical configuration.",
+    "One historical example; no new gameplay session, aggregate payout audit or guarantee. Archived receipts do not establish fresh chain inclusion. Live RPC verification trusts the selected RPC and finalized Solana consensus. Programs remain upgradeable."
+  ],
+  "receipts": [
+    {
+      "signature": "7x4Y8voMKUhqRMTJzxK7GZJfMs2poa2u19bCKat6U66Q4CDNN94NN2pHudkiKjU2q8UgjGbE9K2TgAJGvMG4L3y",
+      "slot": 456250262,
+      "explorer": "https://solscan.io/tx/7x4Y8voMKUhqRMTJzxK7GZJfMs2poa2u19bCKat6U66Q4CDNN94NN2pHudkiKjU2q8UgjGbE9K2TgAJGvMG4L3y"
+    },
+    {
+      "signature": "5AbC7cL6gGUZPYCkH94F8JfHZiE4bSUKypczDbDHkqF8S7iKuJm6RmZ8tfkmpaam3g6V4xd38HL3tHSGXwVbMB78",
+      "slot": 456250741,
+      "explorer": "https://solscan.io/tx/5AbC7cL6gGUZPYCkH94F8JfHZiE4bSUKypczDbDHkqF8S7iKuJm6RmZ8tfkmpaam3g6V4xd38HL3tHSGXwVbMB78"
+    },
+    {
+      "signature": "bLZ5rnesEHQGqJjXG9GugzMrbNeA2zEhUkp5oNh997WmDV9BAWYabpqcnkmxyMGDv5qzdWLQ2LeMryfvcSWCzf2",
+      "slot": 456250747,
+      "explorer": "https://solscan.io/tx/bLZ5rnesEHQGqJjXG9GugzMrbNeA2zEhUkp5oNh997WmDV9BAWYabpqcnkmxyMGDv5qzdWLQ2LeMryfvcSWCzf2"
+    },
+    {
+      "signature": "2jKkNM4WwrgUucwT2t9to8crskEPhH8RL2FJLv8pL2Y5UZAivTJsXyPsSF3i4bKp9FWF8RReH73zpmSnZNCfRSB5",
+      "slot": 456250747,
+      "explorer": "https://solscan.io/tx/2jKkNM4WwrgUucwT2t9to8crskEPhH8RL2FJLv8pL2Y5UZAivTJsXyPsSF3i4bKp9FWF8RReH73zpmSnZNCfRSB5"
+    },
+    {
+      "signature": "4zenrAHsc6pmfCoifu6Mc7roJYKsv2aCyA7qq6qoRJ53wrz8FM7zXgtvKV3tXHBZq99k8n8uA7xvnfDaLUWmqREL",
+      "slot": 456250747,
+      "explorer": "https://solscan.io/tx/4zenrAHsc6pmfCoifu6Mc7roJYKsv2aCyA7qq6qoRJ53wrz8FM7zXgtvKV3tXHBZq99k8n8uA7xvnfDaLUWmqREL"
+    },
+    {
+      "signature": "VeHsxBg77uMBVu3oX5wLhCPCKmwAPGck1tEuxGxp59N5SDLTFTVbphNmfRKars2c43frx91p6MD8BaPCF9bn853",
+      "slot": 456250760,
+      "explorer": "https://solscan.io/tx/VeHsxBg77uMBVu3oX5wLhCPCKmwAPGck1tEuxGxp59N5SDLTFTVbphNmfRKars2c43frx91p6MD8BaPCF9bn853"
+    },
+    {
+      "signature": "mJRGHgXLL7wgKHD1Jy1aQ648hASrYdfBWbQ5E1oDnFRjz1jJiSKtxqw2fAsxpbXA4n3W9UL13dXHwdzxGFSecSP",
+      "slot": 456250770,
+      "explorer": "https://solscan.io/tx/mJRGHgXLL7wgKHD1Jy1aQ648hASrYdfBWbQ5E1oDnFRjz1jJiSKtxqw2fAsxpbXA4n3W9UL13dXHwdzxGFSecSP"
+    },
+    {
+      "signature": "4P5HwrmYFj427aCWA1TyochUgxV23fjQewzZZbennK9KH7FJCdyP1cHZtFbYLsKrf8PPPWhtM9Ex1WJHy6CxVEda",
+      "slot": 456250788,
+      "explorer": "https://solscan.io/tx/4P5HwrmYFj427aCWA1TyochUgxV23fjQewzZZbennK9KH7FJCdyP1cHZtFbYLsKrf8PPPWhtM9Ex1WJHy6CxVEda"
+    },
+    {
+      "signature": "4pfV1oG29CRNqvaZSYHgqSNJuJfyuum1vrUPeqPNgVVj6wv67vw9947B2MK2a7ngrfCq8eELHRutfSPDjss1eDpg",
+      "slot": 456250799,
+      "explorer": "https://solscan.io/tx/4pfV1oG29CRNqvaZSYHgqSNJuJfyuum1vrUPeqPNgVVj6wv67vw9947B2MK2a7ngrfCq8eELHRutfSPDjss1eDpg"
+    },
+    {
+      "signature": "5eTsZv5UELxFpDDtXgwRUs9rzuMMKWkQKHhFSDUp9jFa9CcRvNmGwx3dF3ABaiLYL5znUcXGKvtj4xcfuUJrMECY",
+      "slot": 456267307,
+      "explorer": "https://solscan.io/tx/5eTsZv5UELxFpDDtXgwRUs9rzuMMKWkQKHhFSDUp9jFa9CcRvNmGwx3dF3ABaiLYL5znUcXGKvtj4xcfuUJrMECY"
+    }
+  ]
+}
