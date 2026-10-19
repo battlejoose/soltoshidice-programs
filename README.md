@@ -34,7 +34,10 @@ Upgrade authority remains unchanged. No authority revocation is claimed.
 
 The exported source reproduces the complete 844,256-byte deployed executable:
 `32faf85840d3ce1ee288afc4968e9ed4007600b3a854dce8cdcefae549f25d92`.
-The pinned Docker build matches exactly; the public registry update is pending.
+The pinned Docker build matches exactly. The independent verifier accepted public
+commit `c65b739e5a46f2bd3ba12058bec2d40bb9d3aaf5` on October 19, 2026.
+The metadata registration transaction was
+`wVBRpu83adBKNqHJv1v74NNdNa89EVeEGE2ttr3KKtJXJf9FC3aUFtbwFN4hntUacHNLLQPKT99xNZ9EvC9QMC8`.
 See [the bank upgrade snapshot](evidence/bank-competitions-snapshot-2026-10-19.json).
 Other program sources and deployed programs are unchanged by this release.
 
@@ -42,7 +45,7 @@ Other program sources and deployed programs are unchanged by this release.
 
 | Program | Scope | Local Docker reproduction | Public registry |
 | --- | --- | --- | --- |
-| `CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR` | Bank, Cee-lo, slots, blackjack, competitions, staking, profiles, referrals | Exact deployed bytes reproduced | [Registry update pending](https://verify.osec.io/status/CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR) |
+| `CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR` | Bank, Cee-lo, slots, blackjack, competitions, staking, profiles, referrals | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR) |
 | `3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ` | Hold'em and tournaments | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ) |
 | `5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q` | Street Fights | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q) |
 | `96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG` | Rock Paper Scissors | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG) |

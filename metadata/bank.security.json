@@ -8,7 +8,7 @@
   "preferred_languages": [
     "en"
   ],
-  "source_code": "https://github.com/battlejoose/soltoshidice-programs/tree/e875a74a72af04b0bb203ac2952401e2eb0cef0c/games/chain",
-  "source_revision": "e875a74a72af04b0bb203ac2952401e2eb0cef0c",
+  "source_code": "https://github.com/battlejoose/soltoshidice-programs/tree/c65b739e5a46f2bd3ba12058bec2d40bb9d3aaf5/games/chain",
+  "source_revision": "c65b739e5a46f2bd3ba12058bec2d40bb9d3aaf5",
   "description": "Report suspected vulnerabilities privately through GitHub. See the policy for responsible disclosure guidance."
 }

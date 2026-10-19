@@ -20,9 +20,11 @@
       "workspace": "games/chain/program",
       "library": "hooddice_bank",
       "localDockerMatch": true,
-      "publicRegistryStatus": "pending",
+      "publicRegistryStatus": "verified",
       "previousVerifiedCommit": "e875a74a72af04b0bb203ac2952401e2eb0cef0c",
-      "previousVerifiedAt": "2026-10-17T14:30:33.153245"
+      "previousVerifiedAt": "2026-10-17T14:30:33.153245",
+      "verifiedCommit": "c65b739e5a46f2bd3ba12058bec2d40bb9d3aaf5",
+      "verifiedAt": "2026-10-19T21:12:04.906586"
     },
     {
       "name": "poker",

@@ -1,0 +1,11 @@
+{
+  "is_verified": true,
+  "message": "On chain program verified",
+  "on_chain_hash": "03c03152b05333d7ff6c6dd4700c707c3eb4856089eb5b257b44712d5e8c8dd1",
+  "executable_hash": "03c03152b05333d7ff6c6dd4700c707c3eb4856089eb5b257b44712d5e8c8dd1",
+  "repo_url": "https://github.com/battlejoose/soltoshidice-programs/tree/c65b739e5a46f2bd3ba12058bec2d40bb9d3aaf5",
+  "commit": "c65b739e5a46f2bd3ba12058bec2d40bb9d3aaf5",
+  "last_verified_at": "2026-10-19T21:12:04.906586",
+  "is_frozen": false,
+  "is_closed": false
+}

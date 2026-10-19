@@ -7,7 +7,15 @@ using the `idl` and `security` seeds. Publication is signed by each program's
 existing upgrade authority. It does not upgrade executable code or alter game
 accounts, balances held by the games, or program upgrade authorities.
 
-## Published October 18, 2026
+## Bank update — October 19, 2026
+
+The bank IDL now includes separate game competitions and selectable duration.
+Its security record points to the newly verified source. All ten public records
+match their canonical accounts: [finalized update receipts](../evidence/bank-metadata-update-2026-10-19.json)
+and [public API readback](../evidence/metadata-api-2026-10-19.json).
+Additional storage and fees for this update totaled 0.002680395 SOL.
+
+## Original publication — October 18, 2026
 
 All five IDLs and five security records are finalized. All five Solscan program
 pages render their public IDLs and show `Security.txt: TRUE`. The public Solana
@@ -36,7 +44,7 @@ are recorded separately from transaction finality.
 
 | Program | IDL format | Instruction payloads | Account layouts |
 | --- | --- | ---: | ---: |
-| Bank, Cee-lo, blackjack, slots, staking | Codama | 94 | 28 |
+| Bank, Cee-lo, blackjack, slots, staking | Codama | 98 | 31 |
 | Poker | Anchor | 42 | 13 |
 | Block Fights | Codama | 8 | 3 |
 | Rock Paper Scissors | Codama | 8 | 3 |

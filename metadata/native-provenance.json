@@ -1,7 +1,8 @@
 [
   {
     "name": "bank",
-    "idlSha256": "fd43c1098178d5d2cc736f0c690f683cba0e51b39423e57d4cf5a7910c00b400",
+    "verifiedCommit": "c65b739e5a46f2bd3ba12058bec2d40bb9d3aaf5",
+    "idlSha256": "7d5a5eb576fc386bc4bc1bc02e0c4452c9dd866a958c0b9dcfcb3771e6829d97",
     "sources": [
       {
         "path": "games/chain/program/src/lib.rs",
