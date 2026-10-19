@@ -12,6 +12,7 @@ pub const ROUND_LEN: usize = 16 + 4 + 8 + 8 + 52 + 2 + HAND_LEN + 10 * PLAYER_LE
 pub const SEAT_LEN: usize = 32 + 32 + 8 + 8 + 8 + 8;
 pub const TABLE_LEN: usize = 8 + 1 + 32 + 32 + 8 + 1 + 8 + 8 + 1 + 10 * SEAT_LEN + 320 + ROUND_LEN + 8;
 const MAGIC: [u8; 8] = *b"SDICEBJ1";
+const COMPETITION_MAGIC: [u8; 8] = *b"SDICEBJ2";
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, Copy, Debug, Default)]
 pub struct Seat {
@@ -34,6 +35,8 @@ pub struct Table {
     pub round: rules::Round, pub finished_at: i64,
 }
 impl Table {
+    pub fn competitions(&self) -> bool { self.magic == COMPETITION_MAGIC }
+    pub fn enable_competitions(&mut self) { self.magic = COMPETITION_MAGIC; }
     pub fn new(bank: Pubkey, escrow: Pubkey, id: u64, bump: u8, min: u64, max: u64) -> Self {
         Self { magic: MAGIC, version: 1, bank, escrow, id, bump, min_wager: min,
             max_wager: max, enabled: true, seats: Box::new([Seat::default(); rules::SEATS]),
@@ -84,7 +87,7 @@ pub fn load(program: &Pubkey, account: &AccountInfo, bank: &Pubkey) -> Result<Bo
     check(account.owner == program && account.data_len() == TABLE_LEN, 820)?;
     let t = Box::new(Table::try_from_slice(&account.try_borrow_data()?).map_err(|_| ProgramError::InvalidAccountData)?);
     let (expected, bump) = address(program, bank, t.id);
-    check(t.magic == MAGIC && (1..=4).contains(&t.version) && t.bank == *bank && *account.key == expected && t.bump == bump, 820)?;
+    check((t.magic == MAGIC || (t.magic == COMPETITION_MAGIC && t.version == 4)) && (1..=4).contains(&t.version) && t.bank == *bank && *account.key == expected && t.bump == bump, 820)?;
     Ok(t)
 }
 

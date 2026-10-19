@@ -1,3 +1,6 @@
+//! Classic slots candidate. Fixed 100K cap, shared bank reserves, and the same
+//! direct/tree/staking reward ledger as dice. Activation requires bank authority.
+//! Neither a keeper nor a callback can nominate a wager, payout or referrer.
 use crate::*;
 use sdice_slots_rules as rules;
 use solana_program::instruction::{AccountMeta, Instruction};
@@ -12,6 +15,10 @@ pub const SPIN_SEED: &[u8] = b"slots-spin-v1";
 pub const CONFIG_LEN: usize = 50;
 pub const CURSOR_LEN: usize = 82;
 pub const SPIN_LEN: usize = 261;
+pub const COMPETITION_SPIN_LEN: usize = SPIN_LEN + 32;
+// Upstream pinned queue TTL is 120s. This consumer has a fixed 180s callback
+// cutoff, then refunds unfulfilled spins. Callback and refund windows do not
+// overlap. Stored randomness MUST settle, even if the deadline has passed.
 pub const CALLBACK_SECONDS: i64 = 180;
 const PENDING: u8 = 1;
 const RANDOM: u8 = 2;
@@ -98,13 +105,15 @@ fn cursor(
     Ok(s)
 }
 fn spin(program: &Pubkey, a: &AccountInfo) -> Result<Spin, ProgramError> {
-    check(a.owner == program && a.data_len() == SPIN_LEN, 902)?;
-    let s = Spin::try_from_slice(&a.try_borrow_data()?)?;
+    check(a.owner == program && [SPIN_LEN, COMPETITION_SPIN_LEN].contains(&a.data_len()), 902)?;
+    let s = Spin::try_from_slice(&a.try_borrow_data()?[..SPIN_LEN])?;
     let p = cursor_address(program, &s.bank, &s.player).0;
     let (key, bump) = spin_address(program, &p, s.nonce);
     check(
         *a.key == key
-            && s.magic == *b"SLOTSS01"
+            && ((s.magic == *b"SLOTSS01" && a.data_len() == SPIN_LEN)
+                || (s.magic == *b"SLOTSS02" && a.data_len() == COMPETITION_SPIN_LEN
+                    && competition_event(a)? != Pubkey::default()))
             && s.bump == bump
             && s.config == config_address(program, &s.bank).0
             && (PENDING..=REFUNDED).contains(&s.status)
@@ -112,6 +121,10 @@ fn spin(program: &Pubkey, a: &AccountInfo) -> Result<Spin, ProgramError> {
         902,
     )?;
     Ok(s)
+}
+fn competition_event(a: &AccountInfo) -> Result<Pubkey, ProgramError> {
+    if a.data_len() == SPIN_LEN { return Ok(Pubkey::default()); }
+    Ok(Pubkey::new_from_array(bytes32(&a.try_borrow_data()?, SPIN_LEN)?))
 }
 fn callback_result(
     s: &mut Spin,
@@ -290,7 +303,7 @@ fn open(program: &Pubkey, a: &[AccountInfo], data: &[u8]) -> ProgramResult {
 /// prepaid fee receipt(W), derived event. Player pays request fee/rents directly.
 #[inline(never)]
 fn accept<'a>(program: &Pubkey, a: &[AccountInfo<'a>], data: &[u8]) -> ProgramResult {
-    check(a.len() == 18 && data.len() == 17, 9)?;
+    check((a.len() == 18 || a.len() == 21) && data.len() == 17, 9)?;
     signer(&a[0])?;
     let mut bank = load_bank(program, &a[1])?;
     let cfg = config(program, &a[2], a[1].key)?;
@@ -319,6 +332,8 @@ fn accept<'a>(program: &Pubkey, a: &[AccountInfo<'a>], data: &[u8]) -> ProgramRe
         14,
     )?;
     check(valid_mint(&a[5])? == 6, 5)?;
+    // A closed destination must be recreatable without a lost token-account
+    // keypair. Pin the original wallet's canonical Token-2022 ATA.
     let ata = Pubkey::find_program_address(
         &[
             a[0].key.as_ref(),
@@ -339,8 +354,11 @@ fn accept<'a>(program: &Pubkey, a: &[AccountInfo<'a>], data: &[u8]) -> ProgramRe
     let (key, bump) = spin_address(program, a[3].key, nonce);
     check(key == *a[4].key, 902)?;
     let clock = Clock::get()?;
+    let competition = if a.len() == 21 {
+        tournament::games::enroll(program, a[1].key, tournament::games::SLOTS, a[0].key, clock.unix_timestamp, &a[18..])?
+    } else { Pubkey::default() };
     let s = Spin {
-        magic: *b"SLOTSS01",
+        magic: if competition == Pubkey::default() { *b"SLOTSS01" } else { *b"SLOTSS02" },
         bank: *a[1].key,
         player: *a[0].key,
         destination: *a[7].key,
@@ -372,7 +390,7 @@ fn accept<'a>(program: &Pubkey, a: &[AccountInfo<'a>], data: &[u8]) -> ProgramRe
         &a[4],
         &a[9],
         program,
-        SPIN_LEN,
+        if competition == Pubkey::default() { SPIN_LEN } else { COMPETITION_SPIN_LEN },
         &[SPIN_SEED, a[3].key.as_ref(), &nonce.to_le_bytes(), &[bump]],
     )?;
     rewards::prepare(program, &a[0], &a[9], &a[16], &a[17], &s)?;
@@ -380,6 +398,8 @@ fn accept<'a>(program: &Pubkey, a: &[AccountInfo<'a>], data: &[u8]) -> ProgramRe
     write(&a[1], &bank)?;
     write(&a[3], &p)?;
     write(&a[4], &s)?;
+    if competition != Pubkey::default() { a[4].try_borrow_mut_data()?[SPIN_LEN..].copy_from_slice(competition.as_ref()); }
+    // Existing checked standard queue identity and pinned scoped request ABI.
     let fee = blackjack::magicblock::fee(&a[11])?;
     let (identity, ibump) = Pubkey::find_program_address(&[b"identity"], program);
     check(
@@ -449,11 +469,14 @@ fn accept<'a>(program: &Pubkey, a: &[AccountInfo<'a>], data: &[u8]) -> ProgramRe
 #[inline(never)]
 fn settle<'a>(program: &Pubkey, a: &[AccountInfo<'a>], data: &[u8], refund: bool) -> ProgramResult {
     check(
-        data.len() == 1 && a.len() == if refund { 14 } else { 13 },
+        data.len() == 1 && a.len() >= if refund { 14 } else { 13 },
         9,
     )?;
     let mut bank = load_bank(program, &a[0])?;
     let mut s = spin(program, &a[1])?;
+    let competition = competition_event(&a[1])?;
+    let base = if refund {14} else {13};
+    check(a.len() == base + if competition == Pubkey::default() {0} else {3}, 9)?;
     check(
         s.bank == *a[0].key
             && bank.version == 4
@@ -516,6 +539,10 @@ fn settle<'a>(program: &Pubkey, a: &[AccountInfo<'a>], data: &[u8], refund: bool
         )?;
     }
     p.pending = false;
+    if competition != Pubkey::default() {
+        tournament::games::finish(program, a[0].key, tournament::games::SLOTS, &s.player,
+            &competition, if refund {0} else {s.gross.saturating_sub(s.wager)}, &a[base..])?;
+    }
     write(&a[0], &bank)?;
     write(&a[2], &p)?;
     write(&a[1], &s)?;

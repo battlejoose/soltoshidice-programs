@@ -9,8 +9,8 @@ metadata=""
 for ((i=0;i<${#args[@]}-1;i++)); do
   if [[ "${args[$i]}" = --crate-name ]]; then
     case "${args[$((i+1))]}" in
-      sdice_slots_rules) metadata=c379fe2b17ba9730;;
-      hooddice_bank) metadata=3ff28175af483e15;;
+      sdice_slots_rules) metadata=6d87b0c90b6bb6d4;;
+      hooddice_bank) metadata=b8ceeb93c4edb71b;;
     esac
   fi
 done

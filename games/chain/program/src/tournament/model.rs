@@ -2,6 +2,9 @@ use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::{program_error::ProgramError, pubkey::Pubkey};
 
 pub const DURATION_SECONDS: i64 = 3 * 60 * 60;
+pub const MIN_DURATION_SECONDS: i64 = 60 * 60;
+pub const MAX_DURATION_SECONDS: i64 = 24 * 60 * 60;
+pub const MAX_SCHEDULE_AHEAD_SECONDS: i64 = 24 * 60 * 60;
 pub const MAX_WINNERS: usize = 10;
 pub const OPEN: u8 = 1;
 pub const PAYING: u8 = 2;
@@ -10,7 +13,7 @@ pub const CARRIED: u8 = 4;
 pub const ENTRY_REFUND_FEE: u64 = 5_000;
 pub const ENTRY_RECEIPTS: u32 = 2;
 // SDICE has six decimals. Applied to new v3 series; existing events stay intact.
-pub const MINIMUM_FUNDING: u64 = 10_000_000 * 1_000_000;
+pub const MINIMUM_FUNDING: u64 = 100_000 * 1_000_000;
 
 #[derive(BorshSerialize, BorshDeserialize, Debug, Clone)]
 pub struct Series {
@@ -85,9 +88,18 @@ pub const RECEIPT_LEN: usize = 1 + 32 * 4 + 8 * 2 + 1 + 1;
 
 impl Event {
     pub fn new(series: Pubkey, nonce: u64, now: i64, bump: u8) -> Result<Self, ProgramError> {
+        Self::build(series, nonce, now, DURATION_SECONDS, bump)
+    }
+    pub fn with_duration(series: Pubkey, nonce: u64, now: i64, duration: i64, bump: u8) -> Result<Self, ProgramError> {
+        if !(MIN_DURATION_SECONDS..=MAX_DURATION_SECONDS).contains(&duration) {
+            return Err(ProgramError::Custom(108));
+        }
+        Self::build(series, nonce, now, duration, bump)
+    }
+    fn build(series: Pubkey, nonce: u64, now: i64, duration: i64, bump: u8) -> Result<Self, ProgramError> {
         Ok(Self {
             version: 1, series, nonce, start: now,
-            end: now.checked_add(DURATION_SECONDS).ok_or(ProgramError::ArithmeticOverflow)?,
+            end: now.checked_add(duration).ok_or(ProgramError::ArithmeticOverflow)?,
             status: OPEN, participants: 0, pending: 0, bets: 0, prize: 0, paid: 0,
             winners: 0, paid_mask: 0, top: [Standing::default(); MAX_WINNERS],
             awards: [0; MAX_WINNERS], bump,
@@ -153,6 +165,20 @@ pub fn awards(prize: u64, top: &[Standing; MAX_WINNERS]) -> [u64; MAX_WINNERS] {
 mod tests {
     use super::*;
     fn event() -> Event { Event::new(Pubkey::new_unique(), 1, 1_000, 1).unwrap() }
+    #[test]
+    fn selected_duration_boundaries() {
+        for duration in [MIN_DURATION_SECONDS, 5_400, DURATION_SECONDS, MAX_DURATION_SECONDS] {
+            let mut e = Event::with_duration(Pubkey::new_unique(), 1, 1_000, duration, 1).unwrap();
+            assert_eq!(e.end, 1_000 + duration);
+            assert!(e.accepts(e.end - 1)); assert!(!e.accepts(e.end));
+            assert!(e.freeze(e.end - 1, 100).is_err());
+            e.freeze(e.end, 100).unwrap();
+        }
+        for duration in [-1, 0, MIN_DURATION_SECONDS - 1, MAX_DURATION_SECONDS + 1, i64::MAX] {
+            assert!(Event::with_duration(Pubkey::new_unique(), 1, 1_000, duration, 1).is_err());
+        }
+        assert!(Event::with_duration(Pubkey::new_unique(), 1, i64::MAX, MIN_DURATION_SECONDS, 1).is_err());
+    }
     #[test]
     fn clock_and_profit() {
         let mut e = event();

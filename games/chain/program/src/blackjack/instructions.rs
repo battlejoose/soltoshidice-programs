@@ -74,6 +74,11 @@ pub fn process(program: &Pubkey, a: &[AccountInfo], data: &[u8]) -> ProgramResul
     let tag = *data.first().ok_or(ProgramError::InvalidInstructionData)?;
     if tag == 80 { return initialize(program, a, data, &bank); }
     let mut t = load(program, &a[1], a[2].key)?;
+    // Competition accounts are appended only to bet/reset. Preserve every
+    // existing fee-account index and exact validation in those instructions.
+    let competition_len = if t.competitions() { match tag {85 => 3, 92 => 1, _ => 0} } else {0};
+    check(a.len() >= 7 + competition_len, 9)?;
+    let (a, competition) = a.split_at(a.len() - competition_len);
     check(*a[5].key == t.escrow, 820)?;
     if tag == 85 {
         // Independent bets can be signed against the same table observation.
@@ -143,6 +148,7 @@ pub fn process(program: &Pubkey, a: &[AccountInfo], data: &[u8]) -> ProgramResul
             t.round.bet(i, amount, now)?; t.round_wallets[i] = t.seats[i].wallet;
             if t.version >= 2 { super::sol_funding::hold(program, &t, a[1].key, &a[15], &a[16], i, 2)?; }
             if t.version==4 {super::network_funding::fund(program,&a[1],&t,&a[0],&a[15],&a[17..],i,super::network_funding::BET_BUDGET)?;}
+            if t.competitions() { tournament::games::enroll_blackjack(program, a[2].key, a[1].key, &t, i, now, competition)?; }
         }
         86 => { check(data.len() == 17 && a.len() == 7, 9)?; t.round.start(now)?; }
         87 => {
@@ -200,6 +206,7 @@ pub fn process(program: &Pubkey, a: &[AccountInfo], data: &[u8]) -> ProgramResul
         }
         92 => {
             check(data.len() == 17 && a.len() == 7, 9)?;
+            if t.competitions() { tournament::games::require_blackjack_scored(program, a[2].key, a[1].key, t.round.id, &competition[0])?; }
             check(now >= t.finished_at.checked_add(RESULT_SECONDS).ok_or(ProgramError::ArithmeticOverflow)?, 835)?;
             t.round.next_round()?; t.round_wallets = [Pubkey::default(); rules::SEATS]; t.finished_at = 0;
         }

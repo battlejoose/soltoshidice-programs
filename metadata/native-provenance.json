@@ -1,12 +1,11 @@
 [
   {
     "name": "bank",
-    "verifiedCommit": "e875a74a72af04b0bb203ac2952401e2eb0cef0c",
-    "idlSha256": "bb7a2ce7f048871d643b62b008450d39c4555888b2b91089badaf48e161a0ac2",
+    "idlSha256": "fd43c1098178d5d2cc736f0c690f683cba0e51b39423e57d4cf5a7910c00b400",
     "sources": [
       {
         "path": "games/chain/program/src/lib.rs",
-        "sha256": "3ae82a0c38fcd5cbfa75fe7a09acc140a29bc19318b35e3bd64dfbc16e4fd25f"
+        "sha256": "3fab29de4d1f2f248ca971c3a03eeb947118795454f95848dd0cd2598eb0533e"
       },
       {
         "path": "games/chain/program/src/shared.rs",
@@ -26,7 +25,7 @@
       },
       {
         "path": "games/chain/program/src/tournament/model.rs",
-        "sha256": "fcf46251fcafbe64b8c7e90a1b9dcecf4a9b23fe5a6f7ba7958491e22d2a1245"
+        "sha256": "d3c7f6ee07376e45f8b3f7859d1348128a6d58e447daa8d694bbd9278991ee7e"
       },
       {
         "path": "games/chain/program/src/blackjack/rules.rs",
@@ -34,7 +33,7 @@
       },
       {
         "path": "games/chain/program/src/blackjack/state.rs",
-        "sha256": "08f6d292553a0888fdc64d6c7ec3fba85e2c76fe66ee473a9c77725ef9b15c12"
+        "sha256": "e3d3e10969ff5f2f980c8b9cd3bc0f1af71ab35c4c267040081dc09c14ac4cd2"
       },
       {
         "path": "games/chain/program/src/blackjack/sol_funding.rs",
@@ -46,11 +45,15 @@
       },
       {
         "path": "games/chain/program/src/blackjack/network_funding.rs",
-        "sha256": "a7612bc9e09d7ed70235e335570af6ecf0be2547ce96663e83ac030359a1661b"
+        "sha256": "4f3f7fb132d4eff06b04d78162b42ea3e024708ee310751163a1734c1e1c5aa5"
       },
       {
         "path": "games/chain/program/src/slots/mod.rs",
-        "sha256": "f3c196869f610ab010c9c1b3a9725f75cab1cc579301e17f77a969dcaa3b675c"
+        "sha256": "6903e28888b4dbd3c210d18e40f91ad218b50c91b058d22c4aff8fcc87013362"
+      },
+      {
+        "path": "games/chain/program/src/tournament/games.rs",
+        "sha256": "2a84adaa2638c0592cbcac316f93819a237f765d30f81a6bef57ece347e15ecf"
       }
     ],
     "accounts": [
@@ -151,6 +154,18 @@
         "size": 261
       },
       {
+        "name": "competitionsBlackjackTracker",
+        "size": 396
+      },
+      {
+        "name": "bjCompetitionTable",
+        "size": 3481
+      },
+      {
+        "name": "slotsCompetitionSpin",
+        "size": 293
+      },
+      {
         "name": "economyPoolLegacy",
         "size": 259
       },
@@ -167,7 +182,7 @@
         "size": 276
       }
     ],
-    "instructions": 94
+    "instructions": 98
   },
   {
     "name": "fights",

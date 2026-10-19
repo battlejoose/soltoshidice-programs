@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-19T21:02:42.632Z",
+  "program": "CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR",
+  "programData": "9HF5BoewAreFTHQgR6K3mvgkcG5cLy1mF4mnsUkHWBVM",
+  "lastDeploySlot": 458975234,
+  "upgradeAuthority": "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y",
+  "sha256": "32faf85840d3ce1ee288afc4968e9ed4007600b3a854dce8cdcefae549f25d92",
+  "zeroTrimmedSha256": "03c03152b05333d7ff6c6dd4700c707c3eb4856089eb5b257b44712d5e8c8dd1",
+  "bytes": 844256,
+  "localDockerMatch": true,
+  "sourceCommit": "158465cf007db585e7aece09582ffc004ae24d62"
+}

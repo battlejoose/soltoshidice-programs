@@ -2,11 +2,20 @@
 use super::*;
 use solana_program::instruction::{AccountMeta, Instruction};
 pub mod model;
+pub mod games;
 use model::*;
 
 const ATA: Pubkey = solana_program::pubkey!("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
 pub fn series_address(program: &Pubkey, bank: &Pubkey) -> (Pubkey,u8) {
     Pubkey::find_program_address(&[b"world-series",bank.as_ref()],program)
+}
+/// Dice retains its original address and layout. Other games have isolated series.
+pub fn game_series_address(program: &Pubkey, bank: &Pubkey, game: u8) -> (Pubkey,u8) {
+    if game == 0 { series_address(program, bank) }
+    else { Pubkey::find_program_address(&[b"world-series", bank.as_ref(), &[game]], program) }
+}
+fn series_game(version: u8) -> Result<u8, ProgramError> {
+    match version { 1..=3 => Ok(0), 4 => Ok(1), 5 => Ok(2), _ => Err(ProgramError::Custom(100)) }
 }
 pub fn event_address(program: &Pubkey, series: &Pubkey, nonce: u64) -> (Pubkey,u8) {
     Pubkey::find_program_address(&[b"ws-event",series.as_ref(),&nonce.to_le_bytes()],program)
@@ -29,14 +38,14 @@ fn load<T:BorshDeserialize>(program:&Pubkey, account:&AccountInfo) -> Result<T,P
 }
 fn series(program:&Pubkey, account:&AccountInfo, bank:&Pubkey) -> Result<Series,ProgramError> {
     let s:Series=load(program,account)?;
-    let (key,bump)=series_address(program,bank);
-    check(*account.key==key&&[1,2,3].contains(&s.version)&&s.bank==*bank&&s.bump==bump,100)?;
+    let (key,bump)=game_series_address(program,bank,series_game(s.version)?);
+    check(*account.key==key&&s.bank==*bank&&s.bump==bump,100)?;
     Ok(s)
 }
 fn event(program:&Pubkey, account:&AccountInfo, series:&Pubkey) -> Result<Event,ProgramError> {
     let e:Event=load(program,account)?;
     let (key,bump)=event_address(program,series,e.nonce);
-    check(*account.key==key&&[1,2,3].contains(&e.version)&&e.series==*series&&e.bump==bump&&e.winners<=10,100)?;
+    check(*account.key==key&&(1..=5).contains(&e.version)&&e.series==*series&&e.bump==bump&&e.winners<=10,100)?;
     Ok(e)
 }
 fn entry(program:&Pubkey, account:&AccountInfo, event:&Pubkey, wallet:&Pubkey) -> Result<Entry,ProgramError> {
@@ -127,24 +136,34 @@ fn sponsored_create<'a>(program:&Pubkey, series:&Pubkey, payer:&AccountInfo<'a>,
 pub fn process(program:&Pubkey, accounts:&[AccountInfo], data:&[u8])->ProgramResult {
     match data.first().copied().ok_or(ProgramError::InvalidInstructionData)? {
         60=>initialize(program,accounts,data),
-        61|69=>{
+        61|69|115=>{
+            let custom=data[0]==115;
             let scheduled=data[0]==69;
-            check(data.len()==(if scheduled{17}else{9})&&accounts.len()==11,9)?;
+            check(data.len()==(if custom{25}else if scheduled{17}else{9})&&accounts.len()==11,9)?;
             let sender=&accounts[0]; signer(sender)?;
             let a=&accounts[2..];
             let s=series(program,&a[1],a[0].key)?;
             check(s.intake==*a[3].key&&s.mint==*a[5].key,100)?;
             let amount=u64_at(data,1)?;check(amount>0,101)?;
-            let start=if scheduled{
+            let duration=if custom {
+                let duration=i64::try_from(u64_at(data,17)?).map_err(|_|ProgramError::InvalidInstructionData)?;
+                check((MIN_DURATION_SECONDS..=MAX_DURATION_SECONDS).contains(&duration),108)?;
+                // Explicit creation must never turn into a donation to another sponsor's event.
+                check(s.version>=3&&s.current==0,106)?;
+                check(plus(token_account(&a[3],&s.mint,a[1].key)?,amount)? >= MINIMUM_FUNDING,107)?;
+                Some(duration)
+            }else{None};
+            let start=if scheduled || (custom && u64_at(data,9)? != 0){
                 let start=i64::try_from(u64_at(data,9)?).map_err(|_|ProgramError::InvalidInstructionData)?;
-                check(s.version>=3&&s.current==0&&start>Clock::get()?.unix_timestamp,106)?;
+                let now=Clock::get()?.unix_timestamp;
+                check(s.version>=3&&s.current==0&&start>now&&start.saturating_sub(now)<=MAX_SCHEDULE_AHEAD_SECONDS,106)?;
                 check(plus(token_account(&a[3],&s.mint,a[1].key)?,amount)? >= MINIMUM_FUNDING,107)?;
                 Some(start)
             }else{None};
             token_account(&accounts[1],&s.mint,sender.key)?;
             let decimals=valid_mint(&a[5])?;
             transfer(&accounts[1],&a[3],&a[5],sender,&a[6],amount,decimals,None)?;
-            synchronize_at(program,a,start)
+            synchronize_at(program,a,start,duration)
         },
         62=>{check(data.len()==1,9)?;synchronize(program,accounts)},
         63=>{check(data.len()==1&&accounts.len()==6,9)?;score(program,&accounts[0],&accounts[1],&accounts[2],&accounts[3],&accounts[4],&accounts[5])},
@@ -185,9 +204,9 @@ fn validate_sync<'a>(program:&Pubkey,a:&[AccountInfo<'a>])->Result<Series,Progra
     Ok(s)
 }
 fn synchronize(program:&Pubkey,a:&[AccountInfo])->ProgramResult{
-    synchronize_at(program,a,None)
+    synchronize_at(program,a,None,None)
 }
-fn synchronize_at(program:&Pubkey,a:&[AccountInfo],scheduled:Option<i64>)->ProgramResult{
+fn synchronize_at(program:&Pubkey,a:&[AccountInfo],scheduled:Option<i64>,duration:Option<i64>)->ProgramResult{
     let mut s=validate_sync(program,a)?;
     let now=Clock::get()?.unix_timestamp;
     let intake=token_account(&a[3],&s.mint,a[1].key)?;
@@ -199,7 +218,11 @@ fn synchronize_at(program:&Pubkey,a:&[AccountInfo],scheduled:Option<i64>)->Progr
         let (vault,vb)=vault_address(program,&key);check(*a[4].key==vault,100)?;
         sponsored_create(program,a[1].key,&a[7],&a[4],&a[8],&spl_token_2022::id(),165,&[b"ws-vault",key.as_ref(),&[vb]])?;
         invoke(&spl_token_2022::instruction::initialize_account3(a[6].key,a[4].key,a[5].key,&key)?,&[a[4].clone(),a[5].clone(),a[6].clone()])?;
-        let mut e=Event::new(*a[1].key,s.next,scheduled.unwrap_or(now),bump)?;e.version=s.version;
+        let start=scheduled.unwrap_or(now);
+        let mut e=match duration {
+            Some(seconds)=>Event::with_duration(*a[1].key,s.next,start,seconds,bump)?,
+            None=>Event::new(*a[1].key,s.next,start,bump)?,
+        };e.version=s.version;
         s.current=s.next;s.next=plus(s.next,1)?;s.carry=0;
         msg!("SDICE_WS_START event={} start={} end={}",key,e.start,e.end);
         e
@@ -210,7 +233,10 @@ fn synchronize_at(program:&Pubkey,a:&[AccountInfo],scheduled:Option<i64>)->Progr
     if e.status!=OPEN||now>=e.end{return Ok(());}
     vault_balance(program,&a[2],&a[4],&s.mint)?;
     if intake>0{
-        transfer(&a[3],&a[4],&a[5],&a[1],&a[6],intake,valid_mint(&a[5])?,Some(&[b"world-series",s.bank.as_ref(),&[s.bump]]))?;
+        let game = [series_game(s.version)?]; let bump = [s.bump];
+        let legacy: &[&[u8]] = &[b"world-series", s.bank.as_ref(), &bump];
+        let separate: &[&[u8]] = &[b"world-series", s.bank.as_ref(), &game, &bump];
+        transfer(&a[3],&a[4],&a[5],&a[1],&a[6],intake,valid_mint(&a[5])?,Some(if game[0]==0 {legacy} else {separate}))?;
     }
     e.prize=vault_balance(program,&a[2],&a[4],&s.mint)?;
     write(&a[2],&e)?;write(&a[1],&s)
@@ -221,6 +247,7 @@ fn synchronize_at(program:&Pubkey,a:&[AccountInfo],scheduled:Option<i64>)->Progr
 pub fn enroll<'a>(program:&Pubkey,bank:&AccountInfo,round:&AccountInfo,bet:&AccountInfo,system:&AccountInfo<'a>,tail:&[AccountInfo<'a>])->ProgramResult{
     check(tail.len()==5,9)?;
     let s=series(program,&tail[0],bank.key)?;
+    check(series_game(s.version)? == 0, 100)?;
     check(*tail[3].key==receipt_address(program,bet.key).0,100)?;
     if s.current==0{return Ok(());}
     let mut e=event(program,&tail[1],tail[0].key)?;check(e.nonce==s.current,100)?;

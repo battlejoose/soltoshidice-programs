@@ -75,12 +75,13 @@ pub fn process_instruction(program:&Pubkey,accounts:&[AccountInfo],data:&[u8])->
  if data.starts_with(&slots::CALLBACK) { return slots::callback(program, accounts, data); }
  if data.starts_with(&blackjack::magicblock::CALLBACK) { return blackjack::magicblock::callback(program, accounts, data); }
  let tag=*data.first().ok_or(ProgramError::InvalidInstructionData)?;
+ if (112..=114).contains(&tag) { return tournament::games::process(program, accounts, data); }
  if (106..=111).contains(&tag) { return slots::process(program, accounts, data); }
  if (102..=105).contains(&tag) { return blackjack::network_funding::process(program, accounts, data); }
  if tag == 100 || tag == 101 { return blackjack::magicblock::configure(program, accounts, data); }
  if (95..=99).contains(&tag) { return blackjack::sol_funding::process(program, accounts, data); }
  if (80..=94).contains(&tag) { return blackjack::process(program, accounts, data); }
- if (60..=70).contains(&tag) { return tournament::process(program, accounts, data); }
+ if (60..=70).contains(&tag) || tag == 115 { return tournament::process(program, accounts, data); }
  if (40..=54).contains(&tag) { return funding::process(program, accounts, data); }
  if tag>=18 { return economy::process(program, accounts, data); }
  if tag>=8 { return shared::process(program, accounts, data); }

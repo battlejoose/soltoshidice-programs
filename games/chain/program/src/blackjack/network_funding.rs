@@ -131,7 +131,7 @@ pub fn process(p:&Pubkey,a:&[AccountInfo],data:&[u8])->ProgramResult{
         t.version=4;t.changed()?;return write(&a[1],&*t);
     }
     if data[0]==103 {
-        check(a.len()==7 && t.version==4 && !t.enabled && bank.authority==*a[0].key && t.seats.iter().all(|s|s.wallet==Pubkey::default()),863)?;
+        check(a.len()==7 && t.version==4 && !t.competitions() && !t.enabled && bank.authority==*a[0].key && t.seats.iter().all(|s|s.wallet==Pubkey::default()),863)?;
         let c=config(p,&a[3],a[1].key,a[2].key)?;check(c.open_purses==0,881)?;
         **a[5].try_borrow_mut_lamports()?=add(a[5].lamports(),a[3].lamports())?;
         **a[3].try_borrow_mut_lamports()?=0;a[3].try_borrow_mut_data()?.fill(0);

@@ -2,7 +2,7 @@
 //! the rules engine; this module does not introduce another bank or token mint.
 pub mod rules;
 mod rewards;
-mod state;
+pub(crate) mod state;
 mod instructions;
 pub mod sol_funding;
 pub mod magicblock;
