@@ -57,7 +57,7 @@
     },
     {
       "path": "platform-verifier.mjs",
-      "sha256": "7acac9a2f6ca27c0c896b2a0097aa819218c3abf91ad4ac027e9685a197200ba"
+      "sha256": "8e348631f3237deb8069aae5f09844b4ec1372cdaca2253c433a17b8e2b9a23a"
     },
     {
       "path": "verify-fairness.mjs",
