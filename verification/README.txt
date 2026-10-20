@@ -5,7 +5,7 @@ Exit 0: covered checks pass; 1: not verified; 2: partial/untested.
 Cee-lo, fights, RPS, slots and blackjack: scoped proof/outcome/payment replays.
 Poker: revealed cards/chip awards only; no full shuffle transcript or wallet cash-out.
 Blackjack: draw proofs and table escrow returns; not wallet cash-out.
-Perps: not tested by this kit. No new wagers; no transactions submitted.
+Perps trading/payouts: not tested. Separate delegation check: node verify-delegation.mjs --rpc https://YOUR_TRUSTED_MAINNET_RPC (fresh finalized reads); --archived for saved evidence. Correct program ends RSaeSh, not Rxhbu. No new wagers; no transactions submitted.
 payoutSummary sums only distinct passing examples, with player wallets separate from table escrow. It is not a platform-wide total.
 Fresh gameplay and complete payout reconciliation remain separate tests; see /verification#coverage-next.
 MagicBlock ER architecture and primary documentation: https://soltoshidice.wtf/verification#ephemeral-rollups

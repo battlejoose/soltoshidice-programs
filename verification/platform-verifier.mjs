@@ -240,13 +240,13 @@ var require_buffer = __commonJS({
     var base64 = require_base64_js();
     var ieee754 = require_ieee754();
     var customInspectSymbol = typeof Symbol === "function" && typeof Symbol["for"] === "function" ? Symbol["for"]("nodejs.util.inspect.custom") : null;
-    exports.Buffer = Buffer22;
+    exports.Buffer = Buffer23;
     exports.SlowBuffer = SlowBuffer;
     exports.INSPECT_MAX_BYTES = 50;
     var K_MAX_LENGTH = 2147483647;
     exports.kMaxLength = K_MAX_LENGTH;
-    Buffer22.TYPED_ARRAY_SUPPORT = typedArraySupport();
-    if (!Buffer22.TYPED_ARRAY_SUPPORT && typeof console !== "undefined" && typeof console.error === "function") {
+    Buffer23.TYPED_ARRAY_SUPPORT = typedArraySupport();
+    if (!Buffer23.TYPED_ARRAY_SUPPORT && typeof console !== "undefined" && typeof console.error === "function") {
       console.error(
         "This browser lacks typed array (Uint8Array) support which is required by `buffer` v5.x. Use `buffer` v4.x if you require old browser support."
       );
@@ -264,17 +264,17 @@ var require_buffer = __commonJS({
         return false;
       }
     }
-    Object.defineProperty(Buffer22.prototype, "parent", {
+    Object.defineProperty(Buffer23.prototype, "parent", {
       enumerable: true,
       get: function() {
-        if (!Buffer22.isBuffer(this)) return void 0;
+        if (!Buffer23.isBuffer(this)) return void 0;
         return this.buffer;
       }
     });
-    Object.defineProperty(Buffer22.prototype, "offset", {
+    Object.defineProperty(Buffer23.prototype, "offset", {
       enumerable: true,
       get: function() {
-        if (!Buffer22.isBuffer(this)) return void 0;
+        if (!Buffer23.isBuffer(this)) return void 0;
         return this.byteOffset;
       }
     });
@@ -283,10 +283,10 @@ var require_buffer = __commonJS({
         throw new RangeError('The value "' + length + '" is invalid for option "size"');
       }
       const buf = new Uint8Array(length);
-      Object.setPrototypeOf(buf, Buffer22.prototype);
+      Object.setPrototypeOf(buf, Buffer23.prototype);
       return buf;
     }
-    function Buffer22(arg, encodingOrOffset, length) {
+    function Buffer23(arg, encodingOrOffset, length) {
       if (typeof arg === "number") {
         if (typeof encodingOrOffset === "string") {
           throw new TypeError(
@@ -297,7 +297,7 @@ var require_buffer = __commonJS({
       }
       return from(arg, encodingOrOffset, length);
     }
-    Buffer22.poolSize = 8192;
+    Buffer23.poolSize = 8192;
     function from(value, encodingOrOffset, length) {
       if (typeof value === "string") {
         return fromString(value, encodingOrOffset);
@@ -323,22 +323,22 @@ var require_buffer = __commonJS({
       }
       const valueOf = value.valueOf && value.valueOf();
       if (valueOf != null && valueOf !== value) {
-        return Buffer22.from(valueOf, encodingOrOffset, length);
+        return Buffer23.from(valueOf, encodingOrOffset, length);
       }
       const b = fromObject(value);
       if (b) return b;
       if (typeof Symbol !== "undefined" && Symbol.toPrimitive != null && typeof value[Symbol.toPrimitive] === "function") {
-        return Buffer22.from(value[Symbol.toPrimitive]("string"), encodingOrOffset, length);
+        return Buffer23.from(value[Symbol.toPrimitive]("string"), encodingOrOffset, length);
       }
       throw new TypeError(
         "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received type " + typeof value
       );
     }
-    Buffer22.from = function(value, encodingOrOffset, length) {
+    Buffer23.from = function(value, encodingOrOffset, length) {
       return from(value, encodingOrOffset, length);
     };
-    Object.setPrototypeOf(Buffer22.prototype, Uint8Array.prototype);
-    Object.setPrototypeOf(Buffer22, Uint8Array);
+    Object.setPrototypeOf(Buffer23.prototype, Uint8Array.prototype);
+    Object.setPrototypeOf(Buffer23, Uint8Array);
     function assertSize(size) {
       if (typeof size !== "number") {
         throw new TypeError('"size" argument must be of type number');
@@ -356,24 +356,24 @@ var require_buffer = __commonJS({
       }
       return createBuffer(size);
     }
-    Buffer22.alloc = function(size, fill, encoding) {
+    Buffer23.alloc = function(size, fill, encoding) {
       return alloc(size, fill, encoding);
     };
     function allocUnsafe(size) {
       assertSize(size);
       return createBuffer(size < 0 ? 0 : checked(size) | 0);
     }
-    Buffer22.allocUnsafe = function(size) {
+    Buffer23.allocUnsafe = function(size) {
       return allocUnsafe(size);
     };
-    Buffer22.allocUnsafeSlow = function(size) {
+    Buffer23.allocUnsafeSlow = function(size) {
       return allocUnsafe(size);
     };
     function fromString(string3, encoding) {
       if (typeof encoding !== "string" || encoding === "") {
         encoding = "utf8";
       }
-      if (!Buffer22.isEncoding(encoding)) {
+      if (!Buffer23.isEncoding(encoding)) {
         throw new TypeError("Unknown encoding: " + encoding);
       }
       const length = byteLength(string3, encoding) | 0;
@@ -414,11 +414,11 @@ var require_buffer = __commonJS({
       } else {
         buf = new Uint8Array(array3, byteOffset, length);
       }
-      Object.setPrototypeOf(buf, Buffer22.prototype);
+      Object.setPrototypeOf(buf, Buffer23.prototype);
       return buf;
     }
     function fromObject(obj) {
-      if (Buffer22.isBuffer(obj)) {
+      if (Buffer23.isBuffer(obj)) {
         const len = checked(obj.length) | 0;
         const buf = createBuffer(len);
         if (buf.length === 0) {
@@ -447,15 +447,15 @@ var require_buffer = __commonJS({
       if (+length != length) {
         length = 0;
       }
-      return Buffer22.alloc(+length);
+      return Buffer23.alloc(+length);
     }
-    Buffer22.isBuffer = function isBuffer(b) {
-      return b != null && b._isBuffer === true && b !== Buffer22.prototype;
+    Buffer23.isBuffer = function isBuffer(b) {
+      return b != null && b._isBuffer === true && b !== Buffer23.prototype;
     };
-    Buffer22.compare = function compare3(a, b) {
-      if (isInstance(a, Uint8Array)) a = Buffer22.from(a, a.offset, a.byteLength);
-      if (isInstance(b, Uint8Array)) b = Buffer22.from(b, b.offset, b.byteLength);
-      if (!Buffer22.isBuffer(a) || !Buffer22.isBuffer(b)) {
+    Buffer23.compare = function compare3(a, b) {
+      if (isInstance(a, Uint8Array)) a = Buffer23.from(a, a.offset, a.byteLength);
+      if (isInstance(b, Uint8Array)) b = Buffer23.from(b, b.offset, b.byteLength);
+      if (!Buffer23.isBuffer(a) || !Buffer23.isBuffer(b)) {
         throw new TypeError(
           'The "buf1", "buf2" arguments must be one of type Buffer or Uint8Array'
         );
@@ -474,7 +474,7 @@ var require_buffer = __commonJS({
       if (y < x) return 1;
       return 0;
     };
-    Buffer22.isEncoding = function isEncoding(encoding) {
+    Buffer23.isEncoding = function isEncoding(encoding) {
       switch (String(encoding).toLowerCase()) {
         case "hex":
         case "utf8":
@@ -492,12 +492,12 @@ var require_buffer = __commonJS({
           return false;
       }
     };
-    Buffer22.concat = function concat2(list, length) {
+    Buffer23.concat = function concat2(list, length) {
       if (!Array.isArray(list)) {
         throw new TypeError('"list" argument must be an Array of Buffers');
       }
       if (list.length === 0) {
-        return Buffer22.alloc(0);
+        return Buffer23.alloc(0);
       }
       let i2;
       if (length === void 0) {
@@ -506,13 +506,13 @@ var require_buffer = __commonJS({
           length += list[i2].length;
         }
       }
-      const buffer = Buffer22.allocUnsafe(length);
+      const buffer = Buffer23.allocUnsafe(length);
       let pos = 0;
       for (i2 = 0; i2 < list.length; ++i2) {
         let buf = list[i2];
         if (isInstance(buf, Uint8Array)) {
           if (pos + buf.length > buffer.length) {
-            if (!Buffer22.isBuffer(buf)) buf = Buffer22.from(buf);
+            if (!Buffer23.isBuffer(buf)) buf = Buffer23.from(buf);
             buf.copy(buffer, pos);
           } else {
             Uint8Array.prototype.set.call(
@@ -521,7 +521,7 @@ var require_buffer = __commonJS({
               pos
             );
           }
-        } else if (!Buffer22.isBuffer(buf)) {
+        } else if (!Buffer23.isBuffer(buf)) {
           throw new TypeError('"list" argument must be an Array of Buffers');
         } else {
           buf.copy(buffer, pos);
@@ -531,7 +531,7 @@ var require_buffer = __commonJS({
       return buffer;
     };
     function byteLength(string3, encoding) {
-      if (Buffer22.isBuffer(string3)) {
+      if (Buffer23.isBuffer(string3)) {
         return string3.length;
       }
       if (ArrayBuffer.isView(string3) || isInstance(string3, ArrayBuffer)) {
@@ -573,7 +573,7 @@ var require_buffer = __commonJS({
         }
       }
     }
-    Buffer22.byteLength = byteLength;
+    Buffer23.byteLength = byteLength;
     function slowToString(encoding, start, end) {
       let loweredCase = false;
       if (start === void 0 || start < 0) {
@@ -620,13 +620,13 @@ var require_buffer = __commonJS({
         }
       }
     }
-    Buffer22.prototype._isBuffer = true;
+    Buffer23.prototype._isBuffer = true;
     function swap(b, n, m) {
       const i2 = b[n];
       b[n] = b[m];
       b[m] = i2;
     }
-    Buffer22.prototype.swap16 = function swap16() {
+    Buffer23.prototype.swap16 = function swap16() {
       const len = this.length;
       if (len % 2 !== 0) {
         throw new RangeError("Buffer size must be a multiple of 16-bits");
@@ -636,7 +636,7 @@ var require_buffer = __commonJS({
       }
       return this;
     };
-    Buffer22.prototype.swap32 = function swap32() {
+    Buffer23.prototype.swap32 = function swap32() {
       const len = this.length;
       if (len % 4 !== 0) {
         throw new RangeError("Buffer size must be a multiple of 32-bits");
@@ -647,7 +647,7 @@ var require_buffer = __commonJS({
       }
       return this;
     };
-    Buffer22.prototype.swap64 = function swap64() {
+    Buffer23.prototype.swap64 = function swap64() {
       const len = this.length;
       if (len % 8 !== 0) {
         throw new RangeError("Buffer size must be a multiple of 64-bits");
@@ -660,19 +660,19 @@ var require_buffer = __commonJS({
       }
       return this;
     };
-    Buffer22.prototype.toString = function toString() {
+    Buffer23.prototype.toString = function toString() {
       const length = this.length;
       if (length === 0) return "";
       if (arguments.length === 0) return utf8Slice(this, 0, length);
       return slowToString.apply(this, arguments);
     };
-    Buffer22.prototype.toLocaleString = Buffer22.prototype.toString;
-    Buffer22.prototype.equals = function equals(b) {
-      if (!Buffer22.isBuffer(b)) throw new TypeError("Argument must be a Buffer");
+    Buffer23.prototype.toLocaleString = Buffer23.prototype.toString;
+    Buffer23.prototype.equals = function equals(b) {
+      if (!Buffer23.isBuffer(b)) throw new TypeError("Argument must be a Buffer");
       if (this === b) return true;
-      return Buffer22.compare(this, b) === 0;
+      return Buffer23.compare(this, b) === 0;
     };
-    Buffer22.prototype.inspect = function inspect() {
+    Buffer23.prototype.inspect = function inspect() {
       let str = "";
       const max = exports.INSPECT_MAX_BYTES;
       str = this.toString("hex", 0, max).replace(/(.{2})/g, "$1 ").trim();
@@ -680,13 +680,13 @@ var require_buffer = __commonJS({
       return "<Buffer " + str + ">";
     };
     if (customInspectSymbol) {
-      Buffer22.prototype[customInspectSymbol] = Buffer22.prototype.inspect;
+      Buffer23.prototype[customInspectSymbol] = Buffer23.prototype.inspect;
     }
-    Buffer22.prototype.compare = function compare3(target, start, end, thisStart, thisEnd) {
+    Buffer23.prototype.compare = function compare3(target, start, end, thisStart, thisEnd) {
       if (isInstance(target, Uint8Array)) {
-        target = Buffer22.from(target, target.offset, target.byteLength);
+        target = Buffer23.from(target, target.offset, target.byteLength);
       }
-      if (!Buffer22.isBuffer(target)) {
+      if (!Buffer23.isBuffer(target)) {
         throw new TypeError(
           'The "target" argument must be one of type Buffer or Uint8Array. Received type ' + typeof target
         );
@@ -759,9 +759,9 @@ var require_buffer = __commonJS({
         else return -1;
       }
       if (typeof val === "string") {
-        val = Buffer22.from(val, encoding);
+        val = Buffer23.from(val, encoding);
       }
-      if (Buffer22.isBuffer(val)) {
+      if (Buffer23.isBuffer(val)) {
         if (val.length === 0) {
           return -1;
         }
@@ -829,13 +829,13 @@ var require_buffer = __commonJS({
       }
       return -1;
     }
-    Buffer22.prototype.includes = function includes(val, byteOffset, encoding) {
+    Buffer23.prototype.includes = function includes(val, byteOffset, encoding) {
       return this.indexOf(val, byteOffset, encoding) !== -1;
     };
-    Buffer22.prototype.indexOf = function indexOf(val, byteOffset, encoding) {
+    Buffer23.prototype.indexOf = function indexOf(val, byteOffset, encoding) {
       return bidirectionalIndexOf(this, val, byteOffset, encoding, true);
     };
-    Buffer22.prototype.lastIndexOf = function lastIndexOf(val, byteOffset, encoding) {
+    Buffer23.prototype.lastIndexOf = function lastIndexOf(val, byteOffset, encoding) {
       return bidirectionalIndexOf(this, val, byteOffset, encoding, false);
     };
     function hexWrite(buf, string3, offset3, length) {
@@ -873,7 +873,7 @@ var require_buffer = __commonJS({
     function ucs2Write(buf, string3, offset3, length) {
       return blitBuffer(utf16leToBytes(string3, buf.length - offset3), buf, offset3, length);
     }
-    Buffer22.prototype.write = function write(string3, offset3, length, encoding) {
+    Buffer23.prototype.write = function write(string3, offset3, length, encoding) {
       if (offset3 === void 0) {
         encoding = "utf8";
         length = this.length;
@@ -928,7 +928,7 @@ var require_buffer = __commonJS({
         }
       }
     };
-    Buffer22.prototype.toJSON = function toJSON() {
+    Buffer23.prototype.toJSON = function toJSON() {
       return {
         type: "Buffer",
         data: Array.prototype.slice.call(this._arr || this, 0)
@@ -1051,7 +1051,7 @@ var require_buffer = __commonJS({
       }
       return res;
     }
-    Buffer22.prototype.slice = function slice(start, end) {
+    Buffer23.prototype.slice = function slice(start, end) {
       const len = this.length;
       start = ~~start;
       end = end === void 0 ? len : ~~end;
@@ -1069,14 +1069,14 @@ var require_buffer = __commonJS({
       }
       if (end < start) end = start;
       const newBuf = this.subarray(start, end);
-      Object.setPrototypeOf(newBuf, Buffer22.prototype);
+      Object.setPrototypeOf(newBuf, Buffer23.prototype);
       return newBuf;
     };
     function checkOffset(offset3, ext, length) {
       if (offset3 % 1 !== 0 || offset3 < 0) throw new RangeError("offset is not uint");
       if (offset3 + ext > length) throw new RangeError("Trying to access beyond buffer length");
     }
-    Buffer22.prototype.readUintLE = Buffer22.prototype.readUIntLE = function readUIntLE(offset3, byteLength2, noAssert) {
+    Buffer23.prototype.readUintLE = Buffer23.prototype.readUIntLE = function readUIntLE(offset3, byteLength2, noAssert) {
       offset3 = offset3 >>> 0;
       byteLength2 = byteLength2 >>> 0;
       if (!noAssert) checkOffset(offset3, byteLength2, this.length);
@@ -1088,7 +1088,7 @@ var require_buffer = __commonJS({
       }
       return val;
     };
-    Buffer22.prototype.readUintBE = Buffer22.prototype.readUIntBE = function readUIntBE(offset3, byteLength2, noAssert) {
+    Buffer23.prototype.readUintBE = Buffer23.prototype.readUIntBE = function readUIntBE(offset3, byteLength2, noAssert) {
       offset3 = offset3 >>> 0;
       byteLength2 = byteLength2 >>> 0;
       if (!noAssert) {
@@ -1101,32 +1101,32 @@ var require_buffer = __commonJS({
       }
       return val;
     };
-    Buffer22.prototype.readUint8 = Buffer22.prototype.readUInt8 = function readUInt8(offset3, noAssert) {
+    Buffer23.prototype.readUint8 = Buffer23.prototype.readUInt8 = function readUInt8(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 1, this.length);
       return this[offset3];
     };
-    Buffer22.prototype.readUint16LE = Buffer22.prototype.readUInt16LE = function readUInt16LE(offset3, noAssert) {
+    Buffer23.prototype.readUint16LE = Buffer23.prototype.readUInt16LE = function readUInt16LE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 2, this.length);
       return this[offset3] | this[offset3 + 1] << 8;
     };
-    Buffer22.prototype.readUint16BE = Buffer22.prototype.readUInt16BE = function readUInt16BE(offset3, noAssert) {
+    Buffer23.prototype.readUint16BE = Buffer23.prototype.readUInt16BE = function readUInt16BE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 2, this.length);
       return this[offset3] << 8 | this[offset3 + 1];
     };
-    Buffer22.prototype.readUint32LE = Buffer22.prototype.readUInt32LE = function readUInt32LE(offset3, noAssert) {
+    Buffer23.prototype.readUint32LE = Buffer23.prototype.readUInt32LE = function readUInt32LE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 4, this.length);
       return (this[offset3] | this[offset3 + 1] << 8 | this[offset3 + 2] << 16) + this[offset3 + 3] * 16777216;
     };
-    Buffer22.prototype.readUint32BE = Buffer22.prototype.readUInt32BE = function readUInt32BE(offset3, noAssert) {
+    Buffer23.prototype.readUint32BE = Buffer23.prototype.readUInt32BE = function readUInt32BE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 4, this.length);
       return this[offset3] * 16777216 + (this[offset3 + 1] << 16 | this[offset3 + 2] << 8 | this[offset3 + 3]);
     };
-    Buffer22.prototype.readBigUInt64LE = defineBigIntMethod(function readBigUInt64LE(offset3) {
+    Buffer23.prototype.readBigUInt64LE = defineBigIntMethod(function readBigUInt64LE(offset3) {
       offset3 = offset3 >>> 0;
       validateNumber(offset3, "offset");
       const first = this[offset3];
@@ -1138,7 +1138,7 @@ var require_buffer = __commonJS({
       const hi = this[++offset3] + this[++offset3] * 2 ** 8 + this[++offset3] * 2 ** 16 + last * 2 ** 24;
       return BigInt(lo) + (BigInt(hi) << BigInt(32));
     });
-    Buffer22.prototype.readBigUInt64BE = defineBigIntMethod(function readBigUInt64BE(offset3) {
+    Buffer23.prototype.readBigUInt64BE = defineBigIntMethod(function readBigUInt64BE(offset3) {
       offset3 = offset3 >>> 0;
       validateNumber(offset3, "offset");
       const first = this[offset3];
@@ -1150,7 +1150,7 @@ var require_buffer = __commonJS({
       const lo = this[++offset3] * 2 ** 24 + this[++offset3] * 2 ** 16 + this[++offset3] * 2 ** 8 + last;
       return (BigInt(hi) << BigInt(32)) + BigInt(lo);
     });
-    Buffer22.prototype.readIntLE = function readIntLE(offset3, byteLength2, noAssert) {
+    Buffer23.prototype.readIntLE = function readIntLE(offset3, byteLength2, noAssert) {
       offset3 = offset3 >>> 0;
       byteLength2 = byteLength2 >>> 0;
       if (!noAssert) checkOffset(offset3, byteLength2, this.length);
@@ -1164,7 +1164,7 @@ var require_buffer = __commonJS({
       if (val >= mul) val -= Math.pow(2, 8 * byteLength2);
       return val;
     };
-    Buffer22.prototype.readIntBE = function readIntBE(offset3, byteLength2, noAssert) {
+    Buffer23.prototype.readIntBE = function readIntBE(offset3, byteLength2, noAssert) {
       offset3 = offset3 >>> 0;
       byteLength2 = byteLength2 >>> 0;
       if (!noAssert) checkOffset(offset3, byteLength2, this.length);
@@ -1178,35 +1178,35 @@ var require_buffer = __commonJS({
       if (val >= mul) val -= Math.pow(2, 8 * byteLength2);
       return val;
     };
-    Buffer22.prototype.readInt8 = function readInt8(offset3, noAssert) {
+    Buffer23.prototype.readInt8 = function readInt8(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 1, this.length);
       if (!(this[offset3] & 128)) return this[offset3];
       return (255 - this[offset3] + 1) * -1;
     };
-    Buffer22.prototype.readInt16LE = function readInt16LE(offset3, noAssert) {
+    Buffer23.prototype.readInt16LE = function readInt16LE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 2, this.length);
       const val = this[offset3] | this[offset3 + 1] << 8;
       return val & 32768 ? val | 4294901760 : val;
     };
-    Buffer22.prototype.readInt16BE = function readInt16BE(offset3, noAssert) {
+    Buffer23.prototype.readInt16BE = function readInt16BE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 2, this.length);
       const val = this[offset3 + 1] | this[offset3] << 8;
       return val & 32768 ? val | 4294901760 : val;
     };
-    Buffer22.prototype.readInt32LE = function readInt32LE(offset3, noAssert) {
+    Buffer23.prototype.readInt32LE = function readInt32LE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 4, this.length);
       return this[offset3] | this[offset3 + 1] << 8 | this[offset3 + 2] << 16 | this[offset3 + 3] << 24;
     };
-    Buffer22.prototype.readInt32BE = function readInt32BE(offset3, noAssert) {
+    Buffer23.prototype.readInt32BE = function readInt32BE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 4, this.length);
       return this[offset3] << 24 | this[offset3 + 1] << 16 | this[offset3 + 2] << 8 | this[offset3 + 3];
     };
-    Buffer22.prototype.readBigInt64LE = defineBigIntMethod(function readBigInt64LE(offset3) {
+    Buffer23.prototype.readBigInt64LE = defineBigIntMethod(function readBigInt64LE(offset3) {
       offset3 = offset3 >>> 0;
       validateNumber(offset3, "offset");
       const first = this[offset3];
@@ -1217,7 +1217,7 @@ var require_buffer = __commonJS({
       const val = this[offset3 + 4] + this[offset3 + 5] * 2 ** 8 + this[offset3 + 6] * 2 ** 16 + (last << 24);
       return (BigInt(val) << BigInt(32)) + BigInt(first + this[++offset3] * 2 ** 8 + this[++offset3] * 2 ** 16 + this[++offset3] * 2 ** 24);
     });
-    Buffer22.prototype.readBigInt64BE = defineBigIntMethod(function readBigInt64BE(offset3) {
+    Buffer23.prototype.readBigInt64BE = defineBigIntMethod(function readBigInt64BE(offset3) {
       offset3 = offset3 >>> 0;
       validateNumber(offset3, "offset");
       const first = this[offset3];
@@ -1229,32 +1229,32 @@ var require_buffer = __commonJS({
       this[++offset3] * 2 ** 16 + this[++offset3] * 2 ** 8 + this[++offset3];
       return (BigInt(val) << BigInt(32)) + BigInt(this[++offset3] * 2 ** 24 + this[++offset3] * 2 ** 16 + this[++offset3] * 2 ** 8 + last);
     });
-    Buffer22.prototype.readFloatLE = function readFloatLE(offset3, noAssert) {
+    Buffer23.prototype.readFloatLE = function readFloatLE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 4, this.length);
       return ieee754.read(this, offset3, true, 23, 4);
     };
-    Buffer22.prototype.readFloatBE = function readFloatBE(offset3, noAssert) {
+    Buffer23.prototype.readFloatBE = function readFloatBE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 4, this.length);
       return ieee754.read(this, offset3, false, 23, 4);
     };
-    Buffer22.prototype.readDoubleLE = function readDoubleLE(offset3, noAssert) {
+    Buffer23.prototype.readDoubleLE = function readDoubleLE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 8, this.length);
       return ieee754.read(this, offset3, true, 52, 8);
     };
-    Buffer22.prototype.readDoubleBE = function readDoubleBE(offset3, noAssert) {
+    Buffer23.prototype.readDoubleBE = function readDoubleBE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 8, this.length);
       return ieee754.read(this, offset3, false, 52, 8);
     };
     function checkInt(buf, value, offset3, ext, max, min) {
-      if (!Buffer22.isBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance');
+      if (!Buffer23.isBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance');
       if (value > max || value < min) throw new RangeError('"value" argument is out of bounds');
       if (offset3 + ext > buf.length) throw new RangeError("Index out of range");
     }
-    Buffer22.prototype.writeUintLE = Buffer22.prototype.writeUIntLE = function writeUIntLE(value, offset3, byteLength2, noAssert) {
+    Buffer23.prototype.writeUintLE = Buffer23.prototype.writeUIntLE = function writeUIntLE(value, offset3, byteLength2, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       byteLength2 = byteLength2 >>> 0;
@@ -1270,7 +1270,7 @@ var require_buffer = __commonJS({
       }
       return offset3 + byteLength2;
     };
-    Buffer22.prototype.writeUintBE = Buffer22.prototype.writeUIntBE = function writeUIntBE(value, offset3, byteLength2, noAssert) {
+    Buffer23.prototype.writeUintBE = Buffer23.prototype.writeUIntBE = function writeUIntBE(value, offset3, byteLength2, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       byteLength2 = byteLength2 >>> 0;
@@ -1286,14 +1286,14 @@ var require_buffer = __commonJS({
       }
       return offset3 + byteLength2;
     };
-    Buffer22.prototype.writeUint8 = Buffer22.prototype.writeUInt8 = function writeUInt8(value, offset3, noAssert) {
+    Buffer23.prototype.writeUint8 = Buffer23.prototype.writeUInt8 = function writeUInt8(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 1, 255, 0);
       this[offset3] = value & 255;
       return offset3 + 1;
     };
-    Buffer22.prototype.writeUint16LE = Buffer22.prototype.writeUInt16LE = function writeUInt16LE(value, offset3, noAssert) {
+    Buffer23.prototype.writeUint16LE = Buffer23.prototype.writeUInt16LE = function writeUInt16LE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 2, 65535, 0);
@@ -1301,7 +1301,7 @@ var require_buffer = __commonJS({
       this[offset3 + 1] = value >>> 8;
       return offset3 + 2;
     };
-    Buffer22.prototype.writeUint16BE = Buffer22.prototype.writeUInt16BE = function writeUInt16BE(value, offset3, noAssert) {
+    Buffer23.prototype.writeUint16BE = Buffer23.prototype.writeUInt16BE = function writeUInt16BE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 2, 65535, 0);
@@ -1309,7 +1309,7 @@ var require_buffer = __commonJS({
       this[offset3 + 1] = value & 255;
       return offset3 + 2;
     };
-    Buffer22.prototype.writeUint32LE = Buffer22.prototype.writeUInt32LE = function writeUInt32LE(value, offset3, noAssert) {
+    Buffer23.prototype.writeUint32LE = Buffer23.prototype.writeUInt32LE = function writeUInt32LE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 4, 4294967295, 0);
@@ -1319,7 +1319,7 @@ var require_buffer = __commonJS({
       this[offset3] = value & 255;
       return offset3 + 4;
     };
-    Buffer22.prototype.writeUint32BE = Buffer22.prototype.writeUInt32BE = function writeUInt32BE(value, offset3, noAssert) {
+    Buffer23.prototype.writeUint32BE = Buffer23.prototype.writeUInt32BE = function writeUInt32BE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 4, 4294967295, 0);
@@ -1369,13 +1369,13 @@ var require_buffer = __commonJS({
       buf[offset3] = hi;
       return offset3 + 8;
     }
-    Buffer22.prototype.writeBigUInt64LE = defineBigIntMethod(function writeBigUInt64LE(value, offset3 = 0) {
+    Buffer23.prototype.writeBigUInt64LE = defineBigIntMethod(function writeBigUInt64LE(value, offset3 = 0) {
       return wrtBigUInt64LE(this, value, offset3, BigInt(0), BigInt("0xffffffffffffffff"));
     });
-    Buffer22.prototype.writeBigUInt64BE = defineBigIntMethod(function writeBigUInt64BE(value, offset3 = 0) {
+    Buffer23.prototype.writeBigUInt64BE = defineBigIntMethod(function writeBigUInt64BE(value, offset3 = 0) {
       return wrtBigUInt64BE(this, value, offset3, BigInt(0), BigInt("0xffffffffffffffff"));
     });
-    Buffer22.prototype.writeIntLE = function writeIntLE(value, offset3, byteLength2, noAssert) {
+    Buffer23.prototype.writeIntLE = function writeIntLE(value, offset3, byteLength2, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) {
@@ -1394,7 +1394,7 @@ var require_buffer = __commonJS({
       }
       return offset3 + byteLength2;
     };
-    Buffer22.prototype.writeIntBE = function writeIntBE(value, offset3, byteLength2, noAssert) {
+    Buffer23.prototype.writeIntBE = function writeIntBE(value, offset3, byteLength2, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) {
@@ -1413,7 +1413,7 @@ var require_buffer = __commonJS({
       }
       return offset3 + byteLength2;
     };
-    Buffer22.prototype.writeInt8 = function writeInt8(value, offset3, noAssert) {
+    Buffer23.prototype.writeInt8 = function writeInt8(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 1, 127, -128);
@@ -1421,7 +1421,7 @@ var require_buffer = __commonJS({
       this[offset3] = value & 255;
       return offset3 + 1;
     };
-    Buffer22.prototype.writeInt16LE = function writeInt16LE(value, offset3, noAssert) {
+    Buffer23.prototype.writeInt16LE = function writeInt16LE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 2, 32767, -32768);
@@ -1429,7 +1429,7 @@ var require_buffer = __commonJS({
       this[offset3 + 1] = value >>> 8;
       return offset3 + 2;
     };
-    Buffer22.prototype.writeInt16BE = function writeInt16BE(value, offset3, noAssert) {
+    Buffer23.prototype.writeInt16BE = function writeInt16BE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 2, 32767, -32768);
@@ -1437,7 +1437,7 @@ var require_buffer = __commonJS({
       this[offset3 + 1] = value & 255;
       return offset3 + 2;
     };
-    Buffer22.prototype.writeInt32LE = function writeInt32LE(value, offset3, noAssert) {
+    Buffer23.prototype.writeInt32LE = function writeInt32LE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 4, 2147483647, -2147483648);
@@ -1447,7 +1447,7 @@ var require_buffer = __commonJS({
       this[offset3 + 3] = value >>> 24;
       return offset3 + 4;
     };
-    Buffer22.prototype.writeInt32BE = function writeInt32BE(value, offset3, noAssert) {
+    Buffer23.prototype.writeInt32BE = function writeInt32BE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 4, 2147483647, -2147483648);
@@ -1458,10 +1458,10 @@ var require_buffer = __commonJS({
       this[offset3 + 3] = value & 255;
       return offset3 + 4;
     };
-    Buffer22.prototype.writeBigInt64LE = defineBigIntMethod(function writeBigInt64LE(value, offset3 = 0) {
+    Buffer23.prototype.writeBigInt64LE = defineBigIntMethod(function writeBigInt64LE(value, offset3 = 0) {
       return wrtBigUInt64LE(this, value, offset3, -BigInt("0x8000000000000000"), BigInt("0x7fffffffffffffff"));
     });
-    Buffer22.prototype.writeBigInt64BE = defineBigIntMethod(function writeBigInt64BE(value, offset3 = 0) {
+    Buffer23.prototype.writeBigInt64BE = defineBigIntMethod(function writeBigInt64BE(value, offset3 = 0) {
       return wrtBigUInt64BE(this, value, offset3, -BigInt("0x8000000000000000"), BigInt("0x7fffffffffffffff"));
     });
     function checkIEEE754(buf, value, offset3, ext, max, min) {
@@ -1477,10 +1477,10 @@ var require_buffer = __commonJS({
       ieee754.write(buf, value, offset3, littleEndian, 23, 4);
       return offset3 + 4;
     }
-    Buffer22.prototype.writeFloatLE = function writeFloatLE(value, offset3, noAssert) {
+    Buffer23.prototype.writeFloatLE = function writeFloatLE(value, offset3, noAssert) {
       return writeFloat(this, value, offset3, true, noAssert);
     };
-    Buffer22.prototype.writeFloatBE = function writeFloatBE(value, offset3, noAssert) {
+    Buffer23.prototype.writeFloatBE = function writeFloatBE(value, offset3, noAssert) {
       return writeFloat(this, value, offset3, false, noAssert);
     };
     function writeDouble(buf, value, offset3, littleEndian, noAssert) {
@@ -1492,14 +1492,14 @@ var require_buffer = __commonJS({
       ieee754.write(buf, value, offset3, littleEndian, 52, 8);
       return offset3 + 8;
     }
-    Buffer22.prototype.writeDoubleLE = function writeDoubleLE(value, offset3, noAssert) {
+    Buffer23.prototype.writeDoubleLE = function writeDoubleLE(value, offset3, noAssert) {
       return writeDouble(this, value, offset3, true, noAssert);
     };
-    Buffer22.prototype.writeDoubleBE = function writeDoubleBE(value, offset3, noAssert) {
+    Buffer23.prototype.writeDoubleBE = function writeDoubleBE(value, offset3, noAssert) {
       return writeDouble(this, value, offset3, false, noAssert);
     };
-    Buffer22.prototype.copy = function copy(target, targetStart, start, end) {
-      if (!Buffer22.isBuffer(target)) throw new TypeError("argument should be a Buffer");
+    Buffer23.prototype.copy = function copy(target, targetStart, start, end) {
+      if (!Buffer23.isBuffer(target)) throw new TypeError("argument should be a Buffer");
       if (!start) start = 0;
       if (!end && end !== 0) end = this.length;
       if (targetStart >= target.length) targetStart = target.length;
@@ -1528,7 +1528,7 @@ var require_buffer = __commonJS({
       }
       return len;
     };
-    Buffer22.prototype.fill = function fill(val, start, end, encoding) {
+    Buffer23.prototype.fill = function fill(val, start, end, encoding) {
       if (typeof val === "string") {
         if (typeof start === "string") {
           encoding = start;
@@ -1541,7 +1541,7 @@ var require_buffer = __commonJS({
         if (encoding !== void 0 && typeof encoding !== "string") {
           throw new TypeError("encoding must be a string");
         }
-        if (typeof encoding === "string" && !Buffer22.isEncoding(encoding)) {
+        if (typeof encoding === "string" && !Buffer23.isEncoding(encoding)) {
           throw new TypeError("Unknown encoding: " + encoding);
         }
         if (val.length === 1) {
@@ -1570,7 +1570,7 @@ var require_buffer = __commonJS({
           this[i2] = val;
         }
       } else {
-        const bytes3 = Buffer22.isBuffer(val) ? val : Buffer22.from(val, encoding);
+        const bytes3 = Buffer23.isBuffer(val) ? val : Buffer23.from(val, encoding);
         const len = bytes3.length;
         if (len === 0) {
           throw new TypeError('The value "' + val + '" is invalid for argument "value"');
@@ -1872,12 +1872,12 @@ var require_bn = __commonJS({
       }
       BN3.BN = BN3;
       BN3.wordSize = 26;
-      var Buffer22;
+      var Buffer23;
       try {
         if (typeof window !== "undefined" && typeof window.Buffer !== "undefined") {
-          Buffer22 = window.Buffer;
+          Buffer23 = window.Buffer;
         } else {
-          Buffer22 = require_buffer2().Buffer;
+          Buffer23 = require_buffer2().Buffer;
         }
       } catch (e) {
       }
@@ -2334,9 +2334,9 @@ var require_bn = __commonJS({
       BN3.prototype.toJSON = function toJSON() {
         return this.toString(16, 2);
       };
-      if (Buffer22) {
+      if (Buffer23) {
         BN3.prototype.toBuffer = function toBuffer3(endian, length) {
-          return this.toArrayLike(Buffer22, endian, length);
+          return this.toArrayLike(Buffer23, endian, length);
         };
       }
       BN3.prototype.toArray = function toArray(endian, length) {
@@ -4739,34 +4739,34 @@ var require_safe_buffer = __commonJS({
     "use strict";
     /*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
     var buffer = require_buffer();
-    var Buffer22 = buffer.Buffer;
+    var Buffer23 = buffer.Buffer;
     function copyProps(src, dst) {
       for (var key2 in src) {
         dst[key2] = src[key2];
       }
     }
-    if (Buffer22.from && Buffer22.alloc && Buffer22.allocUnsafe && Buffer22.allocUnsafeSlow) {
+    if (Buffer23.from && Buffer23.alloc && Buffer23.allocUnsafe && Buffer23.allocUnsafeSlow) {
       module.exports = buffer;
     } else {
       copyProps(buffer, exports);
       exports.Buffer = SafeBuffer;
     }
     function SafeBuffer(arg, encodingOrOffset, length) {
-      return Buffer22(arg, encodingOrOffset, length);
+      return Buffer23(arg, encodingOrOffset, length);
     }
-    SafeBuffer.prototype = Object.create(Buffer22.prototype);
-    copyProps(Buffer22, SafeBuffer);
+    SafeBuffer.prototype = Object.create(Buffer23.prototype);
+    copyProps(Buffer23, SafeBuffer);
     SafeBuffer.from = function(arg, encodingOrOffset, length) {
       if (typeof arg === "number") {
         throw new TypeError("Argument must not be a number");
       }
-      return Buffer22(arg, encodingOrOffset, length);
+      return Buffer23(arg, encodingOrOffset, length);
     };
     SafeBuffer.alloc = function(size, fill, encoding) {
       if (typeof size !== "number") {
         throw new TypeError("Argument must be a number");
       }
-      var buf = Buffer22(size);
+      var buf = Buffer23(size);
       if (fill !== void 0) {
         if (typeof encoding === "string") {
           buf.fill(fill, encoding);
@@ -4782,7 +4782,7 @@ var require_safe_buffer = __commonJS({
       if (typeof size !== "number") {
         throw new TypeError("Argument must be a number");
       }
-      return Buffer22(size);
+      return Buffer23(size);
     };
     SafeBuffer.allocUnsafeSlow = function(size) {
       if (typeof size !== "number") {
@@ -8447,13 +8447,13 @@ var require_buffer3 = __commonJS({
     var base64 = require_base64_js2();
     var ieee754 = require_ieee7542();
     var customInspectSymbol = typeof Symbol === "function" && typeof Symbol["for"] === "function" ? Symbol["for"]("nodejs.util.inspect.custom") : null;
-    exports.Buffer = Buffer22;
+    exports.Buffer = Buffer23;
     exports.SlowBuffer = SlowBuffer;
     exports.INSPECT_MAX_BYTES = 50;
     var K_MAX_LENGTH = 2147483647;
     exports.kMaxLength = K_MAX_LENGTH;
-    Buffer22.TYPED_ARRAY_SUPPORT = typedArraySupport();
-    if (!Buffer22.TYPED_ARRAY_SUPPORT && typeof console !== "undefined" && typeof console.error === "function") {
+    Buffer23.TYPED_ARRAY_SUPPORT = typedArraySupport();
+    if (!Buffer23.TYPED_ARRAY_SUPPORT && typeof console !== "undefined" && typeof console.error === "function") {
       console.error(
         "This browser lacks typed array (Uint8Array) support which is required by `buffer` v5.x. Use `buffer` v4.x if you require old browser support."
       );
@@ -8471,17 +8471,17 @@ var require_buffer3 = __commonJS({
         return false;
       }
     }
-    Object.defineProperty(Buffer22.prototype, "parent", {
+    Object.defineProperty(Buffer23.prototype, "parent", {
       enumerable: true,
       get: function() {
-        if (!Buffer22.isBuffer(this)) return void 0;
+        if (!Buffer23.isBuffer(this)) return void 0;
         return this.buffer;
       }
     });
-    Object.defineProperty(Buffer22.prototype, "offset", {
+    Object.defineProperty(Buffer23.prototype, "offset", {
       enumerable: true,
       get: function() {
-        if (!Buffer22.isBuffer(this)) return void 0;
+        if (!Buffer23.isBuffer(this)) return void 0;
         return this.byteOffset;
       }
     });
@@ -8490,10 +8490,10 @@ var require_buffer3 = __commonJS({
         throw new RangeError('The value "' + length + '" is invalid for option "size"');
       }
       const buf = new Uint8Array(length);
-      Object.setPrototypeOf(buf, Buffer22.prototype);
+      Object.setPrototypeOf(buf, Buffer23.prototype);
       return buf;
     }
-    function Buffer22(arg, encodingOrOffset, length) {
+    function Buffer23(arg, encodingOrOffset, length) {
       if (typeof arg === "number") {
         if (typeof encodingOrOffset === "string") {
           throw new TypeError(
@@ -8504,7 +8504,7 @@ var require_buffer3 = __commonJS({
       }
       return from(arg, encodingOrOffset, length);
     }
-    Buffer22.poolSize = 8192;
+    Buffer23.poolSize = 8192;
     function from(value, encodingOrOffset, length) {
       if (typeof value === "string") {
         return fromString(value, encodingOrOffset);
@@ -8530,22 +8530,22 @@ var require_buffer3 = __commonJS({
       }
       const valueOf = value.valueOf && value.valueOf();
       if (valueOf != null && valueOf !== value) {
-        return Buffer22.from(valueOf, encodingOrOffset, length);
+        return Buffer23.from(valueOf, encodingOrOffset, length);
       }
       const b = fromObject(value);
       if (b) return b;
       if (typeof Symbol !== "undefined" && Symbol.toPrimitive != null && typeof value[Symbol.toPrimitive] === "function") {
-        return Buffer22.from(value[Symbol.toPrimitive]("string"), encodingOrOffset, length);
+        return Buffer23.from(value[Symbol.toPrimitive]("string"), encodingOrOffset, length);
       }
       throw new TypeError(
         "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received type " + typeof value
       );
     }
-    Buffer22.from = function(value, encodingOrOffset, length) {
+    Buffer23.from = function(value, encodingOrOffset, length) {
       return from(value, encodingOrOffset, length);
     };
-    Object.setPrototypeOf(Buffer22.prototype, Uint8Array.prototype);
-    Object.setPrototypeOf(Buffer22, Uint8Array);
+    Object.setPrototypeOf(Buffer23.prototype, Uint8Array.prototype);
+    Object.setPrototypeOf(Buffer23, Uint8Array);
     function assertSize(size) {
       if (typeof size !== "number") {
         throw new TypeError('"size" argument must be of type number');
@@ -8563,24 +8563,24 @@ var require_buffer3 = __commonJS({
       }
       return createBuffer(size);
     }
-    Buffer22.alloc = function(size, fill, encoding) {
+    Buffer23.alloc = function(size, fill, encoding) {
       return alloc(size, fill, encoding);
     };
     function allocUnsafe(size) {
       assertSize(size);
       return createBuffer(size < 0 ? 0 : checked(size) | 0);
     }
-    Buffer22.allocUnsafe = function(size) {
+    Buffer23.allocUnsafe = function(size) {
       return allocUnsafe(size);
     };
-    Buffer22.allocUnsafeSlow = function(size) {
+    Buffer23.allocUnsafeSlow = function(size) {
       return allocUnsafe(size);
     };
     function fromString(string3, encoding) {
       if (typeof encoding !== "string" || encoding === "") {
         encoding = "utf8";
       }
-      if (!Buffer22.isEncoding(encoding)) {
+      if (!Buffer23.isEncoding(encoding)) {
         throw new TypeError("Unknown encoding: " + encoding);
       }
       const length = byteLength(string3, encoding) | 0;
@@ -8621,11 +8621,11 @@ var require_buffer3 = __commonJS({
       } else {
         buf = new Uint8Array(array3, byteOffset, length);
       }
-      Object.setPrototypeOf(buf, Buffer22.prototype);
+      Object.setPrototypeOf(buf, Buffer23.prototype);
       return buf;
     }
     function fromObject(obj) {
-      if (Buffer22.isBuffer(obj)) {
+      if (Buffer23.isBuffer(obj)) {
         const len = checked(obj.length) | 0;
         const buf = createBuffer(len);
         if (buf.length === 0) {
@@ -8654,15 +8654,15 @@ var require_buffer3 = __commonJS({
       if (+length != length) {
         length = 0;
       }
-      return Buffer22.alloc(+length);
+      return Buffer23.alloc(+length);
     }
-    Buffer22.isBuffer = function isBuffer(b) {
-      return b != null && b._isBuffer === true && b !== Buffer22.prototype;
+    Buffer23.isBuffer = function isBuffer(b) {
+      return b != null && b._isBuffer === true && b !== Buffer23.prototype;
     };
-    Buffer22.compare = function compare3(a, b) {
-      if (isInstance(a, Uint8Array)) a = Buffer22.from(a, a.offset, a.byteLength);
-      if (isInstance(b, Uint8Array)) b = Buffer22.from(b, b.offset, b.byteLength);
-      if (!Buffer22.isBuffer(a) || !Buffer22.isBuffer(b)) {
+    Buffer23.compare = function compare3(a, b) {
+      if (isInstance(a, Uint8Array)) a = Buffer23.from(a, a.offset, a.byteLength);
+      if (isInstance(b, Uint8Array)) b = Buffer23.from(b, b.offset, b.byteLength);
+      if (!Buffer23.isBuffer(a) || !Buffer23.isBuffer(b)) {
         throw new TypeError(
           'The "buf1", "buf2" arguments must be one of type Buffer or Uint8Array'
         );
@@ -8681,7 +8681,7 @@ var require_buffer3 = __commonJS({
       if (y < x) return 1;
       return 0;
     };
-    Buffer22.isEncoding = function isEncoding(encoding) {
+    Buffer23.isEncoding = function isEncoding(encoding) {
       switch (String(encoding).toLowerCase()) {
         case "hex":
         case "utf8":
@@ -8699,12 +8699,12 @@ var require_buffer3 = __commonJS({
           return false;
       }
     };
-    Buffer22.concat = function concat2(list, length) {
+    Buffer23.concat = function concat2(list, length) {
       if (!Array.isArray(list)) {
         throw new TypeError('"list" argument must be an Array of Buffers');
       }
       if (list.length === 0) {
-        return Buffer22.alloc(0);
+        return Buffer23.alloc(0);
       }
       let i2;
       if (length === void 0) {
@@ -8713,13 +8713,13 @@ var require_buffer3 = __commonJS({
           length += list[i2].length;
         }
       }
-      const buffer = Buffer22.allocUnsafe(length);
+      const buffer = Buffer23.allocUnsafe(length);
       let pos = 0;
       for (i2 = 0; i2 < list.length; ++i2) {
         let buf = list[i2];
         if (isInstance(buf, Uint8Array)) {
           if (pos + buf.length > buffer.length) {
-            if (!Buffer22.isBuffer(buf)) buf = Buffer22.from(buf);
+            if (!Buffer23.isBuffer(buf)) buf = Buffer23.from(buf);
             buf.copy(buffer, pos);
           } else {
             Uint8Array.prototype.set.call(
@@ -8728,7 +8728,7 @@ var require_buffer3 = __commonJS({
               pos
             );
           }
-        } else if (!Buffer22.isBuffer(buf)) {
+        } else if (!Buffer23.isBuffer(buf)) {
           throw new TypeError('"list" argument must be an Array of Buffers');
         } else {
           buf.copy(buffer, pos);
@@ -8738,7 +8738,7 @@ var require_buffer3 = __commonJS({
       return buffer;
     };
     function byteLength(string3, encoding) {
-      if (Buffer22.isBuffer(string3)) {
+      if (Buffer23.isBuffer(string3)) {
         return string3.length;
       }
       if (ArrayBuffer.isView(string3) || isInstance(string3, ArrayBuffer)) {
@@ -8780,7 +8780,7 @@ var require_buffer3 = __commonJS({
         }
       }
     }
-    Buffer22.byteLength = byteLength;
+    Buffer23.byteLength = byteLength;
     function slowToString(encoding, start, end) {
       let loweredCase = false;
       if (start === void 0 || start < 0) {
@@ -8827,13 +8827,13 @@ var require_buffer3 = __commonJS({
         }
       }
     }
-    Buffer22.prototype._isBuffer = true;
+    Buffer23.prototype._isBuffer = true;
     function swap(b, n, m) {
       const i2 = b[n];
       b[n] = b[m];
       b[m] = i2;
     }
-    Buffer22.prototype.swap16 = function swap16() {
+    Buffer23.prototype.swap16 = function swap16() {
       const len = this.length;
       if (len % 2 !== 0) {
         throw new RangeError("Buffer size must be a multiple of 16-bits");
@@ -8843,7 +8843,7 @@ var require_buffer3 = __commonJS({
       }
       return this;
     };
-    Buffer22.prototype.swap32 = function swap32() {
+    Buffer23.prototype.swap32 = function swap32() {
       const len = this.length;
       if (len % 4 !== 0) {
         throw new RangeError("Buffer size must be a multiple of 32-bits");
@@ -8854,7 +8854,7 @@ var require_buffer3 = __commonJS({
       }
       return this;
     };
-    Buffer22.prototype.swap64 = function swap64() {
+    Buffer23.prototype.swap64 = function swap64() {
       const len = this.length;
       if (len % 8 !== 0) {
         throw new RangeError("Buffer size must be a multiple of 64-bits");
@@ -8867,19 +8867,19 @@ var require_buffer3 = __commonJS({
       }
       return this;
     };
-    Buffer22.prototype.toString = function toString() {
+    Buffer23.prototype.toString = function toString() {
       const length = this.length;
       if (length === 0) return "";
       if (arguments.length === 0) return utf8Slice(this, 0, length);
       return slowToString.apply(this, arguments);
     };
-    Buffer22.prototype.toLocaleString = Buffer22.prototype.toString;
-    Buffer22.prototype.equals = function equals(b) {
-      if (!Buffer22.isBuffer(b)) throw new TypeError("Argument must be a Buffer");
+    Buffer23.prototype.toLocaleString = Buffer23.prototype.toString;
+    Buffer23.prototype.equals = function equals(b) {
+      if (!Buffer23.isBuffer(b)) throw new TypeError("Argument must be a Buffer");
       if (this === b) return true;
-      return Buffer22.compare(this, b) === 0;
+      return Buffer23.compare(this, b) === 0;
     };
-    Buffer22.prototype.inspect = function inspect() {
+    Buffer23.prototype.inspect = function inspect() {
       let str = "";
       const max = exports.INSPECT_MAX_BYTES;
       str = this.toString("hex", 0, max).replace(/(.{2})/g, "$1 ").trim();
@@ -8887,13 +8887,13 @@ var require_buffer3 = __commonJS({
       return "<Buffer " + str + ">";
     };
     if (customInspectSymbol) {
-      Buffer22.prototype[customInspectSymbol] = Buffer22.prototype.inspect;
+      Buffer23.prototype[customInspectSymbol] = Buffer23.prototype.inspect;
     }
-    Buffer22.prototype.compare = function compare3(target, start, end, thisStart, thisEnd) {
+    Buffer23.prototype.compare = function compare3(target, start, end, thisStart, thisEnd) {
       if (isInstance(target, Uint8Array)) {
-        target = Buffer22.from(target, target.offset, target.byteLength);
+        target = Buffer23.from(target, target.offset, target.byteLength);
       }
-      if (!Buffer22.isBuffer(target)) {
+      if (!Buffer23.isBuffer(target)) {
         throw new TypeError(
           'The "target" argument must be one of type Buffer or Uint8Array. Received type ' + typeof target
         );
@@ -8966,9 +8966,9 @@ var require_buffer3 = __commonJS({
         else return -1;
       }
       if (typeof val === "string") {
-        val = Buffer22.from(val, encoding);
+        val = Buffer23.from(val, encoding);
       }
-      if (Buffer22.isBuffer(val)) {
+      if (Buffer23.isBuffer(val)) {
         if (val.length === 0) {
           return -1;
         }
@@ -9036,13 +9036,13 @@ var require_buffer3 = __commonJS({
       }
       return -1;
     }
-    Buffer22.prototype.includes = function includes(val, byteOffset, encoding) {
+    Buffer23.prototype.includes = function includes(val, byteOffset, encoding) {
       return this.indexOf(val, byteOffset, encoding) !== -1;
     };
-    Buffer22.prototype.indexOf = function indexOf(val, byteOffset, encoding) {
+    Buffer23.prototype.indexOf = function indexOf(val, byteOffset, encoding) {
       return bidirectionalIndexOf(this, val, byteOffset, encoding, true);
     };
-    Buffer22.prototype.lastIndexOf = function lastIndexOf(val, byteOffset, encoding) {
+    Buffer23.prototype.lastIndexOf = function lastIndexOf(val, byteOffset, encoding) {
       return bidirectionalIndexOf(this, val, byteOffset, encoding, false);
     };
     function hexWrite(buf, string3, offset3, length) {
@@ -9080,7 +9080,7 @@ var require_buffer3 = __commonJS({
     function ucs2Write(buf, string3, offset3, length) {
       return blitBuffer(utf16leToBytes(string3, buf.length - offset3), buf, offset3, length);
     }
-    Buffer22.prototype.write = function write(string3, offset3, length, encoding) {
+    Buffer23.prototype.write = function write(string3, offset3, length, encoding) {
       if (offset3 === void 0) {
         encoding = "utf8";
         length = this.length;
@@ -9135,7 +9135,7 @@ var require_buffer3 = __commonJS({
         }
       }
     };
-    Buffer22.prototype.toJSON = function toJSON() {
+    Buffer23.prototype.toJSON = function toJSON() {
       return {
         type: "Buffer",
         data: Array.prototype.slice.call(this._arr || this, 0)
@@ -9258,7 +9258,7 @@ var require_buffer3 = __commonJS({
       }
       return res;
     }
-    Buffer22.prototype.slice = function slice(start, end) {
+    Buffer23.prototype.slice = function slice(start, end) {
       const len = this.length;
       start = ~~start;
       end = end === void 0 ? len : ~~end;
@@ -9276,14 +9276,14 @@ var require_buffer3 = __commonJS({
       }
       if (end < start) end = start;
       const newBuf = this.subarray(start, end);
-      Object.setPrototypeOf(newBuf, Buffer22.prototype);
+      Object.setPrototypeOf(newBuf, Buffer23.prototype);
       return newBuf;
     };
     function checkOffset(offset3, ext, length) {
       if (offset3 % 1 !== 0 || offset3 < 0) throw new RangeError("offset is not uint");
       if (offset3 + ext > length) throw new RangeError("Trying to access beyond buffer length");
     }
-    Buffer22.prototype.readUintLE = Buffer22.prototype.readUIntLE = function readUIntLE(offset3, byteLength2, noAssert) {
+    Buffer23.prototype.readUintLE = Buffer23.prototype.readUIntLE = function readUIntLE(offset3, byteLength2, noAssert) {
       offset3 = offset3 >>> 0;
       byteLength2 = byteLength2 >>> 0;
       if (!noAssert) checkOffset(offset3, byteLength2, this.length);
@@ -9295,7 +9295,7 @@ var require_buffer3 = __commonJS({
       }
       return val;
     };
-    Buffer22.prototype.readUintBE = Buffer22.prototype.readUIntBE = function readUIntBE(offset3, byteLength2, noAssert) {
+    Buffer23.prototype.readUintBE = Buffer23.prototype.readUIntBE = function readUIntBE(offset3, byteLength2, noAssert) {
       offset3 = offset3 >>> 0;
       byteLength2 = byteLength2 >>> 0;
       if (!noAssert) {
@@ -9308,32 +9308,32 @@ var require_buffer3 = __commonJS({
       }
       return val;
     };
-    Buffer22.prototype.readUint8 = Buffer22.prototype.readUInt8 = function readUInt8(offset3, noAssert) {
+    Buffer23.prototype.readUint8 = Buffer23.prototype.readUInt8 = function readUInt8(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 1, this.length);
       return this[offset3];
     };
-    Buffer22.prototype.readUint16LE = Buffer22.prototype.readUInt16LE = function readUInt16LE(offset3, noAssert) {
+    Buffer23.prototype.readUint16LE = Buffer23.prototype.readUInt16LE = function readUInt16LE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 2, this.length);
       return this[offset3] | this[offset3 + 1] << 8;
     };
-    Buffer22.prototype.readUint16BE = Buffer22.prototype.readUInt16BE = function readUInt16BE(offset3, noAssert) {
+    Buffer23.prototype.readUint16BE = Buffer23.prototype.readUInt16BE = function readUInt16BE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 2, this.length);
       return this[offset3] << 8 | this[offset3 + 1];
     };
-    Buffer22.prototype.readUint32LE = Buffer22.prototype.readUInt32LE = function readUInt32LE(offset3, noAssert) {
+    Buffer23.prototype.readUint32LE = Buffer23.prototype.readUInt32LE = function readUInt32LE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 4, this.length);
       return (this[offset3] | this[offset3 + 1] << 8 | this[offset3 + 2] << 16) + this[offset3 + 3] * 16777216;
     };
-    Buffer22.prototype.readUint32BE = Buffer22.prototype.readUInt32BE = function readUInt32BE(offset3, noAssert) {
+    Buffer23.prototype.readUint32BE = Buffer23.prototype.readUInt32BE = function readUInt32BE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 4, this.length);
       return this[offset3] * 16777216 + (this[offset3 + 1] << 16 | this[offset3 + 2] << 8 | this[offset3 + 3]);
     };
-    Buffer22.prototype.readBigUInt64LE = defineBigIntMethod(function readBigUInt64LE(offset3) {
+    Buffer23.prototype.readBigUInt64LE = defineBigIntMethod(function readBigUInt64LE(offset3) {
       offset3 = offset3 >>> 0;
       validateNumber(offset3, "offset");
       const first = this[offset3];
@@ -9345,7 +9345,7 @@ var require_buffer3 = __commonJS({
       const hi = this[++offset3] + this[++offset3] * 2 ** 8 + this[++offset3] * 2 ** 16 + last * 2 ** 24;
       return BigInt(lo) + (BigInt(hi) << BigInt(32));
     });
-    Buffer22.prototype.readBigUInt64BE = defineBigIntMethod(function readBigUInt64BE(offset3) {
+    Buffer23.prototype.readBigUInt64BE = defineBigIntMethod(function readBigUInt64BE(offset3) {
       offset3 = offset3 >>> 0;
       validateNumber(offset3, "offset");
       const first = this[offset3];
@@ -9357,7 +9357,7 @@ var require_buffer3 = __commonJS({
       const lo = this[++offset3] * 2 ** 24 + this[++offset3] * 2 ** 16 + this[++offset3] * 2 ** 8 + last;
       return (BigInt(hi) << BigInt(32)) + BigInt(lo);
     });
-    Buffer22.prototype.readIntLE = function readIntLE(offset3, byteLength2, noAssert) {
+    Buffer23.prototype.readIntLE = function readIntLE(offset3, byteLength2, noAssert) {
       offset3 = offset3 >>> 0;
       byteLength2 = byteLength2 >>> 0;
       if (!noAssert) checkOffset(offset3, byteLength2, this.length);
@@ -9371,7 +9371,7 @@ var require_buffer3 = __commonJS({
       if (val >= mul) val -= Math.pow(2, 8 * byteLength2);
       return val;
     };
-    Buffer22.prototype.readIntBE = function readIntBE(offset3, byteLength2, noAssert) {
+    Buffer23.prototype.readIntBE = function readIntBE(offset3, byteLength2, noAssert) {
       offset3 = offset3 >>> 0;
       byteLength2 = byteLength2 >>> 0;
       if (!noAssert) checkOffset(offset3, byteLength2, this.length);
@@ -9385,35 +9385,35 @@ var require_buffer3 = __commonJS({
       if (val >= mul) val -= Math.pow(2, 8 * byteLength2);
       return val;
     };
-    Buffer22.prototype.readInt8 = function readInt8(offset3, noAssert) {
+    Buffer23.prototype.readInt8 = function readInt8(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 1, this.length);
       if (!(this[offset3] & 128)) return this[offset3];
       return (255 - this[offset3] + 1) * -1;
     };
-    Buffer22.prototype.readInt16LE = function readInt16LE(offset3, noAssert) {
+    Buffer23.prototype.readInt16LE = function readInt16LE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 2, this.length);
       const val = this[offset3] | this[offset3 + 1] << 8;
       return val & 32768 ? val | 4294901760 : val;
     };
-    Buffer22.prototype.readInt16BE = function readInt16BE(offset3, noAssert) {
+    Buffer23.prototype.readInt16BE = function readInt16BE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 2, this.length);
       const val = this[offset3 + 1] | this[offset3] << 8;
       return val & 32768 ? val | 4294901760 : val;
     };
-    Buffer22.prototype.readInt32LE = function readInt32LE(offset3, noAssert) {
+    Buffer23.prototype.readInt32LE = function readInt32LE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 4, this.length);
       return this[offset3] | this[offset3 + 1] << 8 | this[offset3 + 2] << 16 | this[offset3 + 3] << 24;
     };
-    Buffer22.prototype.readInt32BE = function readInt32BE(offset3, noAssert) {
+    Buffer23.prototype.readInt32BE = function readInt32BE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 4, this.length);
       return this[offset3] << 24 | this[offset3 + 1] << 16 | this[offset3 + 2] << 8 | this[offset3 + 3];
     };
-    Buffer22.prototype.readBigInt64LE = defineBigIntMethod(function readBigInt64LE(offset3) {
+    Buffer23.prototype.readBigInt64LE = defineBigIntMethod(function readBigInt64LE(offset3) {
       offset3 = offset3 >>> 0;
       validateNumber(offset3, "offset");
       const first = this[offset3];
@@ -9424,7 +9424,7 @@ var require_buffer3 = __commonJS({
       const val = this[offset3 + 4] + this[offset3 + 5] * 2 ** 8 + this[offset3 + 6] * 2 ** 16 + (last << 24);
       return (BigInt(val) << BigInt(32)) + BigInt(first + this[++offset3] * 2 ** 8 + this[++offset3] * 2 ** 16 + this[++offset3] * 2 ** 24);
     });
-    Buffer22.prototype.readBigInt64BE = defineBigIntMethod(function readBigInt64BE(offset3) {
+    Buffer23.prototype.readBigInt64BE = defineBigIntMethod(function readBigInt64BE(offset3) {
       offset3 = offset3 >>> 0;
       validateNumber(offset3, "offset");
       const first = this[offset3];
@@ -9436,32 +9436,32 @@ var require_buffer3 = __commonJS({
       this[++offset3] * 2 ** 16 + this[++offset3] * 2 ** 8 + this[++offset3];
       return (BigInt(val) << BigInt(32)) + BigInt(this[++offset3] * 2 ** 24 + this[++offset3] * 2 ** 16 + this[++offset3] * 2 ** 8 + last);
     });
-    Buffer22.prototype.readFloatLE = function readFloatLE(offset3, noAssert) {
+    Buffer23.prototype.readFloatLE = function readFloatLE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 4, this.length);
       return ieee754.read(this, offset3, true, 23, 4);
     };
-    Buffer22.prototype.readFloatBE = function readFloatBE(offset3, noAssert) {
+    Buffer23.prototype.readFloatBE = function readFloatBE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 4, this.length);
       return ieee754.read(this, offset3, false, 23, 4);
     };
-    Buffer22.prototype.readDoubleLE = function readDoubleLE(offset3, noAssert) {
+    Buffer23.prototype.readDoubleLE = function readDoubleLE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 8, this.length);
       return ieee754.read(this, offset3, true, 52, 8);
     };
-    Buffer22.prototype.readDoubleBE = function readDoubleBE(offset3, noAssert) {
+    Buffer23.prototype.readDoubleBE = function readDoubleBE(offset3, noAssert) {
       offset3 = offset3 >>> 0;
       if (!noAssert) checkOffset(offset3, 8, this.length);
       return ieee754.read(this, offset3, false, 52, 8);
     };
     function checkInt(buf, value, offset3, ext, max, min) {
-      if (!Buffer22.isBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance');
+      if (!Buffer23.isBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance');
       if (value > max || value < min) throw new RangeError('"value" argument is out of bounds');
       if (offset3 + ext > buf.length) throw new RangeError("Index out of range");
     }
-    Buffer22.prototype.writeUintLE = Buffer22.prototype.writeUIntLE = function writeUIntLE(value, offset3, byteLength2, noAssert) {
+    Buffer23.prototype.writeUintLE = Buffer23.prototype.writeUIntLE = function writeUIntLE(value, offset3, byteLength2, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       byteLength2 = byteLength2 >>> 0;
@@ -9477,7 +9477,7 @@ var require_buffer3 = __commonJS({
       }
       return offset3 + byteLength2;
     };
-    Buffer22.prototype.writeUintBE = Buffer22.prototype.writeUIntBE = function writeUIntBE(value, offset3, byteLength2, noAssert) {
+    Buffer23.prototype.writeUintBE = Buffer23.prototype.writeUIntBE = function writeUIntBE(value, offset3, byteLength2, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       byteLength2 = byteLength2 >>> 0;
@@ -9493,14 +9493,14 @@ var require_buffer3 = __commonJS({
       }
       return offset3 + byteLength2;
     };
-    Buffer22.prototype.writeUint8 = Buffer22.prototype.writeUInt8 = function writeUInt8(value, offset3, noAssert) {
+    Buffer23.prototype.writeUint8 = Buffer23.prototype.writeUInt8 = function writeUInt8(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 1, 255, 0);
       this[offset3] = value & 255;
       return offset3 + 1;
     };
-    Buffer22.prototype.writeUint16LE = Buffer22.prototype.writeUInt16LE = function writeUInt16LE(value, offset3, noAssert) {
+    Buffer23.prototype.writeUint16LE = Buffer23.prototype.writeUInt16LE = function writeUInt16LE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 2, 65535, 0);
@@ -9508,7 +9508,7 @@ var require_buffer3 = __commonJS({
       this[offset3 + 1] = value >>> 8;
       return offset3 + 2;
     };
-    Buffer22.prototype.writeUint16BE = Buffer22.prototype.writeUInt16BE = function writeUInt16BE(value, offset3, noAssert) {
+    Buffer23.prototype.writeUint16BE = Buffer23.prototype.writeUInt16BE = function writeUInt16BE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 2, 65535, 0);
@@ -9516,7 +9516,7 @@ var require_buffer3 = __commonJS({
       this[offset3 + 1] = value & 255;
       return offset3 + 2;
     };
-    Buffer22.prototype.writeUint32LE = Buffer22.prototype.writeUInt32LE = function writeUInt32LE(value, offset3, noAssert) {
+    Buffer23.prototype.writeUint32LE = Buffer23.prototype.writeUInt32LE = function writeUInt32LE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 4, 4294967295, 0);
@@ -9526,7 +9526,7 @@ var require_buffer3 = __commonJS({
       this[offset3] = value & 255;
       return offset3 + 4;
     };
-    Buffer22.prototype.writeUint32BE = Buffer22.prototype.writeUInt32BE = function writeUInt32BE(value, offset3, noAssert) {
+    Buffer23.prototype.writeUint32BE = Buffer23.prototype.writeUInt32BE = function writeUInt32BE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 4, 4294967295, 0);
@@ -9576,13 +9576,13 @@ var require_buffer3 = __commonJS({
       buf[offset3] = hi;
       return offset3 + 8;
     }
-    Buffer22.prototype.writeBigUInt64LE = defineBigIntMethod(function writeBigUInt64LE(value, offset3 = 0) {
+    Buffer23.prototype.writeBigUInt64LE = defineBigIntMethod(function writeBigUInt64LE(value, offset3 = 0) {
       return wrtBigUInt64LE(this, value, offset3, BigInt(0), BigInt("0xffffffffffffffff"));
     });
-    Buffer22.prototype.writeBigUInt64BE = defineBigIntMethod(function writeBigUInt64BE(value, offset3 = 0) {
+    Buffer23.prototype.writeBigUInt64BE = defineBigIntMethod(function writeBigUInt64BE(value, offset3 = 0) {
       return wrtBigUInt64BE(this, value, offset3, BigInt(0), BigInt("0xffffffffffffffff"));
     });
-    Buffer22.prototype.writeIntLE = function writeIntLE(value, offset3, byteLength2, noAssert) {
+    Buffer23.prototype.writeIntLE = function writeIntLE(value, offset3, byteLength2, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) {
@@ -9601,7 +9601,7 @@ var require_buffer3 = __commonJS({
       }
       return offset3 + byteLength2;
     };
-    Buffer22.prototype.writeIntBE = function writeIntBE(value, offset3, byteLength2, noAssert) {
+    Buffer23.prototype.writeIntBE = function writeIntBE(value, offset3, byteLength2, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) {
@@ -9620,7 +9620,7 @@ var require_buffer3 = __commonJS({
       }
       return offset3 + byteLength2;
     };
-    Buffer22.prototype.writeInt8 = function writeInt8(value, offset3, noAssert) {
+    Buffer23.prototype.writeInt8 = function writeInt8(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 1, 127, -128);
@@ -9628,7 +9628,7 @@ var require_buffer3 = __commonJS({
       this[offset3] = value & 255;
       return offset3 + 1;
     };
-    Buffer22.prototype.writeInt16LE = function writeInt16LE(value, offset3, noAssert) {
+    Buffer23.prototype.writeInt16LE = function writeInt16LE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 2, 32767, -32768);
@@ -9636,7 +9636,7 @@ var require_buffer3 = __commonJS({
       this[offset3 + 1] = value >>> 8;
       return offset3 + 2;
     };
-    Buffer22.prototype.writeInt16BE = function writeInt16BE(value, offset3, noAssert) {
+    Buffer23.prototype.writeInt16BE = function writeInt16BE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 2, 32767, -32768);
@@ -9644,7 +9644,7 @@ var require_buffer3 = __commonJS({
       this[offset3 + 1] = value & 255;
       return offset3 + 2;
     };
-    Buffer22.prototype.writeInt32LE = function writeInt32LE(value, offset3, noAssert) {
+    Buffer23.prototype.writeInt32LE = function writeInt32LE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 4, 2147483647, -2147483648);
@@ -9654,7 +9654,7 @@ var require_buffer3 = __commonJS({
       this[offset3 + 3] = value >>> 24;
       return offset3 + 4;
     };
-    Buffer22.prototype.writeInt32BE = function writeInt32BE(value, offset3, noAssert) {
+    Buffer23.prototype.writeInt32BE = function writeInt32BE(value, offset3, noAssert) {
       value = +value;
       offset3 = offset3 >>> 0;
       if (!noAssert) checkInt(this, value, offset3, 4, 2147483647, -2147483648);
@@ -9665,10 +9665,10 @@ var require_buffer3 = __commonJS({
       this[offset3 + 3] = value & 255;
       return offset3 + 4;
     };
-    Buffer22.prototype.writeBigInt64LE = defineBigIntMethod(function writeBigInt64LE(value, offset3 = 0) {
+    Buffer23.prototype.writeBigInt64LE = defineBigIntMethod(function writeBigInt64LE(value, offset3 = 0) {
       return wrtBigUInt64LE(this, value, offset3, -BigInt("0x8000000000000000"), BigInt("0x7fffffffffffffff"));
     });
-    Buffer22.prototype.writeBigInt64BE = defineBigIntMethod(function writeBigInt64BE(value, offset3 = 0) {
+    Buffer23.prototype.writeBigInt64BE = defineBigIntMethod(function writeBigInt64BE(value, offset3 = 0) {
       return wrtBigUInt64BE(this, value, offset3, -BigInt("0x8000000000000000"), BigInt("0x7fffffffffffffff"));
     });
     function checkIEEE754(buf, value, offset3, ext, max, min) {
@@ -9684,10 +9684,10 @@ var require_buffer3 = __commonJS({
       ieee754.write(buf, value, offset3, littleEndian, 23, 4);
       return offset3 + 4;
     }
-    Buffer22.prototype.writeFloatLE = function writeFloatLE(value, offset3, noAssert) {
+    Buffer23.prototype.writeFloatLE = function writeFloatLE(value, offset3, noAssert) {
       return writeFloat(this, value, offset3, true, noAssert);
     };
-    Buffer22.prototype.writeFloatBE = function writeFloatBE(value, offset3, noAssert) {
+    Buffer23.prototype.writeFloatBE = function writeFloatBE(value, offset3, noAssert) {
       return writeFloat(this, value, offset3, false, noAssert);
     };
     function writeDouble(buf, value, offset3, littleEndian, noAssert) {
@@ -9699,14 +9699,14 @@ var require_buffer3 = __commonJS({
       ieee754.write(buf, value, offset3, littleEndian, 52, 8);
       return offset3 + 8;
     }
-    Buffer22.prototype.writeDoubleLE = function writeDoubleLE(value, offset3, noAssert) {
+    Buffer23.prototype.writeDoubleLE = function writeDoubleLE(value, offset3, noAssert) {
       return writeDouble(this, value, offset3, true, noAssert);
     };
-    Buffer22.prototype.writeDoubleBE = function writeDoubleBE(value, offset3, noAssert) {
+    Buffer23.prototype.writeDoubleBE = function writeDoubleBE(value, offset3, noAssert) {
       return writeDouble(this, value, offset3, false, noAssert);
     };
-    Buffer22.prototype.copy = function copy(target, targetStart, start, end) {
-      if (!Buffer22.isBuffer(target)) throw new TypeError("argument should be a Buffer");
+    Buffer23.prototype.copy = function copy(target, targetStart, start, end) {
+      if (!Buffer23.isBuffer(target)) throw new TypeError("argument should be a Buffer");
       if (!start) start = 0;
       if (!end && end !== 0) end = this.length;
       if (targetStart >= target.length) targetStart = target.length;
@@ -9735,7 +9735,7 @@ var require_buffer3 = __commonJS({
       }
       return len;
     };
-    Buffer22.prototype.fill = function fill(val, start, end, encoding) {
+    Buffer23.prototype.fill = function fill(val, start, end, encoding) {
       if (typeof val === "string") {
         if (typeof start === "string") {
           encoding = start;
@@ -9748,7 +9748,7 @@ var require_buffer3 = __commonJS({
         if (encoding !== void 0 && typeof encoding !== "string") {
           throw new TypeError("encoding must be a string");
         }
-        if (typeof encoding === "string" && !Buffer22.isEncoding(encoding)) {
+        if (typeof encoding === "string" && !Buffer23.isEncoding(encoding)) {
           throw new TypeError("Unknown encoding: " + encoding);
         }
         if (val.length === 1) {
@@ -9777,7 +9777,7 @@ var require_buffer3 = __commonJS({
           this[i2] = val;
         }
       } else {
-        const bytes3 = Buffer22.isBuffer(val) ? val : Buffer22.from(val, encoding);
+        const bytes3 = Buffer23.isBuffer(val) ? val : Buffer23.from(val, encoding);
         const len = bytes3.length;
         if (len === 0) {
           throw new TypeError('The value "' + val + '" is invalid for argument "value"');
@@ -10079,12 +10079,12 @@ var require_bn2 = __commonJS({
       }
       BN3.BN = BN3;
       BN3.wordSize = 26;
-      var Buffer22;
+      var Buffer23;
       try {
         if (typeof window !== "undefined" && typeof window.Buffer !== "undefined") {
-          Buffer22 = window.Buffer;
+          Buffer23 = window.Buffer;
         } else {
-          Buffer22 = require_buffer4().Buffer;
+          Buffer23 = require_buffer4().Buffer;
         }
       } catch (e) {
       }
@@ -10541,9 +10541,9 @@ var require_bn2 = __commonJS({
       BN3.prototype.toJSON = function toJSON() {
         return this.toString(16, 2);
       };
-      if (Buffer22) {
+      if (Buffer23) {
         BN3.prototype.toBuffer = function toBuffer3(endian, length) {
-          return this.toArrayLike(Buffer22, endian, length);
+          return this.toArrayLike(Buffer23, endian, length);
         };
       }
       BN3.prototype.toArray = function toArray(endian, length) {
@@ -12946,34 +12946,34 @@ var require_safe_buffer2 = __commonJS({
     "use strict";
     /*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
     var buffer = require_buffer3();
-    var Buffer22 = buffer.Buffer;
+    var Buffer23 = buffer.Buffer;
     function copyProps(src, dst) {
       for (var key2 in src) {
         dst[key2] = src[key2];
       }
     }
-    if (Buffer22.from && Buffer22.alloc && Buffer22.allocUnsafe && Buffer22.allocUnsafeSlow) {
+    if (Buffer23.from && Buffer23.alloc && Buffer23.allocUnsafe && Buffer23.allocUnsafeSlow) {
       module.exports = buffer;
     } else {
       copyProps(buffer, exports);
       exports.Buffer = SafeBuffer;
     }
     function SafeBuffer(arg, encodingOrOffset, length) {
-      return Buffer22(arg, encodingOrOffset, length);
+      return Buffer23(arg, encodingOrOffset, length);
     }
-    SafeBuffer.prototype = Object.create(Buffer22.prototype);
-    copyProps(Buffer22, SafeBuffer);
+    SafeBuffer.prototype = Object.create(Buffer23.prototype);
+    copyProps(Buffer23, SafeBuffer);
     SafeBuffer.from = function(arg, encodingOrOffset, length) {
       if (typeof arg === "number") {
         throw new TypeError("Argument must not be a number");
       }
-      return Buffer22(arg, encodingOrOffset, length);
+      return Buffer23(arg, encodingOrOffset, length);
     };
     SafeBuffer.alloc = function(size, fill, encoding) {
       if (typeof size !== "number") {
         throw new TypeError("Argument must be a number");
       }
-      var buf = Buffer22(size);
+      var buf = Buffer23(size);
       if (fill !== void 0) {
         if (typeof encoding === "string") {
           buf.fill(fill, encoding);
@@ -12989,7 +12989,7 @@ var require_safe_buffer2 = __commonJS({
       if (typeof size !== "number") {
         throw new TypeError("Argument must be a number");
       }
-      return Buffer22(size);
+      return Buffer23(size);
     };
     SafeBuffer.allocUnsafeSlow = function(size) {
       if (typeof size !== "number") {
@@ -47645,6 +47645,105 @@ async function verifyPoker(b) {
   };
 }
 
+// lib/verification/delegation.ts
+var import_buffer21 = __toESM(require_buffer(), 1);
+var DELEGATION = "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh";
+var PERPS = "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7";
+var LOADER = "BPFLoaderUpgradeab1e11111111111111111111111";
+var SYSTEM = "11111111111111111111111111111111";
+var TX = "mxyLvQ5vjAGWunKQi3BM9NykP4ETBnpD3XtoEVsVwtTphWAf26VTVyWySXC5KywpNgkDgSmSDM2gd3W11CmJMNq";
+var pda3 = (seeds, program) => PublicKey.findProgramAddressSync(seeds, new PublicKey(program))[0].toBase58();
+var delegationAddresses = () => {
+  const risk = pda3([text("er-risk")], PERPS), bytes3 = new PublicKey(risk).toBytes();
+  return {
+    delegation: DELEGATION,
+    perps: PERPS,
+    risk,
+    record: pda3([text("delegation"), bytes3], DELEGATION),
+    metadata: pda3([text("delegation-metadata"), bytes3], DELEGATION)
+  };
+};
+async function verifyDelegationEvidence(b) {
+  need(b.schemaVersion === 1 && b.genesisHash === GENESIS, "Expected mainnet delegation evidence");
+  const addresses2 = delegationAddresses();
+  for (const [name, address] of Object.entries(addresses2)) {
+    need(b.addresses[name] === address, "Incorrect program or derived address: " + name);
+    const account = b.accounts[address]?.value;
+    need(account && account.lamports > 0, "Account missing: " + name);
+    const program = name === "delegation" || name === "perps";
+    need(account.owner === (program ? LOADER : DELEGATION) && account.executable === program, "Incorrect owner/executable: " + name);
+    need(account.data?.[1] === "base64", "Expected base64 account data");
+  }
+  const record3 = import_buffer21.Buffer.from(b.accounts[addresses2.record].value.data[0], "base64");
+  need(record3.length === 96, "Unexpected delegation record layout");
+  const validator = new PublicKey(record3.subarray(8, 40)).toBase58();
+  need(validator !== SYSTEM, "Missing delegated validator");
+  need(b.records.length === 1 && b.records[0].signature === TX, "Expected pinned delegation receipt");
+  validateReceipts(b.records, b.genesisHash);
+  const tx = b.records[0].receipt;
+  const discriminator = (await hash(text("global:er_delegate_risk"))).subarray(0, 8);
+  const index = tx.transaction.message.instructions.findIndex((ix) => ix.programId === PERPS && ix.accounts?.includes(addresses2.risk) && ix.accounts?.includes(addresses2.record) && ix.accounts?.includes(addresses2.metadata) && ix.accounts?.includes(DELEGATION) && wire(ix.data).equals(discriminator));
+  need(index >= 0, "Missing Perps er_delegate_risk instruction");
+  const inner2 = tx.meta.innerInstructions.find((group) => group.index === index)?.instructions ?? [];
+  need(
+    inner2.some((ix) => ix.programId === DELEGATION && [PERPS, addresses2.risk, addresses2.record, addresses2.metadata].every((k) => ix.accounts?.includes(k))),
+    "Missing associated Delegation Program invocation"
+  );
+  need(
+    inner2.some((ix) => ix.programId === SYSTEM && ix.parsed?.type === "assign" && ix.parsed.info.account === addresses2.risk && ix.parsed.info.owner === DELEGATION),
+    "Missing risk-account owner assignment"
+  );
+  const accountSlots = Object.values(b.accounts).map((a) => a.context?.slot);
+  need(accountSlots.every((s) => Number.isSafeInteger(s) && s >= tx.slot), "Account reads predate delegation");
+  return {
+    status: "pass",
+    scope: "perps-mainnet-delegation-only",
+    checkedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    transactionsSubmitted: 0,
+    addresses: addresses2,
+    validator,
+    accountSlots,
+    receipt: { signature: TX, slot: tx.slot, explorer: "https://solscan.io/tx/" + TX },
+    checks: [
+      "Solana mainnet genesis",
+      "Executable MagicBlock delegation and Perps programs",
+      "Canonical Perps risk PDA and delegation-record/metadata PDAs",
+      "Current delegated account ownership",
+      "Successful Perps delegation instruction, nested MagicBlock invocation and owner assignment"
+    ],
+    limits: [
+      "Current root SDICE risk delegation and one historical delegation transaction only; not all markets or every ER transaction.",
+      "Does not verify Perps prices, owner authorization of a trade, liquidations, commitments, USDC payouts or poker shuffles.",
+      "Live reads trust the selected RPC and finalized Solana consensus. Archived evidence alone does not establish fresh inclusion.",
+      "Programs remain upgradeable. Delegation does not imply Solana L1 consensus for every ER execution."
+    ]
+  };
+}
+async function loadDelegationEvidence(rpcUrl = "https://api.mainnet-beta.solana.com") {
+  const url = new URL(rpcUrl);
+  need(url.protocol === "https:" || ["localhost", "127.0.0.1"].includes(url.hostname), "Use a trusted HTTPS RPC");
+  const rpc = async (method, params = []) => {
+    const response2 = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
+      signal: AbortSignal.timeout(2e4)
+    });
+    need(response2.ok, "RPC unavailable: HTTP " + response2.status);
+    const body = await response2.json();
+    need(!body.error, "RPC error: " + body.error?.code);
+    need(body.result != null, "RPC evidence unavailable: " + method);
+    return body.result;
+  };
+  const genesisHash = await rpc("getGenesisHash");
+  need(genesisHash === GENESIS, "Wrong RPC network");
+  const addresses2 = delegationAddresses();
+  const response = await rpc("getMultipleAccounts", [Object.values(addresses2), { encoding: "base64", commitment: "finalized" }]);
+  const accounts = Object.fromEntries(Object.values(addresses2).map((address, i2) => [address, { context: response.context, value: response.value[i2] }]));
+  const receipt = await rpc("getTransaction", [TX, { encoding: "jsonParsed", commitment: "finalized", maxSupportedTransactionVersion: 0 }]);
+  return { schemaVersion: 1, checkedAt: (/* @__PURE__ */ new Date()).toISOString(), genesisHash, addresses: addresses2, accounts, records: [{ signature: TX, receipt }] };
+}
+
 // lib/verification/platform.ts
 function summarizeVerifiedPayouts(results) {
   const groups = /* @__PURE__ */ new Map();
@@ -47743,7 +47842,9 @@ async function refreshGameEvidence(manifest, rpcUrl = "https://api.mainnet-beta.
   return b;
 }
 export {
+  loadDelegationEvidence,
   refreshGameEvidence,
   summarizeVerifiedPayouts,
+  verifyDelegationEvidence,
   verifyGameEvidence
 };

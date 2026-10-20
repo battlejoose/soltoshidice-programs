@@ -1,0 +1,354 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-20T05:56:50.495Z",
+  "genesisHash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+  "addresses": {
+    "delegation": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh",
+    "perps": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+    "risk": "86EVcDQkvfJo6poPJhsm3TW6vHig31pLfPgEBVngVkob",
+    "record": "H4BaNqE5Gj1ww1NUYwFb2oNuSKj6MgZ6YLDxUzMpeaDA",
+    "metadata": "ET97E7NquTTeuoK5fohn26amJ89ctWDJprkrQkFMVsSZ"
+  },
+  "accounts": {
+    "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh": {
+      "context": {
+        "slot": 459122053,
+        "apiVersion": "4.3.0-alpha.2"
+      },
+      "value": {
+        "lamports": 1146359,
+        "data": [
+          "AgAAAM7+HSHzfePDirJZsP2vM1j4qRKR4eqZAPfY67jQzKMB",
+          "base64"
+        ],
+        "owner": "BPFLoaderUpgradeab1e11111111111111111111111",
+        "executable": true,
+        "rentEpoch": 18446744073709552000,
+        "space": 36
+      }
+    },
+    "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7": {
+      "context": {
+        "slot": 459122053,
+        "apiVersion": "4.3.0-alpha.2"
+      },
+      "value": {
+        "lamports": 833120,
+        "data": [
+          "AgAAAOqSwFbKtVuU1a35qahC/5mX527FmvObXou1asG7lIsN",
+          "base64"
+        ],
+        "owner": "BPFLoaderUpgradeab1e11111111111111111111111",
+        "executable": true,
+        "rentEpoch": 18446744073709552000,
+        "space": 36
+      }
+    },
+    "86EVcDQkvfJo6poPJhsm3TW6vHig31pLfPgEBVngVkob": {
+      "context": {
+        "slot": 459122053,
+        "apiVersion": "4.3.0-alpha.2"
+      },
+      "value": {
+        "lamports": 12664440,
+        "data": [
+          "aI/Z4pXCCMXxcdHg9Ce3PEhYk106a/5rxRIVrYE47odsxdrXFNjYGQEAAAAAAAAAeCvKagAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6HZIFwAAAADodkgXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6HZIFwAAAADodkgXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6HZIFwAAAADodkgXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6HZIFwAAAADodkgXAAAA/w==",
+          "base64"
+        ],
+        "owner": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh",
+        "executable": false,
+        "rentEpoch": 18446744073709552000,
+        "space": 2365
+      }
+    },
+    "H4BaNqE5Gj1ww1NUYwFb2oNuSKj6MgZ6YLDxUzMpeaDA": {
+      "context": {
+        "slot": 459122053,
+        "apiVersion": "4.3.0-alpha.2"
+      },
+      "value": {
+        "lamports": 1137920,
+        "data": [
+          "ZAAAAAAAAAAFKkerg3q2DD3Yn8TISmGeKoxSLz+BiP7iQ4pYqXYXsmE4dWriYb59Y2mXHX2PxA2F1eB/kafM1uPd2Q2IHcAWn5QiGwAAAAB4PsEAAAAAAP////8AAAAA",
+          "base64"
+        ],
+        "owner": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh",
+        "executable": false,
+        "rentEpoch": 18446744073709552000,
+        "space": 96
+      }
+    },
+    "ET97E7NquTTeuoK5fohn26amJ89ctWDJprkrQkFMVsSZ": {
+      "context": {
+        "slot": 459122053,
+        "apiVersion": "4.3.0-alpha.2"
+      },
+      "value": {
+        "lamports": 975360,
+        "data": [
+          "ZgAAAAAAAAAAAAAAAAAAAAABAAAABwAAAGVyLXJpc2saV+7p1QMEDhjgixHhrYNNUO+oFfQL66ORmUaeWfU+rg==",
+          "base64"
+        ],
+        "owner": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh",
+        "executable": false,
+        "rentEpoch": 18446744073709552000,
+        "space": 64
+      }
+    }
+  },
+  "records": [
+    {
+      "signature": "mxyLvQ5vjAGWunKQi3BM9NykP4ETBnpD3XtoEVsVwtTphWAf26VTVyWySXC5KywpNgkDgSmSDM2gd3W11CmJMNq",
+      "receipt": {
+        "transaction": {
+          "signatures": [
+            "mxyLvQ5vjAGWunKQi3BM9NykP4ETBnpD3XtoEVsVwtTphWAf26VTVyWySXC5KywpNgkDgSmSDM2gd3W11CmJMNq"
+          ],
+          "message": {
+            "accountKeys": [
+              {
+                "pubkey": "2mqNPWFZo8oLUCYrAsEVgos1SfZJNasfs3LZxKNpvSbX",
+                "writable": true,
+                "signer": true,
+                "source": "transaction"
+              },
+              {
+                "pubkey": "GYDnDpcdhF9ddb4RGpbYMJ3KkQ4UvmuiZcXsxDnk9fnY",
+                "writable": true,
+                "signer": false,
+                "source": "transaction"
+              },
+              {
+                "pubkey": "H4BaNqE5Gj1ww1NUYwFb2oNuSKj6MgZ6YLDxUzMpeaDA",
+                "writable": true,
+                "signer": false,
+                "source": "transaction"
+              },
+              {
+                "pubkey": "ET97E7NquTTeuoK5fohn26amJ89ctWDJprkrQkFMVsSZ",
+                "writable": true,
+                "signer": false,
+                "source": "transaction"
+              },
+              {
+                "pubkey": "86EVcDQkvfJo6poPJhsm3TW6vHig31pLfPgEBVngVkob",
+                "writable": true,
+                "signer": false,
+                "source": "transaction"
+              },
+              {
+                "pubkey": "ComputeBudget111111111111111111111111111111",
+                "writable": false,
+                "signer": false,
+                "source": "transaction"
+              },
+              {
+                "pubkey": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+                "writable": false,
+                "signer": false,
+                "source": "transaction"
+              },
+              {
+                "pubkey": "HFVvFANmPCGS5ZoWiA943TsBxXzPv1MdG5WQ49aBDcGg",
+                "writable": false,
+                "signer": false,
+                "source": "transaction"
+              },
+              {
+                "pubkey": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh",
+                "writable": false,
+                "signer": false,
+                "source": "transaction"
+              },
+              {
+                "pubkey": "11111111111111111111111111111111",
+                "writable": false,
+                "signer": false,
+                "source": "transaction"
+              }
+            ],
+            "recentBlockhash": "DF2FvufxijDe6nCG5jAkcZQGsaPDkKi9CdYRma8QZvYo",
+            "instructions": [
+              {
+                "programId": "ComputeBudget111111111111111111111111111111",
+                "accounts": [],
+                "data": "3tGNFMqHiozw",
+                "stackHeight": 1
+              },
+              {
+                "programId": "ComputeBudget111111111111111111111111111111",
+                "accounts": [],
+                "data": "7YXqJ7",
+                "stackHeight": 1
+              },
+              {
+                "programId": "ComputeBudget111111111111111111111111111111",
+                "accounts": [],
+                "data": "E6NUis",
+                "stackHeight": 1
+              },
+              {
+                "programId": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+                "accounts": [
+                  "2mqNPWFZo8oLUCYrAsEVgos1SfZJNasfs3LZxKNpvSbX",
+                  "HFVvFANmPCGS5ZoWiA943TsBxXzPv1MdG5WQ49aBDcGg",
+                  "GYDnDpcdhF9ddb4RGpbYMJ3KkQ4UvmuiZcXsxDnk9fnY",
+                  "H4BaNqE5Gj1ww1NUYwFb2oNuSKj6MgZ6YLDxUzMpeaDA",
+                  "ET97E7NquTTeuoK5fohn26amJ89ctWDJprkrQkFMVsSZ",
+                  "86EVcDQkvfJo6poPJhsm3TW6vHig31pLfPgEBVngVkob",
+                  "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+                  "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh",
+                  "11111111111111111111111111111111"
+                ],
+                "data": "Ud8zNYPstiq",
+                "stackHeight": 1
+              }
+            ],
+            "addressTableLookups": []
+          }
+        },
+        "meta": {
+          "err": null,
+          "status": {
+            "Ok": null
+          },
+          "fee": 5800,
+          "preBalances": [
+            157067920,
+            0,
+            0,
+            0,
+            12664440,
+            1,
+            833120,
+            1229360,
+            1146359,
+            1
+          ],
+          "postBalances": [
+            154948840,
+            0,
+            1137920,
+            975360,
+            12664440,
+            1,
+            833120,
+            1229360,
+            1146359,
+            1
+          ],
+          "innerInstructions": [
+            {
+              "index": 3,
+              "instructions": [
+                {
+                  "program": "system",
+                  "programId": "11111111111111111111111111111111",
+                  "parsed": {
+                    "info": {
+                      "lamports": 0,
+                      "newAccount": "GYDnDpcdhF9ddb4RGpbYMJ3KkQ4UvmuiZcXsxDnk9fnY",
+                      "owner": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+                      "source": "2mqNPWFZo8oLUCYrAsEVgos1SfZJNasfs3LZxKNpvSbX",
+                      "space": 2365
+                    },
+                    "type": "createAccount"
+                  },
+                  "stackHeight": 2
+                },
+                {
+                  "program": "system",
+                  "programId": "11111111111111111111111111111111",
+                  "parsed": {
+                    "info": {
+                      "account": "86EVcDQkvfJo6poPJhsm3TW6vHig31pLfPgEBVngVkob",
+                      "owner": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh"
+                    },
+                    "type": "assign"
+                  },
+                  "stackHeight": 2
+                },
+                {
+                  "programId": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh",
+                  "accounts": [
+                    "2mqNPWFZo8oLUCYrAsEVgos1SfZJNasfs3LZxKNpvSbX",
+                    "86EVcDQkvfJo6poPJhsm3TW6vHig31pLfPgEBVngVkob",
+                    "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+                    "GYDnDpcdhF9ddb4RGpbYMJ3KkQ4UvmuiZcXsxDnk9fnY",
+                    "H4BaNqE5Gj1ww1NUYwFb2oNuSKj6MgZ6YLDxUzMpeaDA",
+                    "ET97E7NquTTeuoK5fohn26amJ89ctWDJprkrQkFMVsSZ",
+                    "11111111111111111111111111111111"
+                  ],
+                  "data": "1111111124T5FwTrwishYowEzQMYXvF8h9AwjCQqxwKSX7MzHMvF4kanoYWPZAf6gzLJcdiyyPQ2JpGR",
+                  "stackHeight": 2
+                },
+                {
+                  "program": "system",
+                  "programId": "11111111111111111111111111111111",
+                  "parsed": {
+                    "info": {
+                      "lamports": 1137920,
+                      "newAccount": "H4BaNqE5Gj1ww1NUYwFb2oNuSKj6MgZ6YLDxUzMpeaDA",
+                      "owner": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh",
+                      "source": "2mqNPWFZo8oLUCYrAsEVgos1SfZJNasfs3LZxKNpvSbX",
+                      "space": 96
+                    },
+                    "type": "createAccount"
+                  },
+                  "stackHeight": 3
+                },
+                {
+                  "program": "system",
+                  "programId": "11111111111111111111111111111111",
+                  "parsed": {
+                    "info": {
+                      "lamports": 975360,
+                      "newAccount": "ET97E7NquTTeuoK5fohn26amJ89ctWDJprkrQkFMVsSZ",
+                      "owner": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh",
+                      "source": "2mqNPWFZo8oLUCYrAsEVgos1SfZJNasfs3LZxKNpvSbX",
+                      "space": 64
+                    },
+                    "type": "createAccount"
+                  },
+                  "stackHeight": 3
+                }
+              ]
+            }
+          ],
+          "logMessages": [
+            "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+            "Program ComputeBudget111111111111111111111111111111 success",
+            "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+            "Program ComputeBudget111111111111111111111111111111 success",
+            "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+            "Program ComputeBudget111111111111111111111111111111 success",
+            "Program 7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7 invoke [1]",
+            "Program log: Instruction: ErDelegateRisk",
+            "Program 11111111111111111111111111111111 invoke [2]",
+            "Program 11111111111111111111111111111111 success",
+            "Program 11111111111111111111111111111111 invoke [2]",
+            "Program 11111111111111111111111111111111 success",
+            "Program DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh invoke [2]",
+            "Program 11111111111111111111111111111111 invoke [3]",
+            "Program 11111111111111111111111111111111 success",
+            "Program 11111111111111111111111111111111 invoke [3]",
+            "Program 11111111111111111111111111111111 success",
+            "Program DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh consumed 15434 of 767705 compute units",
+            "Program DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh success",
+            "Program 7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7 consumed 48301 of 799550 compute units",
+            "Program 7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7 success"
+          ],
+          "preTokenBalances": [],
+          "postTokenBalances": [],
+          "rewards": [],
+          "computeUnitsConsumed": 48775,
+          "costUnits": 51513
+        },
+        "version": 0,
+        "slot": 455251103,
+        "transactionIndex": 139,
+        "blockTime": 1791634324
+      }
+    }
+  ]
+}

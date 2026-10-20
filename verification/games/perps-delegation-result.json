@@ -1,0 +1,42 @@
+{
+  "status": "pass",
+  "scope": "perps-mainnet-delegation-only",
+  "checkedAt": "2026-10-20T05:56:50.499Z",
+  "transactionsSubmitted": 0,
+  "addresses": {
+    "delegation": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh",
+    "perps": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+    "risk": "86EVcDQkvfJo6poPJhsm3TW6vHig31pLfPgEBVngVkob",
+    "record": "H4BaNqE5Gj1ww1NUYwFb2oNuSKj6MgZ6YLDxUzMpeaDA",
+    "metadata": "ET97E7NquTTeuoK5fohn26amJ89ctWDJprkrQkFMVsSZ"
+  },
+  "validator": "MAS1Dt9qreoRMQ14YQuhg8UTZMMzDdKhmkZMECCzk57",
+  "accountSlots": [
+    459122053,
+    459122053,
+    459122053,
+    459122053,
+    459122053
+  ],
+  "receipt": {
+    "signature": "mxyLvQ5vjAGWunKQi3BM9NykP4ETBnpD3XtoEVsVwtTphWAf26VTVyWySXC5KywpNgkDgSmSDM2gd3W11CmJMNq",
+    "slot": 455251103,
+    "explorer": "https://solscan.io/tx/mxyLvQ5vjAGWunKQi3BM9NykP4ETBnpD3XtoEVsVwtTphWAf26VTVyWySXC5KywpNgkDgSmSDM2gd3W11CmJMNq"
+  },
+  "checks": [
+    "Solana mainnet genesis",
+    "Executable MagicBlock delegation and Perps programs",
+    "Canonical Perps risk PDA and delegation-record/metadata PDAs",
+    "Current delegated account ownership",
+    "Successful Perps delegation instruction, nested MagicBlock invocation and owner assignment"
+  ],
+  "limits": [
+    "Current root SDICE risk delegation and one historical delegation transaction only; not all markets or every ER transaction.",
+    "Does not verify Perps prices, owner authorization of a trade, liquidations, commitments, USDC payouts or poker shuffles.",
+    "Live reads trust the selected RPC and finalized Solana consensus. Archived evidence alone does not establish fresh inclusion.",
+    "Programs remain upgradeable. Delegation does not imply Solana L1 consensus for every ER execution."
+  ],
+  "evidenceMode": "live-finalized-rpc",
+  "rpc": "https://hooddice-holdem-mainnet.hooddice.workers.dev/rpc",
+  "rpcOperator": "SoltoshiDICE; rerun with an independent archival RPC"
+}

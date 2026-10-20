@@ -5,7 +5,7 @@
   "files": [
     {
       "path": "games/index.json",
-      "sha256": "99c170fe3cd626e442e714bff10bfc193508d990f2ddf5cb248c2b67cc66de3e"
+      "sha256": "42584f3134cba461f203e73bdc2453cfa83d8d8c3c9aa93e786749c0442b16ed"
     },
     {
       "path": "games/project-run.json",
@@ -14,6 +14,14 @@
     {
       "path": "games/project-live-run.json",
       "sha256": "8c3f2845be41ccbe5e16a11548264e6ff4962db03330c3103d3802be498e27a8"
+    },
+    {
+      "path": "games/perps-delegation.json",
+      "sha256": "b0d944cbc034fbfac993805d8ac4a10443807d0291471edbc96b244e226d34d1"
+    },
+    {
+      "path": "games/perps-delegation-result.json",
+      "sha256": "3bba17b253914ef748b825cf000de876214fd50df5e8e02dc552ca7f33b1f8f2"
     },
     {
       "path": "games/fights.json",
@@ -61,11 +69,15 @@
     },
     {
       "path": "platform-verifier.mjs",
-      "sha256": "32bde55822d09d697ad1898967f89e38a885dfa587a595dd5f09e74d88343b58"
+      "sha256": "f8d3e77637e4d431bb86e131243a15f1215b771e0347befa93060b52caf16cd0"
     },
     {
       "path": "verify-fairness.mjs",
       "sha256": "a44182bf41672ed20d8428d47678f401a55536c5261780456eb14e9d7f3d786a"
+    },
+    {
+      "path": "verify-delegation.mjs",
+      "sha256": "239c95a436cf898fc0b981bd28c3653dedf1ef955783abcecbdb13403483aaef"
     },
     {
       "path": "fairness-example.json",
@@ -73,7 +85,7 @@
     },
     {
       "path": "README.txt",
-      "sha256": "a2698edfcf05ce3360eb9329404ae27085d929fa7a74fc04ad90a4428594dbb4"
+      "sha256": "8c309f774a03638e7a11ac9d394b4a3f19eecfa243d4b614f8fb5e11eb9ea9dd"
     }
   ]
 }

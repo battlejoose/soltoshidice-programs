@@ -28,7 +28,15 @@
         "label": "Public Solana Delegation Program source",
         "href": "https://github.com/magicblock-labs/delegation-program"
       }
-    ]
+    ],
+    "delegationCheck": {
+      "page": "https://soltoshidice.wtf/verification#delegation-proof",
+      "program": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh",
+      "evidence": "/verification/games/perps-delegation.json",
+      "result": "/verification/games/perps-delegation-result.json",
+      "command": "node verify-delegation.mjs --rpc https://YOUR_TRUSTED_MAINNET_RPC",
+      "scope": "Mainnet root Perps risk delegation, not trading economics or payouts"
+    }
   },
   "command": "node verify-platform.mjs --all --live",
   "requirements": "Node 22+, inspect the downloaded code first. No npm install, wallet, login or wager. Unzip with all files together.",
