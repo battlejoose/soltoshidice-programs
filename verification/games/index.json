@@ -10,10 +10,10 @@
     "format": "Public readable JavaScript ES modules, identical to the code shipped in the kit; no private repository access required. Compare file SHA-256 values in source-manifest.json."
   },
   "execution": {
-    "coordinators": "The hooddice.workers.dev hosts are offchain Cloudflare services for sessions, realtime views, coordination and transaction delivery. The historical hostname does not establish where a game rule executes.",
+    "coordinators": "Project-hosted Cloudflare services provide realtime views, session messages and transaction delivery. Game programs validate submitted instructions and govern their token vaults. Service availability affects access and processing; inspect each instruction and required signers for authority.",
     "games": "For Cee-lo, slots, blackjack, fights and RPS, the kit checks receipts from the identified Solana programs, proof inputs, deterministic outcomes and the scoped transfers. Offchain service availability remains a dependency.",
     "poker": "Client-verified encrypted shuffle; onchain commitments, betting, card openings and pot settlement. This kit lacks the complete historical shuffle/unlock transcript and wallet cash-out.",
-    "perps": "Solana-program financial execution on MagicBlock’s Solana-native SVM Ephemeral Rollups, with Solana base-layer custody and settlement. ER execution is not identical to L1 consensus. This VRF-game kit does not yet verify Perps price inputs, economics or USDC settlement.",
+    "perps": "Solana custody and settlement, with trading execution on MagicBlock’s SVM. The ER validator confirms delegated execution; Solana finalizes commitments and base-layer settlement. The separate checker verifies mainnet delegation; this game kit does not yet verify Perps price inputs, economics or USDC settlement.",
     "programs": "https://soltoshidice.wtf/verification/evidence.json",
     "references": [
       {
@@ -36,7 +36,8 @@
       "result": "/verification/games/perps-delegation-result.json",
       "command": "node verify-delegation.mjs --rpc https://YOUR_TRUSTED_MAINNET_RPC",
       "scope": "Mainnet root Perps risk delegation, not trading economics or payouts"
-    }
+    },
+    "dependencies": "Perps opens require the owner signature and the configured operator admission co-signature. Oracle/quote inputs, validator/keeper availability and upgrade authority remain trust and availability dependencies."
   },
   "command": "node verify-platform.mjs --all --live",
   "requirements": "Node 22+, inspect the downloaded code first. No npm install, wallet, login or wager. Unzip with all files together.",
