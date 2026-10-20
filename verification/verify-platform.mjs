@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Read-only Node 22+ runner. Keep this file, both verifier modules and games/ together.
 import { readFile } from 'node:fs/promises';
-import { verifyGameEvidence, refreshGameEvidence } from './platform-verifier.mjs';
+import { verifyGameEvidence, refreshGameEvidence, summarizeVerifiedPayouts } from './platform-verifier.mjs';
 import { verifyEvidence, loadLiveEvidence } from './verify-fairness.mjs';
 const args = process.argv.slice(2), option = key => args.includes(key) ? args[args.indexOf(key) + 1] : undefined;
 const read = async path => JSON.parse(await readFile(new URL(path, import.meta.url), 'utf8'));
@@ -29,5 +29,5 @@ try {
   if (args.includes('--all')) results.push(...manifest.otherProducts);
 } catch (e) { results.push({ status: 'not-verified', error: e.message }); }
 const failed = results.some(r => r.status === 'not-verified'), partial = results.some(r => ['partial', 'not-tested'].includes(r.status));
-console.log(JSON.stringify({ status: failed ? 'not-verified' : partial ? 'partial' : 'pass', checkedAt: new Date().toISOString(), transactionsSubmitted: 0, results }, null, 2));
+console.log(JSON.stringify({ status: failed ? 'not-verified' : partial ? 'partial' : 'pass', checkedAt: new Date().toISOString(), transactionsSubmitted: 0, payoutSummary: summarizeVerifiedPayouts(results), results }, null, 2));
 process.exitCode = failed ? 1 : partial ? 2 : 0;

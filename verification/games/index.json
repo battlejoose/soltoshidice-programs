@@ -13,22 +13,95 @@
     "coordinators": "The hooddice.workers.dev hosts are offchain Cloudflare services for sessions, realtime views, coordination and transaction delivery. The historical hostname does not establish where a game rule executes.",
     "games": "For Cee-lo, slots, blackjack, fights and RPS, the kit checks receipts from the identified Solana programs, proof inputs, deterministic outcomes and the scoped transfers. Offchain service availability remains a dependency.",
     "poker": "Client-verified encrypted shuffle; onchain commitments, betting, card openings and pot settlement. This kit lacks the complete historical shuffle/unlock transcript and wallet cash-out.",
-    "perps": "Delegated trading state executes in MagicBlock Ephemeral Rollups; Solana controls custody and settlement. This kit does not verify the Perps price/economics/USDC path.",
-    "programs": "https://soltoshidice.wtf/verification/evidence.json"
+    "perps": "Solana-program financial execution on MagicBlock’s Solana-native SVM Ephemeral Rollups, with Solana base-layer custody and settlement. ER execution is not identical to L1 consensus. This VRF-game kit does not yet verify Perps price inputs, economics or USDC settlement.",
+    "programs": "https://soltoshidice.wtf/verification/evidence.json",
+    "references": [
+      {
+        "label": "MagicBlock: Solana-native Ephemeral Rollups",
+        "href": "https://docs.magicblock.gg/pages/ephemeral-rollups-ers/introduction/why"
+      },
+      {
+        "label": "MagicBlock: delegation, execution, commitment and undelegation",
+        "href": "https://docs.magicblock.gg/pages/ephemeral-rollups-ers/introduction/ephemeral-rollup"
+      },
+      {
+        "label": "Public Solana Delegation Program source",
+        "href": "https://github.com/magicblock-labs/delegation-program"
+      }
+    ]
   },
   "command": "node verify-platform.mjs --all --live",
   "requirements": "Node 22+, inspect the downloaded code first. No npm install, wallet, login or wager. Unzip with all files together.",
-  "exitCodes": {"0": "All selected checks passed within their stated scope", "1": "Invalid, missing or unavailable evidence; not verified", "2": "Partial coverage or untested product; never a full-platform pass"},
+  "exitCodes": {
+    "0": "All selected checks passed within their stated scope",
+    "1": "Invalid, missing or unavailable evidence; not verified",
+    "2": "Partial coverage or untested product; never a full-platform pass"
+  },
   "trust": "Archived mode checks supplied evidence, not fresh chain inclusion. --live fetches finalized receipts/accounts directly from the selected Solana RPC; it never silently falls back. Each example is one historical case, not aggregate payouts or newly played gameplay.",
   "games": [
-    {"id": "cee-lo", "name": "Cee-lo", "mechanism": "ORAO signatures + deterministic dice", "example": "/verification/fairness-example.json", "scope": "Stake, winning result and bank-to-player transfer", "display": "10,000 → 20,000 SDICE"},
-    {"id": "fights", "name": "Street Fights", "mechanism": "ORAO signatures + combat replay", "example": "/verification/games/fights.json", "scope": "Both stakes, every strike, knockout, winner payment and bank fee", "display": "100,000 pot → 99,000 winner + 1,000 bank"},
-    {"id": "rps", "name": "Rock Paper Scissors", "mechanism": "Salted commit/reveal", "example": "/verification/games/rps.json", "scope": "Both stakes, commitments, reveals, score, winner payment and fee", "display": "20,000 pot → 19,800 winner + 200 bank"},
-    {"id": "slots", "name": "Lucky Block slots", "mechanism": "MagicBlock VRF + reel/paytable replay", "example": "/verification/games/slots.json", "scope": "Stake, Ristretto proof, callback, reel stops and winning token credit", "display": "1,000 → 2,000 SDICE"},
-    {"id": "blackjack", "name": "Blackjack", "mechanism": "MagicBlock VRF + card/return replay", "example": "/verification/games/blackjack.json", "scope": "Draw proofs, shoe continuity, hand returns and table escrow payment; not every betting action or cash-out", "display": "90,000 SDICE returned to table escrow"},
-    {"id": "poker", "name": "Texas Hold’em", "mechanism": "Player-shuffled encrypted cards", "example": "/verification/games/poker.json", "scope": "Partial: revealed card points, hand ranks and chip awards. Full shuffle transcript and cash-out not verified.", "display": "416,986 table chips awarded; not wallet tokens", "expectedCoverage": "partial"}
+    {
+      "id": "cee-lo",
+      "name": "Cee-lo",
+      "mechanism": "ORAO signatures + deterministic dice",
+      "example": "/verification/fairness-example.json",
+      "scope": "Stake, winning result and bank-to-player transfer",
+      "display": "10,000 → 20,000 SDICE"
+    },
+    {
+      "id": "fights",
+      "name": "Street Fights",
+      "mechanism": "ORAO signatures + combat replay",
+      "example": "/verification/games/fights.json",
+      "scope": "Both stakes, every strike, knockout, winner payment and bank fee",
+      "display": "100,000 pot → 99,000 winner + 1,000 bank"
+    },
+    {
+      "id": "rps",
+      "name": "Rock Paper Scissors",
+      "mechanism": "Salted commit/reveal",
+      "example": "/verification/games/rps.json",
+      "scope": "Both stakes, commitments, reveals, score, winner payment and fee",
+      "display": "20,000 pot → 19,800 winner + 200 bank"
+    },
+    {
+      "id": "slots",
+      "name": "Lucky Block slots",
+      "mechanism": "MagicBlock VRF + reel/paytable replay",
+      "example": "/verification/games/slots.json",
+      "scope": "Stake, Ristretto proof, callback, reel stops and winning token credit",
+      "display": "1,000 → 2,000 SDICE"
+    },
+    {
+      "id": "blackjack",
+      "name": "Blackjack",
+      "mechanism": "MagicBlock VRF + card/return replay",
+      "example": "/verification/games/blackjack.json",
+      "scope": "Draw proofs, shoe continuity, hand returns and table escrow payment; not every betting action or cash-out",
+      "display": "90,000 SDICE returned to table escrow"
+    },
+    {
+      "id": "poker",
+      "name": "Texas Hold’em",
+      "mechanism": "Player-shuffled encrypted cards",
+      "example": "/verification/games/poker.json",
+      "scope": "Partial: revealed card points, hand ranks and chip awards. Full shuffle transcript and cash-out not verified.",
+      "display": "416,986 table chips awarded; not wallet tokens",
+      "expectedCoverage": "partial"
+    }
   ],
   "otherProducts": [
-    {"id": "perps", "name": "SDICE Perps", "status": "not-tested", "reason": "Oracle-priced leveraged markets, not a VRF game. Requires entry/close price, haircut, liquidation, venue accounting and paid USDC settlement replay. A queued claim is not a payout.", "documentation": "https://soltoshidice.wtf/agents/perps.md"}
-  ]
+    {
+      "id": "perps",
+      "name": "SDICE Perps",
+      "status": "not-tested",
+      "reason": "Oracle-priced leveraged markets, not a VRF game. Requires entry/close price, haircut, liquidation, venue accounting and paid USDC settlement replay. A queued claim is not a payout.",
+      "documentation": "https://soltoshidice.wtf/agents/perps.md"
+    }
+  ],
+  "payoutSummary": {
+    "scope": "verified-examples-only",
+    "completePlatformHistory": false,
+    "newGameplayTested": false,
+    "description": "Sums successful distinct example gross payments by mint and destination. Table escrow is separate from player wallets; partial poker chips and untested Perps are excluded."
+  }
 }

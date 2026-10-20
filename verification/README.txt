@@ -6,6 +6,9 @@ Cee-lo, fights, RPS, slots and blackjack: scoped proof/outcome/payment replays.
 Poker: revealed cards/chip awards only; no full shuffle transcript or wallet cash-out.
 Blackjack: draw proofs and table escrow returns; not wallet cash-out.
 Perps: not tested by this kit. No new wagers; no transactions submitted.
+payoutSummary sums only distinct passing examples, with player wallets separate from table escrow. It is not a platform-wide total.
+Fresh gameplay and complete payout reconciliation remain separate tests; see /verification#coverage-next.
+MagicBlock ER architecture and primary documentation: https://soltoshidice.wtf/verification#ephemeral-rollups
 Public source: https://github.com/battlejoose/soltoshidice-programs/tree/main/verification
 The .mjs files are readable executable source, not minified binaries.
 Compare every listed file against source-manifest.json; the public repository and website distribute the same kit files.

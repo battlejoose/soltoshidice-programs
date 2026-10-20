@@ -5,11 +5,15 @@
   "files": [
     {
       "path": "games/index.json",
-      "sha256": "509a152017baa7ae1b3c8786072a022b3711c917041c0545a4fa4cc8ce732c6a"
+      "sha256": "99c170fe3cd626e442e714bff10bfc193508d990f2ddf5cb248c2b67cc66de3e"
     },
     {
       "path": "games/project-run.json",
       "sha256": "63498576363567db89e3e2cdeb808115da06b8394f97a3a5d391da2bc9bc853a"
+    },
+    {
+      "path": "games/project-live-run.json",
+      "sha256": "8c3f2845be41ccbe5e16a11548264e6ff4962db03330c3103d3802be498e27a8"
     },
     {
       "path": "games/fights.json",
@@ -53,11 +57,11 @@
     },
     {
       "path": "verify-platform.mjs",
-      "sha256": "4bbcdeebaa7846fd53ffc86852a6d2ae264f7b2ff34b26c3e176fefc35c0f7a6"
+      "sha256": "075d1fa38ab1a5dfd66068be6f4ef1fef4420ef922a0cfd90bb157012a9fb97c"
     },
     {
       "path": "platform-verifier.mjs",
-      "sha256": "8e348631f3237deb8069aae5f09844b4ec1372cdaca2253c433a17b8e2b9a23a"
+      "sha256": "32bde55822d09d697ad1898967f89e38a885dfa587a595dd5f09e74d88343b58"
     },
     {
       "path": "verify-fairness.mjs",
@@ -69,7 +73,7 @@
     },
     {
       "path": "README.txt",
-      "sha256": "100f11a7542cdff9797f3493e451a3cbea42294af0bffc666d446cfcbc92b4a2"
+      "sha256": "a2698edfcf05ce3360eb9329404ae27085d929fa7a74fc04ad90a4428594dbb4"
     }
   ]
 }

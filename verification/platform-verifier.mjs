@@ -47646,6 +47646,48 @@ async function verifyPoker(b) {
 }
 
 // lib/verification/platform.ts
+function summarizeVerifiedPayouts(results) {
+  const groups = /* @__PURE__ */ new Map();
+  const seen = /* @__PURE__ */ new Set(), included = [], excluded = [];
+  for (const r of results) {
+    const t = r.totals;
+    if (r.status !== "pass" || !["cee-lo", "fights", "rps", "slots", "blackjack"].includes(r.game) || !t?.mint || !Number.isInteger(t.decimals) || t.decimals < 0 || t.decimals > 18 || !/^\d+$/.test(t.grossPayoutBaseUnits ?? "") || !r.receipts?.length) {
+      excluded.push(r.game ?? r.id ?? "unknown");
+      continue;
+    }
+    const signatures = r.receipts.map((receipt) => receipt.signature);
+    need(signatures.every((s) => typeof s === "string" && s.length > 0), "Missing payout evidence identity");
+    if (signatures.some((s) => seen.has(s))) {
+      excluded.push(r.game + ": overlapping evidence");
+      continue;
+    }
+    signatures.forEach((s) => seen.add(s));
+    const destination = r.game === "blackjack" ? "table-escrow" : "player-wallet";
+    const id = `${t.mint}:${t.decimals}:${destination}`;
+    const row = groups.get(id) ?? { mint: t.mint, decimals: t.decimals, destination, grossPayoutBaseUnits: 0n, examples: 0 };
+    row.grossPayoutBaseUnits += BigInt(t.grossPayoutBaseUnits);
+    row.examples++;
+    groups.set(id, row);
+    included.push(r.game);
+  }
+  return {
+    scope: "verified-examples-only",
+    completePlatformHistory: false,
+    newGameplayTested: false,
+    included,
+    excluded,
+    totals: [...groups.values()].map((row) => ({
+      ...row,
+      grossPayoutBaseUnits: row.grossPayoutBaseUnits.toString(),
+      grossPayoutTokens: `${row.grossPayoutBaseUnits / 10n ** BigInt(row.decimals)}${row.decimals ? "." + (row.grossPayoutBaseUnits % 10n ** BigInt(row.decimals)).toString().padStart(row.decimals, "0") : ""}`
+    })),
+    limits: [
+      "Gross verified returns, not net profit, wagering volume or lifetime/24-hour platform totals.",
+      "Only successful distinct examples count. Poker chips, untested Perps, bank fees and failed/missing evidence are excluded. Table escrow is separate from wallet payments.",
+      "Receipt inclusion depends on each result evidenceMode: archived replay or live finalized RPC reads. No new game was played."
+    ]
+  };
+}
 async function verifyGameEvidence(bundle) {
   need(bundle?.schemaVersion === 1, "Unsupported game evidence schema");
   validateReceipts(bundle.records, bundle.genesisHash);
@@ -47702,5 +47744,6 @@ async function refreshGameEvidence(manifest, rpcUrl = "https://api.mainnet-beta.
 }
 export {
   refreshGameEvidence,
+  summarizeVerifiedPayouts,
   verifyGameEvidence
 };
