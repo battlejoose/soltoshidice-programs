@@ -61,8 +61,10 @@ It does not prevent price manipulation across separate transactions or volatilit
 The published source rebuilt to the deployed SHA-256
 `07578b1054b56d1dd34c2e2d1ee47405fcb2fec5f97e6aee8675d6be4fdc4966`.
 See [source/build evidence](evidence/perps-spot-payout-source-2026-10-21.json).
-Explorer metadata and remote verification are being updated. Earlier release
-records below remain historical snapshots. Perps remains upgradeable.
+The canonical IDL is finalized, and independent remote verification passed
+for source `8821a2a604750eafdc27742893f73a5598edad04`. See the
+[final release and verification receipt](evidence/perps-spot-payout-release-2026-10-21.json).
+Earlier records below are historical snapshots. Perps remains upgradeable.
 
 ## Perps position rules — October 21, 2026 UTC
 

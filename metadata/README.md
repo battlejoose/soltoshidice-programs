@@ -7,6 +7,13 @@ using the `idl` and `security` seeds. Publication is signed by each program's
 existing upgrade authority. It does not upgrade executable code or alter game
 accounts, balances held by the games, or program upgrade authorities.
 
+## Perps spot payout update — October 21, 2026
+
+The canonical IDL now includes `redeem_profit_tokens`. Its SHA-256 is
+`3478ed5c0e34e9d0d7e2b582f53d20ec6e187a8d573de1cd2aa924d9d60237b2`.
+The atomic replacement is finalized and its temporary buffer was closed.
+See [publication and independent verification receipts](../evidence/perps-spot-payout-release-2026-10-21.json).
+
 ## Perps update — October 20, 2026
 
 The new Perps IDL contains 85 instructions and 23 account layouts, including

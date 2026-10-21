@@ -1,0 +1,204 @@
+{
+  "at": "2026-10-21T06:58:04.301Z",
+  "status": "deployed-entries-reopened",
+  "program": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+  "programData": "GngBxRxp2nvs7kHSTfjxfL9jgt7Abt3wHw4cUV92TEon",
+  "lastDeploySlot": 459534877,
+  "upgradeAuthority": "GqJwW3CF9XfopAmCP9zNKN1BvVo3aSPQHmfHdrGUeTzA",
+  "upgradeTransaction": "2szt9SG93jHC5JyE3XF3ofGoCFAEZjDdguBaEvfunJvnCfNjPFFoDJFUCy8GKxQADmHCsP2rruFSkdTdFXnyTQf5",
+  "upgradeTransactionFeeLamports": 5003,
+  "sha256": "07578b1054b56d1dd34c2e2d1ee47405fcb2fec5f97e6aee8675d6be4fdc4966",
+  "allocatedBytes": 2052976,
+  "zeroTrimmedSha256": "4aafed51d5e8ec0e12ec2c9559933ca5b319cec85d48047a43dc0dc3bc3bc6cd",
+  "zeroTrimmedBytes": 2052961,
+  "sourceCommit": "8821a2a604750eafdc27742893f73a5598edad04",
+  "sourceUrl": "https://github.com/battlejoose/soltoshidice-programs/tree/8821a2a604750eafdc27742893f73a5598edad04/perps",
+  "publicDockerRebuildMatched": true,
+  "uploadBufferClosed": true,
+  "entries": [
+    {
+      "symbol": "ANSEM",
+      "config": "285caK3dULr4K6JC42dEw8VTGeEjaqMJkUTNrtqHLhHj",
+      "basePaused": false,
+      "erPaused": false
+    },
+    {
+      "symbol": "STABLE",
+      "config": "5eAe7a5DWPxGKMGv3FbLvNQr1VKgdBS5iaBvezAk3pJD",
+      "basePaused": false,
+      "erPaused": false
+    },
+    {
+      "symbol": "MACHI",
+      "config": "6mxSrprbbHJA3d1wGuzjvfVJwFxyvvKycS78J4QaiRk7",
+      "basePaused": false,
+      "erPaused": false
+    },
+    {
+      "symbol": "SDICE",
+      "config": "HFVvFANmPCGS5ZoWiA943TsBxXzPv1MdG5WQ49aBDcGg",
+      "basePaused": false,
+      "erPaused": false
+    }
+  ],
+  "pricePolicy": {
+    "profitPrice": "spot-at-payment",
+    "backingTokenPerVenue": true,
+    "existingUnpaidClaims": true,
+    "poolRewardAndRiskValue": "spot",
+    "collateralValuation": "unchanged-executable",
+    "atomicReserveMutationRejected": true
+  },
+  "idl": {
+    "at": "2026-10-21T06:53:41.752Z",
+    "metadata": "6KRvnUXACkTWMASoPmnYLH63U9z1taRjhsY8EnHrpGes",
+    "buffer": "9H8m8PnnTppbcndiUc5pH1XAmR46djyKxX8XDHQaqrQR",
+    "contentSha256": "3478ed5c0e34e9d0d7e2b582f53d20ec6e187a8d573de1cd2aa924d9d60237b2",
+    "published": true,
+    "bufferClosed": true,
+    "programHash": "07578b1054b56d1dd34c2e2d1ee47405fcb2fec5f97e6aee8675d6be4fdc4966",
+    "additionalRentLamports": 568960,
+    "transactions": [
+      {
+        "label": "create-buffer",
+        "signature": "2BfS22ZXtdmwWHHyRrMr4uSBGqNJVfnM1AAjjUm9AmCWjpqCsVQZa1TFMHcnozqKpagPv2G8Hk9B7s1btLxt5Xdy",
+        "slot": 459535889
+      },
+      {
+        "label": "write-0",
+        "signature": "258AYSUfiHmaXa2WbraC7MxuS5CPPrqwxjMM4eoL8qDpd4r8emecMYZgjpX8wDRNVPEqUMViGFgtKKDncmCvpUn8",
+        "slot": 459535899
+      },
+      {
+        "label": "write-800",
+        "signature": "4VdD3hru5PTVGE7gEe3PmVEb5tp6DQxHj6eeD9QTuoB6B8bp7jF71WfbNYUot2oD3Ph8cgg5ZNFa8dANTUk7YT7i",
+        "slot": 459535907
+      },
+      {
+        "label": "write-1600",
+        "signature": "4Fp5HqjhuV32VGBC1W5JHYqHn6knicfCpEftMxjkmWmbwqC7daGK1CRT4WzUiPboGdYNtTK9PsE5VhRmgF5Gi7BT",
+        "slot": 459535916
+      },
+      {
+        "label": "write-2400",
+        "signature": "4i7h3QrXH5aWbHCBhXrTzULZSU8AAd5DPW5SCDN6XkioxGstsAbAioQG7sibgGX5tZu7QDsEF3STb5umsqdNYemv",
+        "slot": 459535924
+      },
+      {
+        "label": "write-3200",
+        "signature": "2my1zbAGeS3x49qmVCfGfeSGxRKiux2tvrbNw8dHQkQHN9MrZJZDwMzP5oJn6ZUqvPhv9xnvepaPxiZtwhRHiLTQ",
+        "slot": 459535932
+      },
+      {
+        "label": "write-4000",
+        "signature": "4qWQdi727hzoNuewrad4ZqWigqncxhaM5SDgqmCiKJZTjsbc15KbhmJfjgqtPgCSGyZDcqdU3CVd6yd5ZoKUifSo",
+        "slot": 459535941
+      },
+      {
+        "label": "write-4800",
+        "signature": "5v6sTPcHwUJJ8xch2ccZ7UgJMhsVnJ5UmTdoW83aLXxysjEkF5rFToMxF62ad219FpChwphn7rN2VGsLZHVznkJD",
+        "slot": 459535949
+      },
+      {
+        "label": "write-5600",
+        "signature": "2PYVdgwBazcqvVUojSWGxouA9USemzBfCPpwHbDW5299LJ1tBb9gAv2QNN6quajw2TVRVxNutjn8eLjzeiyqw1DW",
+        "slot": 459535959
+      },
+      {
+        "label": "write-6400",
+        "signature": "456qR3VdrayKgj64RZf88V7ris8jfcnNs1Qcw4fn8wJAK1GMTfNfUd9LTKYFqAHm3Yq3o42RLNn1nAbzBJaVz1a1",
+        "slot": 459535968
+      },
+      {
+        "label": "write-7200",
+        "signature": "2p6Z57Y9TXFnaCF3c2RMAebfGPToeZUuMKZJHF7Sqm95gkMUx9mHf34HLmZSmhdAQ2eyvm2BXK84Wk3GUgjuui7E",
+        "slot": 459535977
+      },
+      {
+        "label": "write-8000",
+        "signature": "3Ydet56WxmGQ4AEDFXmTEQsPQTRxeZCuWyUC3pucJ8DDNrzfRuTymRD41L17obP6arAkDYkp5XouiD5xYHZDonnK",
+        "slot": 459535987
+      },
+      {
+        "label": "write-8800",
+        "signature": "4xF44jkHgfm3jmnhgo6pYWD3dJTF8FbRthQcawF1WCFyczvYLc16AGK7ukGrhkEiW8Nk5Y8dCGXd4bBR7UW7kV1X",
+        "slot": 459535997
+      },
+      {
+        "label": "write-9600",
+        "signature": "4Z83PUo2JeeUwkBkGjQGHDhiDyVurVZjoX1iR3TuttZGdhm99z9q7f21FuEVbBYpFZ2LHGQ6L1BLratKgBgE6C3G",
+        "slot": 459536005
+      },
+      {
+        "label": "write-10400",
+        "signature": "56A9jqtzsP7Qw6RUg3ozC1MLFn5JoTC1kzxFEQtbuUEFHLYfk3J7sXYW8vnEbe2ataTimEATDoC4JWxnzRuyE4Tr",
+        "slot": 459536014
+      },
+      {
+        "label": "write-11200",
+        "signature": "3tKcWjQzJ4Cer2vthU6mrVc8rS4xTcfU9v21QwA9N13YGC9K38wDypT5BFt8LV9RUAR6LD5cZa47SRFbA9B3hh2J",
+        "slot": 459536023
+      },
+      {
+        "label": "write-12000",
+        "signature": "3Upi67Kne45ZrrjMg8Gw733QcJnHL58mQn1C1TjeRerHgVYmJNdWAiCdXtG7Zcqog4PYWbtzx3WW1xMPhQfqHFcc",
+        "slot": 459536032
+      },
+      {
+        "label": "write-12800",
+        "signature": "2ajEj1L8HFLCvnvuipAjgBzS4LAtFmGXJRWig9Mcb7pw1GuR23jrw3Lrmg5NddUMwMW3R3csb8tZA2asnyfJ2SmU",
+        "slot": 459536040
+      },
+      {
+        "label": "write-13600",
+        "signature": "5cW2KfHJoNjQzFddS5LUXyQDVJTPKbF2sHvYkzbnbGgdDau1J8DLpASMyefxvyRP9teLtbdz2YzSbmWdNYZDsht3",
+        "slot": 459536049
+      },
+      {
+        "label": "write-14400",
+        "signature": "3dy2Hw6ui3nKwusLWmSjLycPbA6H48jW8QJZmetkfNnhTJJwPdjbNcgbdZuiU2M5CQaGp9aDqeU9AH6G8gmDAaRB",
+        "slot": 459536058
+      },
+      {
+        "label": "write-15200",
+        "signature": "2xmEaFctuduaRGaA9tcTUCkMtKBsEs247Fvu6GKUMwUv4uDYvwBuZNBWmqkUHmd26uc7Uev4LmRLjrJAnRGBjZGM",
+        "slot": 459536067
+      },
+      {
+        "label": "write-16000",
+        "signature": "CDuQNwoFpU7dh5rDN1pXDSMnpmrSZFYSSHPoHmUKcErWtpMrfLXH5UsmQWL5dhvQZ1b74NK9nCMgCkQUp4Dbxch",
+        "slot": 459536075
+      },
+      {
+        "label": "write-16800",
+        "signature": "35ydYc77fM1C8whS1PbdEnWEe1H1Swb6JezNHiSCPNZ9TqCn9Up5DcrKXB1jDoLPpGrD4CUHnjpmdzMZbpSKhV2Z",
+        "slot": 459536084
+      },
+      {
+        "label": "write-17600",
+        "signature": "47YissJ8sGczqBqv2CXhjTy6agJ5z7hatqaFBLMyS1kaoDk23cSKzTi8ERRotsUL5khsu3NFkemCW7o5XutEPH3u",
+        "slot": 459536092
+      },
+      {
+        "label": "atomic-replace",
+        "signature": "4jyEkA3bqQ9QAqaUUqx16BerdHVJA8zCW9198CZd96TNVtXQLMuXiJRM3djpLx2eiKXeHd1wqjNMPySpaMHzm3bM",
+        "slot": 459536102
+      }
+    ]
+  },
+  "publicVerificationRequestId": "f8ac9a6e-dea8-4b78-afe5-4d48d8c878d4",
+  "publicVerificationStatus": "verified",
+  "bankChanged": false,
+  "productionWagers": 0,
+  "publicVerification": {
+    "is_verified": true,
+    "message": "On chain program verified",
+    "on_chain_hash": "4aafed51d5e8ec0e12ec2c9559933ca5b319cec85d48047a43dc0dc3bc3bc6cd",
+    "executable_hash": "4aafed51d5e8ec0e12ec2c9559933ca5b319cec85d48047a43dc0dc3bc3bc6cd",
+    "repo_url": "https://github.com/battlejoose/soltoshidice-programs/tree/8821a2a604750eafdc27742893f73a5598edad04",
+    "commit": "8821a2a604750eafdc27742893f73a5598edad04",
+    "last_verified_at": "2026-10-21T06:58:49.415391",
+    "is_frozen": false,
+    "is_closed": false
+  }
+}

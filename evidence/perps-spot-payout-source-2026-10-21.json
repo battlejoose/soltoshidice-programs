@@ -1,6 +1,6 @@
 {
   "at": "2026-10-21T06:44:28.415Z",
-  "status": "deployed-local-rebuild-matched",
+  "status": "deployed-independently-verified",
   "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
   "expectedProgramSha256": "07578b1054b56d1dd34c2e2d1ee47405fcb2fec5f97e6aee8675d6be4fdc4966",
   "expectedProgramBytes": 2052976,
@@ -72,5 +72,6 @@
   ],
   "otherProgramsChanged": false,
   "deployedTransaction": "2szt9SG93jHC5JyE3XF3ofGoCFAEZjDdguBaEvfunJvnCfNjPFFoDJFUCy8GKxQADmHCsP2rruFSkdTdFXnyTQf5",
-  "publicRebuildSha256": "07578b1054b56d1dd34c2e2d1ee47405fcb2fec5f97e6aee8675d6be4fdc4966"
+  "publicRebuildSha256": "07578b1054b56d1dd34c2e2d1ee47405fcb2fec5f97e6aee8675d6be4fdc4966",
+  "verifiedCommit": "8821a2a604750eafdc27742893f73a5598edad04"
 }

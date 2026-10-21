@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-21T05:14:24.012Z",
+  "at": "2026-10-21T06:58:04.301Z",
   "cluster": "mainnet-beta",
   "solanaVerifyVersion": "0.5.2",
   "image": "solanafoundation/solana-verifiable-build@sha256:f71be5ca7620b7e40933b7f1294fa44e01d08c1fc5ba1f375a2478f5a01580d3",
@@ -93,13 +93,13 @@
       "program": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
       "programData": "GngBxRxp2nvs7kHSTfjxfL9jgt7Abt3wHw4cUV92TEon",
       "readSlot": 459489867,
-      "lastDeploySlot": 459487920,
+      "lastDeploySlot": 459534877,
       "upgradeAuthority": "GqJwW3CF9XfopAmCP9zNKN1BvVo3aSPQHmfHdrGUeTzA",
-      "allocatedBytes": 2041080,
-      "sha256": "67faba5e6aa439746dc5bf9215db5e6dbba18e9ea4571cfd2fcc123a0fb9400d",
-      "zeroTrimmedSha256": "c1a6de2a438cc307462791241d6fded1d77355676239cb3859e8f6c4554fe176",
-      "zeroTrimmedBytes": 2031641,
-      "binarySha256": "3c1eedcad2296066dd025e741caa9f775f4ca121a8c549fece25323532a32c18",
+      "allocatedBytes": 2052976,
+      "sha256": "07578b1054b56d1dd34c2e2d1ee47405fcb2fec5f97e6aee8675d6be4fdc4966",
+      "zeroTrimmedSha256": "4aafed51d5e8ec0e12ec2c9559933ca5b319cec85d48047a43dc0dc3bc3bc6cd",
+      "zeroTrimmedBytes": 2052961,
+      "binarySha256": "07578b1054b56d1dd34c2e2d1ee47405fcb2fec5f97e6aee8675d6be4fdc4966",
       "mount": "perps",
       "workspace": "perps",
       "library": "acidpump_er",
@@ -107,14 +107,14 @@
         "--features",
         "mainnet"
       ],
-      "localDockerMatch": false,
+      "localDockerMatch": true,
       "publicRegistryStatus": "verified",
-      "previousVerifiedCommit": "f82f527a44a15292ededb544d9129fc6a5459804",
-      "previousVerifiedAt": "2026-10-21T00:23:55.39853",
+      "previousVerifiedCommit": "dba12051b0ca9c735dd94409d215211a1b903ec9",
+      "previousVerifiedAt": "2026-10-21T04:08:02.082724",
       "localNativeMatch": true,
       "remoteDockerMatch": true,
-      "verifiedCommit": "dba12051b0ca9c735dd94409d215211a1b903ec9",
-      "verifiedAt": "2026-10-21T04:08:02.082724"
+      "verifiedCommit": "8821a2a604750eafdc27742893f73a5598edad04",
+      "verifiedAt": "2026-10-21T06:58:49.415391"
     }
   ]
 }
