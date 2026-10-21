@@ -25,6 +25,19 @@ All five programs have canonical on-chain IDLs and security records. See
 Native IDLs describe decoding; they are not generic transaction-building SDKs.
 Report vulnerabilities privately through our [security policy](SECURITY.md).
 
+## Bank stake contributions — October 21, 2026 UTC
+
+The bank now supports owner-signed partial or full stake contributions into the
+main SDICE Perps payout pool, including locked and Forever stakes. Existing
+withdrawal restrictions remain unchanged. Credited pSDICE is non-transferable.
+The bank upgrade at slot **459463816** retains its upgrade authority.
+Public source `8c86ff6a501d385508fbe4953f7aa515f2054cb7` independently rebuilds to
+the deployed executable; the registry reports verified. The canonical bank IDL
+now includes tag 116 (99 instruction variants, 31 account layouts).
+See [verification evidence](evidence/bank-contribution-verification-2026-10-21.json)
+and [finalized IDL publication receipts](evidence/bank-contribution-metadata-2026-10-21.json).
+The Perps program itself is unchanged by this bank release.
+
 ## Bank competition upgrade — October 19, 2026
 
 The bank was upgraded at mainnet slot **458975234** to add separate blackjack

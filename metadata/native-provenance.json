@@ -1,8 +1,8 @@
 [
   {
     "name": "bank",
-    "verifiedCommit": "c65b739e5a46f2bd3ba12058bec2d40bb9d3aaf5",
-    "idlSha256": "7d5a5eb576fc386bc4bc1bc02e0c4452c9dd866a958c0b9dcfcb3771e6829d97",
+    "verifiedCommit": "8c86ff6a501d385508fbe4953f7aa515f2054cb7",
+    "idlSha256": "38f12c529cf9410c5ff5ab4aae08851b4697f8c4ca3458bd549f4fe48de81668",
     "sources": [
       {
         "path": "games/chain/program/src/lib.rs",
@@ -14,11 +14,11 @@
       },
       {
         "path": "games/chain/program/src/economy.rs",
-        "sha256": "f7c63665984324e1bf70d6ee9ea63ce8ac4f6dd76dc2e5d557e4e3d6e4f0bedc"
+        "sha256": "be1c292660fc7f6a21ae16b704cf78179e0c59bddb69d2c023cf2750c1bdf7ce"
       },
       {
         "path": "games/chain/program/src/economy/locks.rs",
-        "sha256": "4bbfededbce0042d4a6842991078f0d28fea0979f870121d55c1da3fdfd6f732"
+        "sha256": "91caaa3eb0f01ab8bec72916d45f730b0fa603f22655563d4783e04e21104753"
       },
       {
         "path": "games/chain/program/src/funding.rs",
@@ -51,6 +51,10 @@
       {
         "path": "games/chain/program/src/slots/mod.rs",
         "sha256": "6903e28888b4dbd3c210d18e40f91ad218b50c91b058d22c4aff8fcc87013362"
+      },
+      {
+        "path": "games/chain/program/src/economy/perps_contribution.rs",
+        "sha256": "b0f518ea0995d2335cc4001ee24fe52b7b5d7065add28a62039343ffa3e92891"
       },
       {
         "path": "games/chain/program/src/tournament/games.rs",
@@ -183,7 +187,7 @@
         "size": 276
       }
     ],
-    "instructions": 98
+    "instructions": 99
   },
   {
     "name": "fights",

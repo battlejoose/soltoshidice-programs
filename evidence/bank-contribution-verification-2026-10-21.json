@@ -1,0 +1,38 @@
+{
+  "checkedAt": "2026-10-21T02:38:38.953Z",
+  "registry": {
+    "is_verified": true,
+    "message": "On chain program verified",
+    "on_chain_hash": "3b8f58ec23625a6cdb8d52698e690f004f23c19bb530e95d36de04f0040453cb",
+    "executable_hash": "3b8f58ec23625a6cdb8d52698e690f004f23c19bb530e95d36de04f0040453cb",
+    "repo_url": "https://github.com/battlejoose/soltoshidice-programs/tree/8c86ff6a501d385508fbe4953f7aa515f2054cb7",
+    "commit": "8c86ff6a501d385508fbe4953f7aa515f2054cb7",
+    "last_verified_at": "2026-10-21T02:37:51.850390",
+    "is_frozen": false,
+    "is_closed": false
+  },
+  "verificationTransaction": "34kSHXzb8DZTuu6ZSXXBpdNqecFvJkFVLzpywSi9dWkMjAb3udRVJdqu4bbPBLbh6oAw1AUN3bQweNS7dT5gHaeD",
+  "bank": {
+    "at": "2026-10-21T02:33:30.430Z",
+    "contextSlot": 459463819,
+    "program": "CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR",
+    "programData": "9HF5BoewAreFTHQgR6K3mvgkcG5cLy1mF4mnsUkHWBVM",
+    "authority": "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y",
+    "authorityRetained": true,
+    "upgraded": true,
+    "sha256": "9c382bb7d94029c097ee2edc37ad6b142fde2aa2b3695887553fa3f8def77912",
+    "bytes": 862400,
+    "deploymentSlot": "459463816",
+    "allocatedBytes": 862445,
+    "authorityLamports": 4413315777,
+    "bankReserved": "0",
+    "blackjack": {
+      "enabled": false,
+      "idle": true,
+      "phase": "betting",
+      "round": "680",
+      "revision": "7068"
+    },
+    "source": "4582ffb78e2a9cb7badb7e882a4fccae661e1e67"
+  }
+}
