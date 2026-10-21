@@ -2,8 +2,10 @@
 
 October 21 addition: [separate RPS/fighting bracket program source and finalized mainnet receipts](brackets/README.md).
 Poker stays at four tables / 40 players; none of the existing five programs was
-upgraded by this release. Explorer build verification for the new bracket program
-is not claimed; its source, tested binary hash and deployment receipts are published.
+upgraded by this release. The bracket program now has independent reproducible-build
+verification: [exact source, matching hashes and finalized registration](brackets/verification.json).
+Run `bash verify.sh brackets` to repeat it. Six program executables are verified;
+IDL/security records below cover the original five programs.
 
 Public contract source and reproducible build instructions for the existing
 Solana mainnet programs behind [SoltoshiDICE](https://soltoshidice.wtf).

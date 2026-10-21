@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-10-21T21:40:43.779Z",
+  "cluster": "mainnet-beta",
+  "name": "brackets",
+  "program": "EmAQwVNSBkKUDPziofdhSNdD4HYacQSYyfuDn7c4QKe2",
+  "programData": "HQGK9hdu5fXm19wSumDE8EiqcnwoxdVcB2nK8c2P92vT",
+  "readSlot": 459784332,
+  "lastDeploySlot": 459778651,
+  "upgradeAuthority": "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y",
+  "allocatedBytes": 208080,
+  "sha256": "c5749486b42a375f3fb985251cad65a172ce7262e3bd02ac443301bcda6fc9d4",
+  "zeroTrimmedSha256": "aebe93fa60ba5c9d88f65739ef30b8eec44e3c6df58ccb5e7de673ff7ed4665e",
+  "zeroTrimmedBytes": 208065,
+  "sourceRepository": "https://github.com/battlejoose/soltoshidice-programs",
+  "sourceCommit": "dc468fb446450aa86f525c2ae922e1733a687138",
+  "builder": {
+    "tool": "solana-verify",
+    "version": "0.5.2",
+    "image": "solanafoundation/solana-verifiable-build@sha256:f71be5ca7620b7e40933b7f1294fa44e01d08c1fc5ba1f375a2478f5a01580d3",
+    "mount": "brackets/chain",
+    "workspace": "brackets/chain/bracket-program",
+    "library": "hooddice_brackets"
+  },
+  "localDockerMatch": true,
+  "remoteDockerMatch": true,
+  "statusUrl": "https://verify.osec.io/status/EmAQwVNSBkKUDPziofdhSNdD4HYacQSYyfuDn7c4QKe2",
+  "registry": {
+    "is_verified": true,
+    "message": "On chain program verified",
+    "on_chain_hash": "aebe93fa60ba5c9d88f65739ef30b8eec44e3c6df58ccb5e7de673ff7ed4665e",
+    "executable_hash": "aebe93fa60ba5c9d88f65739ef30b8eec44e3c6df58ccb5e7de673ff7ed4665e",
+    "repo_url": "https://github.com/battlejoose/soltoshidice-programs/tree/dc468fb446450aa86f525c2ae922e1733a687138",
+    "commit": "dc468fb446450aa86f525c2ae922e1733a687138",
+    "last_verified_at": "2026-10-21T21:38:52.522369",
+    "is_frozen": false,
+    "is_closed": false
+  },
+  "jobUrl": "https://verify.osec.io/job/ee612bf4-6f81-4e99-8ec6-4b7b6c08fc2d",
+  "registration": {
+    "signature": "2npcRFLEqPPPkDPMdCbukN6KFLEdiK6XwSpgdJBrBY4zb5FULp67VSDUY7T83MjYjwmzU3uFzanCv1aBmpY8Ldo1",
+    "slot": 459783815,
+    "finalized": true,
+    "verifierProgram": "verifycLy8mB96wd9wqq3WDXQwM4oU6r42Th37Db9fC",
+    "metadataAccount": "A4nyndvGErUdWnDC51UFqr4uN3HDQhXH92VVihwxg6UQ",
+    "feeLamports": 5000,
+    "totalDebitLamports": 2956480,
+    "authorityBalanceAfter": 7053520,
+    "writableAccounts": [
+      "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y",
+      "A4nyndvGErUdWnDC51UFqr4uN3HDQhXH92VVihwxg6UQ"
+    ]
+  },
+  "deploymentUnchanged": true,
+  "scope": "Reproducible source identity, not a security audit or new gameplay. Bracket IDL/security metadata publication is not claimed. Existing program bytes and authorities remain unchanged."
+}

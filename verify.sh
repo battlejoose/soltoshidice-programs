@@ -4,12 +4,13 @@ set -euo pipefail
 cd "$(dirname "$0")"
 image=solanafoundation/solana-verifiable-build@sha256:f71be5ca7620b7e40933b7f1294fa44e01d08c1fc5ba1f375a2478f5a01580d3
 extra=()
-case "${1:?Choose bank, poker, fights, rps or perps}" in
+case "${1:?Choose bank, poker, fights, rps, perps or brackets}" in
   bank) id=CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR; mount=games/chain; workspace=games/chain/program; lib=hooddice_bank;;
   poker) id=3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ; mount=games/poker; workspace=$mount; lib=riverproof;;
   fights) id=5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q; mount=games/fights; workspace=games/fights/fight-program; lib=hooddice_fights;;
   rps) id=96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG; mount=games/chain/rps-program; workspace=$mount; lib=hooddice_rps;;
   perps) id=7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7; mount=perps; workspace=$mount; lib=acidpump_er; extra=(-- --features mainnet);;
+  brackets) id=EmAQwVNSBkKUDPziofdhSNdD4HYacQSYyfuDn7c4QKe2; mount=brackets/chain; workspace=brackets/chain/bracket-program; lib=hooddice_brackets;;
   *) echo 'Unknown program' >&2; exit 2;;
 esac
 solana-verify build "$PWD/$mount" --workspace-path "$PWD/$workspace" --library-name "$lib" --base-image "$image" "${extra[@]}"
