@@ -18,6 +18,10 @@ use anchor_spl::token_interface::{self, Mint, TokenAccount, TokenInterface, Tran
 pub mod math;
 pub mod emissions;
 pub mod risk;
+pub mod pool_exposure;
+pub use pool_exposure::*;
+pub mod pool_contribution;
+pub use pool_contribution::*;
 pub mod stake_backing;
 pub mod core_migration;
 pub use core_migration::*;
@@ -70,6 +74,10 @@ pub const ACTIVE_MARKET_COUNT: u16 = 4;
 #[program]
 pub mod acidpump_er {
     use super::*;
+pub fn contribute_pool(ctx:Context<ContributePool>,amount:u64,nonce:u64,min_issued:u128,expires:i64)->Result<()> {pool_contribution::contribute(ctx,amount,nonce,min_issued,expires)}
+pub fn initialize_pool_exposure(ctx:Context<InitializePoolExposure>)->Result<()> {pool_exposure::initialize(ctx)}
+pub fn delegate_pool_exposure(ctx:Context<DelegatePoolExposure>)->Result<()> {pool_exposure::delegate(ctx)}
+pub fn publish_pool_exposure(ctx:Context<PublishPoolExposure>,usd:u64,source_slot:u64,observed_at:i64)->Result<()> {pool_exposure::publish(ctx,usd,source_slot,observed_at)}
 pub fn withdraw_gas_surplus(ctx: Context<WithdrawGasSurplus>, amount:u64) -> Result<()> { fee_surplus::withdraw(ctx,amount) }
 pub fn deposit_gas_revenue(ctx: Context<DepositGasRevenue>, amount:u64) -> Result<()> { fee_surplus::deposit_revenue(ctx,amount) }
 pub fn initialize_economics_v1(ctx: Context<InitializeEconomicsV1>, deadband:bool) -> Result<()> { economics::initialize(ctx,deadband) }

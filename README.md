@@ -41,7 +41,21 @@ The metadata registration transaction was
 See [the bank upgrade snapshot](evidence/bank-competitions-snapshot-2026-10-19.json).
 Other program sources and deployed programs are unchanged by this release.
 
-## Status — October 19, 2026
+## Perps tokenomics upgrade — October 20, 2026
+
+Perps was upgraded at mainnet slot **459424476**. This release adds full-loss
+rewards with a pool-value taper, doubled FIFO loss rewards, root-pool contributions,
+and continuous per-position and combined per-wallet/venue exposure limits.
+Existing position layouts and upgrade authority are unchanged.
+
+The exported source rebuilds to the complete 2,030,840-byte mainnet executable:
+`a5e884d7015a62d428ef165e15626dfebd4ceb9f4db1562f082fb93bf3949eaa`.
+The executable served by MagicBlock matches too. The native pinned-toolchain
+rebuild passed; independent remote verification for this new hash is pending.
+See [the current chain snapshot](evidence/perps-tokenomics-snapshot-2026-10-20.json)
+and [source provenance](evidence/perps-tokenomics-source-2026-10-20.json).
+
+## Status — October 20, 2026
 
 | Program | Scope | Local Docker reproduction | Public registry |
 | --- | --- | --- | --- |
@@ -49,13 +63,14 @@ Other program sources and deployed programs are unchanged by this release.
 | `3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ` | Hold'em and tournaments | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ) |
 | `5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q` | Street Fights | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q) |
 | `96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG` | Rock Paper Scissors | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG) |
-| `7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7` | SDICE Perps, modular economics upgrade | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7) |
+| `7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7` | SDICE Perps, pool tokenomics upgrade | Native rebuild matches; Docker result pending | [New release pending verification](https://verify.osec.io/status/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7) |
 
 No deployed program, authority, custody account or game state was changed to
 produce this evidence. Verification metadata belongs to a separate verification
 program. Local reproduction is distinct from remote verifier acceptance.
 
-The October 17 verification covered all five programs. Perps was subsequently
+The following is historical October 18 evidence, superseded for Perps by the
+October 20 upgrade above. The October 17 verification covered all five programs. Perps was subsequently
 upgraded at mainnet slot **458267056**; the old Perps verification no longer
 matches. This export contains the upgraded source from release commit
 `4bdf1057c95ee5e701b41452c4aa356ae60ad506`. The current full executable SHA-256 is
@@ -76,7 +91,7 @@ in [`evidence/verification-receipts.json`](evidence/verification-receipts.json).
 The historical bank verification uses commit `e875a74a72af04b0bb203ac2952401e2eb0cef0c`; the other four historical jobs verified `d2c0b0b7fd14b727d925b137f64ee910261c9f3c`. Later documentation-only commits
 do not replace the precise source commit recorded by the verifier.
 
-Current upgrade evidence: [`evidence/perps-upgrade-verification-2026-10-18.json`](evidence/perps-upgrade-verification-2026-10-18.json).
+Historical upgrade evidence: [`evidence/perps-upgrade-verification-2026-10-18.json`](evidence/perps-upgrade-verification-2026-10-18.json).
 
 ## Reproduce independently
 

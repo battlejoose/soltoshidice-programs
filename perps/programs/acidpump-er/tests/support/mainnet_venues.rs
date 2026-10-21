@@ -5,6 +5,24 @@ use super::*;
 fn fixture()->Value {
     serde_json::from_slice(&std::fs::read(Path::new(env!("CARGO_MANIFEST_DIR")).join("../../.cache/perps-economics-modular/venue-instructions.json")).unwrap()).unwrap()
 }
+
+#[test]
+fn large_venue_uses_10_pool_70_stakers_10_burn_9_sdice_1_sol() {
+    let(mut h,f,root_primary)=make_venue();let own=h.tokens[0];
+    super::pool_tokenomics::seed_high_pool(&mut h,own);
+    h.send("fund high-value venue loss",vec![h.deposit(own,10_000*UNIT)],false);
+    let treasury=get::<Inventory>(&h.svm,own.inventory).treasury;
+    let own_supply=supply(&h.svm,own.mint);let root_supply=supply(&h.svm,root_primary.mint);
+    h.committed(own,20,10_000*UNIT,true,false);
+    h.send("settle high-value venue loss",settlement(&f,20),false);
+    assert_eq!(get::<Inventory>(&h.svm,own.inventory).treasury-treasury,1_000*UNIT);
+    assert_eq!(own_supply-supply(&h.svm,own.mint),1_000*UNIT);
+    let rewards:OwnershipPool=get(&h.svm,h.ownership);assert_eq!(rewards.fee_pending+rewards.reward_pool,7_000*UNIT);
+    let v:p::Venue=get(&h.svm,key(&f["venue"],"venue"));assert!(v.buyback_received>0);
+    let before=token(&h.svm,root_primary.vault);
+    h.send("contribute high-value venue SDICE purchase to root",Bank::client_instructions(&f["buyback"]),false);
+    assert!(token(&h.svm,root_primary.vault)>before);assert_eq!(supply(&h.svm,root_primary.mint),root_supply);
+}
 fn make_venue()->(Bank,Value,Token) {
     let mut h=Bank::new();let root_primary=h.tokens[0];let own=h.register_backed_collateral("FARTCOIN");let f=fixture();
     let create=Bank::client_instructions(&f["create"]);
@@ -31,9 +49,9 @@ fn settlement(f:&Value,nonce:u64)->Vec<Instruction> {
 }
 
 #[test]
-fn created_venue_burns_own_token_and_bought_sdice_without_spending_root_inventory() {
+fn created_venue_burns_own_token_and_credits_bought_sdice_to_root_inventory() {
     let(mut h,f,root_primary)=make_venue();let own=h.tokens[0];
-    let root_inventory_before=h.svm.get_account(&root_primary.inventory).unwrap();
+    let root_inventory_before:Inventory=get(&h.svm,root_primary.inventory);
     let root_vault_before=token(&h.svm,root_primary.vault);
     let own_supply=supply(&h.svm,own.mint);let sdice_supply=supply(&h.svm,root_primary.mint);
     let gas_before=get::<GasReserve>(&h.svm,h.gas).sol_received;
@@ -46,15 +64,18 @@ fn created_venue_burns_own_token_and_bought_sdice_without_spending_root_inventor
     let venue_key=key(&f["venue"],"venue");let venue:p::Venue=get(&h.svm,venue_key);
     assert!(venue.buyback_received>0);assert_eq!(venue.sdice_burned,0);
     assert!(get::<GasReserve>(&h.svm,h.gas).sol_received>gas_before);
-    h.send("buy and burn SDICE with isolated venue proceeds",Bank::client_instructions(&f["buyback"]),false);
-    let after:p::Venue=get(&h.svm,venue_key);assert!(after.sdice_burned>0);assert_eq!(after.buyback_spent,venue.buyback_received);
-    assert_eq!(sdice_supply-supply(&h.svm,root_primary.mint),after.sdice_burned);
-    assert_eq!(token(&h.svm,root_primary.vault),root_vault_before);
-    assert_eq!(h.svm.get_account(&root_primary.inventory).unwrap().data,root_inventory_before.data);
+    h.send("buy SDICE into root payouts with isolated venue proceeds",Bank::client_instructions(&f["buyback"]),false);
+    let after:p::Venue=get(&h.svm,venue_key);assert_eq!(after.sdice_burned,0);assert_eq!(after.buyback_spent,venue.buyback_received);
+    assert_eq!(supply(&h.svm,root_primary.mint),sdice_supply);
+    let added=token(&h.svm,root_primary.vault)-root_vault_before;assert!(added>0);
+    let inventory_after:Inventory=get(&h.svm,root_primary.inventory);
+    assert_eq!(inventory_after.treasury,root_inventory_before.treasury+added);
+    assert_eq!(inventory_after.locked,root_inventory_before.locked);
+    h.send("empty contribution cannot be replayed",Bank::client_instructions(&f["buyback"]),true);
 }
 
 #[test]
-fn venue_queue_suspends_both_burns_and_rewards_but_not_shared_sol_fees() {
+fn venue_queue_suspends_burns_and_staker_fees_but_not_loss_rewards_or_sol_fees() {
     let(mut h,f,root_primary)=make_venue();let own=h.tokens[0];let usd=h.tokens[1];
     h.send("fund venue loss and winner",vec![h.deposit(own,100_000*UNIT),h.deposit(usd,20*UNIT)],false);
     // Accumulate buyback quote before the queue; it too must wait.
@@ -112,11 +133,15 @@ fn venue_converts_usdc_sol_and_sdice_collateral_without_mixing_custody() {
 }
 
 #[test]
-fn root_fifo_also_defers_created_venue_sdice_buyback() {
-    let(mut h,f,_)=make_venue();let own=h.tokens[0];
+fn root_fifo_accepts_created_venue_sdice_contribution_without_changing_claims() {
+    let(mut h,f,root_primary)=make_venue();let own=h.tokens[0];
     h.send("fund root queue buyback fixture",vec![h.deposit(own,100_000*UNIT)],false);
     h.committed(own,20,10_000*UNIT,true,false);h.send("accumulate buyback proceeds",settlement(&f,20),false);
     let mut pool:Pool=get(&h.svm,p::ROOT_POOL);pool.queue_usd=1;pool.queue_tail=1;
     put(&mut h.svm,p::ROOT_POOL,&pool,p::ID);
-    h.send("root unpaid claims defer venue SDICE burn",Bank::client_instructions(&f["buyback"]),true);
+    let before=token(&h.svm,root_primary.vault);let minted=supply(&h.svm,root_primary.mint);
+    h.send("root unpaid claims accept incoming venue contribution",Bank::client_instructions(&f["buyback"]),false);
+    assert!(token(&h.svm,root_primary.vault)>before);
+    assert_eq!(supply(&h.svm,root_primary.mint),minted);
+    let after:Pool=get(&h.svm,p::ROOT_POOL);assert_eq!(after.queue_usd,1);assert_eq!(after.queue_tail,1);
 }

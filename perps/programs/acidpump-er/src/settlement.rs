@@ -6,7 +6,8 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
         let same = ctx.accounts.asset.key() == ctx.accounts.pool_accounts.pool.settlement;
         require!(if same {ctx.accounts.settlement_inventory.is_none() && ctx.accounts.settlement_vault.is_none()} else {ctx.accounts.settlement_inventory.is_some() && ctx.accounts.settlement_vault.is_some()},MixError::Binding);
         let treasury_before = if same {ctx.accounts.inventory.treasury} else {ctx.accounts.settlement_inventory.as_ref().ok_or(MixError::Binding)?.treasury};
-        let tracked_before = pump::sell_value(treasury_before,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)? as i128 - ctx.accounts.pool_accounts.pool.queue_usd as i128;
+        let pool_usd_before = pump::sell_value(treasury_before,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)?;
+        let tracked_before = pool_usd_before as i128;
         ctx.accounts.ownership.validate(&ctx.accounts.position, ctx.accounts.pool_accounts.pool.key())?;
         let trader = basebridge::committed_trader(&ctx.accounts.bridge.trader, ctx.accounts.position.owner,
             ctx.accounts.bridge.config.key(), ctx.accounts.pool_accounts.pool.key())?;
@@ -26,13 +27,17 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
             token_pnl
         };
         let returned = x.margin - loss;
+        // Quote before swaps change reserves; never derive rewards from the
+        // pool/staker/burn split or FIFO state. All trader loss counts.
+        let loss_reward_tokens=pump::loss_reward_tokens(loss,&ctx.accounts.asset,&ctx.accounts.pool_accounts.valuation,
+            &ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)?;
         // A queued venue retains all post-gas proceeds: neither burn is funded.
         let root = crate::venue::is_root(&ctx.accounts.bridge.config.key());
         let pool_before=&ctx.accounts.pool_accounts.pool;
         let queued=math::queue_pending(pool_before.queue_usd,pool_before.queue_head,pool_before.queue_tail)?;
         let (mut acid_input,mut gas_share,mut buyback_share)=if root || queued {
             let (acid,gas)=math::loss_split(loss)?;(acid,gas,0)
-        } else {math::venue_loss_split(loss)?};
+        } else {math::venue_loss_split_at(loss,pool_usd_before)?};
         // Tiny unswappable allocations stay in the pool, with no reward or burn.
         let small_loss=loss>0 && pump::sell_value(loss,&ctx.accounts.asset,&ctx.accounts.pool_accounts.valuation)?<1000;
         if small_loss {acid_input=loss;gas_share=0;buyback_share=0;}
@@ -128,7 +133,7 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
         let fees=&mut ctx.accounts.fees;
         let inv = &mut ctx.accounts.inventory;
         let (payout_receipts,staker_out,burn_out)=if small_loss || queued {(acid_out,0,0)}
-            else if root {math::acid_split(acid_out)?} else {math::venue_token_split(acid_out)?};
+            else if root {math::acid_split_at(acid_out,pool_usd_before)?} else {math::venue_token_split_at(acid_out,pool_usd_before)?};
         if same {inv.treasury=inv.treasury.checked_add(payout_receipts).ok_or(MixError::Arithmetic)?;}
         else {
             let target=ctx.accounts.settlement_inventory.as_mut().ok_or(MixError::Binding)?;
@@ -158,17 +163,21 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
         // Keep the old event decodable for historical fee-reserve receipts.
         emit!(LossSplit{position:x.key(),loss,market_tokens:acid_input,gas_tokens:gas_share,perp_tokens:0,perp_bought:acid_out,sol_received:gas_out});
         emit!(RevenueSplit{position:x.key(),acid_received:acid_out,pool_tokens:payout_receipts,staker_tokens:staker_out,burned_tokens:burn_out});
-        // Both the loss swap and the trader's consumed backing fund the payout
-        // pool. Award their combined contribution once, under the same curve.
+        // Preserve actual pool receipts for accounting. Reward the full trader
+        // loss plus consumed backing, independent of the revenue allocation.
         let settlement_inventory = if same { &mut ctx.accounts.inventory } else { ctx.accounts.settlement_inventory.as_mut().ok_or(MixError::Binding)? };
         crate::stake_backing::allocate_coverage(&mut ctx.accounts.bridge.custody, &trader, settlement_inventory, coverage, backing.core)?;
         emit!(CoreCoverageApplied { position: x.key(), owner: x.owner, closing_usd: x.collateral_close_value,
             core_tokens: coverage.tokens, covered_usd: x.coverage_usd, uncovered_usd: coverage.uncovered_usd });
         let ownership_tokens = payout_receipts.checked_add(coverage.tokens).ok_or(MixError::Arithmetic)?;
-        let tracked_after = pump::sell_value(settlement_inventory.treasury,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)? as i128 - ctx.accounts.pool_accounts.pool.queue_usd as i128;
+        let tracked_after = pump::sell_value(settlement_inventory.treasury,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)? as i128;
         let basis_usd = pump::sell_value(ownership_tokens,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)?;
         let advance = (tracked_after-tracked_before).max(0).min(basis_usd as i128) as u64;
-        ownership::award_scaled(&mut ctx.accounts.ownership.ownership_pool, &mut ctx.accounts.ownership.ownership_trader, &mut ctx.accounts.ownership.ownership_receipt, ownership_tokens,basis_usd,tracked_before,advance)?;
+        let reward_basis=loss_reward_tokens.checked_add(coverage.tokens).ok_or(MixError::Arithmetic)?;
+        ownership::award_loss(&mut ctx.accounts.ownership.ownership_pool, &mut ctx.accounts.ownership.ownership_trader, &mut ctx.accounts.ownership.ownership_receipt, ownership_tokens,reward_basis,basis_usd,tracked_before,advance,queued)?;
+        emit!(PoolTokenomicsApplied { position:x.key(), pool:ctx.accounts.pool_accounts.pool.key(),
+            pool_usd_before, queued, reward_factor:emissions::reward_factor(tracked_before) as u64,
+            high_pool:pool_usd_before>math::HIGH_POOL_THRESHOLD });
         x.swapped_out = payout_receipts;
         x.state = if liquidated { 2 } else { 1 };
         x.closed_at = intent.closed_at;
@@ -206,7 +215,11 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
         Ok(())
     }
 
-/// Created-venue loss conversion: 98% to the venue token, 1% SOL gas and 1%
+#[event]
+pub struct PoolTokenomicsApplied { pub position:Pubkey, pub pool:Pubkey, pub pool_usd_before:u64,
+    pub queued:bool, pub reward_factor:u64, pub high_pool:bool }
+
+/// Created-venue loss conversion: 98% or 90% to the venue token, 1% SOL gas and 1% or 9%
 /// swap quote into the SDICE buyback vault. Returns (token, SOL, buyback quote).
 #[allow(clippy::too_many_arguments)]
 fn venue_conversion<'info>(route:&crate::venue::VenueRoute<'_,'info>,accounts:&[AccountInfo<'info>],dust:&mut u64,

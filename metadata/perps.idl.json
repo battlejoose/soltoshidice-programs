@@ -1478,6 +1478,357 @@
       ]
     },
     {
+      "name": "contribute_pool",
+      "discriminator": [
+        238,
+        61,
+        229,
+        10,
+        130,
+        18,
+        35,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "owner",
+          "docs": [
+            "Beneficiary explicitly signs even when a bank PDA supplies the tokens."
+          ],
+          "signer": true
+        },
+        {
+          "name": "funding_authority",
+          "signer": true
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  0,
+                  0
+                ]
+              }
+            ]
+          },
+          "relations": [
+            "inventory",
+            "ownership_pool"
+          ]
+        },
+        {
+          "name": "asset",
+          "relations": [
+            "inventory"
+          ]
+        },
+        {
+          "name": "authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "source",
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "asset"
+              }
+            ]
+          }
+        },
+        {
+          "name": "inventory",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  118,
+                  101,
+                  110,
+                  116,
+                  111,
+                  114,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "asset"
+              }
+            ]
+          }
+        },
+        {
+          "name": "ownership_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  119,
+                  110,
+                  101,
+                  114,
+                  115,
+                  104,
+                  105,
+                  112,
+                  45,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "ownership_trader",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  119,
+                  110,
+                  101,
+                  114,
+                  115,
+                  104,
+                  105,
+                  112,
+                  45,
+                  116,
+                  114,
+                  97,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "ledger",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "valuation",
+          "accounts": [
+            {
+              "name": "dex_pool"
+            },
+            {
+              "name": "dex_base"
+            },
+            {
+              "name": "dex_quote"
+            },
+            {
+              "name": "fee_config"
+            },
+            {
+              "name": "dex_mint"
+            },
+            {
+              "name": "global_config"
+            },
+            {
+              "name": "usd_pool"
+            },
+            {
+              "name": "usd_mint"
+            },
+            {
+              "name": "usd_base"
+            },
+            {
+              "name": "usd_quote"
+            },
+            {
+              "name": "source_global"
+            },
+            {
+              "name": "source_fees"
+            }
+          ]
+        },
+        {
+          "name": "execution",
+          "accounts": [
+            {
+              "name": "magic_program",
+              "address": "Magic11111111111111111111111111111111111111"
+            }
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "nonce",
+          "type": "u64"
+        },
+        {
+          "name": "min_issued",
+          "type": "u128"
+        },
+        {
+          "name": "expires",
+          "type": "i64"
+        }
+      ]
+    },
+    {
       "name": "create_feed",
       "discriminator": [
         173,
@@ -2235,6 +2586,209 @@
               "address": "Magic11111111111111111111111111111111111111"
             }
           ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "delegate_pool_exposure",
+      "discriminator": [
+        94,
+        44,
+        27,
+        123,
+        100,
+        63,
+        206,
+        200
+      ],
+      "accounts": [
+        {
+          "name": "publisher",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config"
+        },
+        {
+          "name": "pool"
+        },
+        {
+          "name": "buffer_pool_exposure",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  117,
+                  102,
+                  102,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool_exposure"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                97,
+                56,
+                117,
+                106,
+                226,
+                97,
+                190,
+                125,
+                99,
+                105,
+                151,
+                29,
+                125,
+                143,
+                196,
+                13,
+                133,
+                213,
+                224,
+                127,
+                145,
+                167,
+                204,
+                214,
+                227,
+                221,
+                217,
+                13,
+                136,
+                29,
+                192,
+                22
+              ]
+            }
+          }
+        },
+        {
+          "name": "delegation_record_pool_exposure",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool_exposure"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "delegation_metadata_pool_exposure",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  45,
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool_exposure"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "pool_exposure",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  45,
+                  101,
+                  120,
+                  112,
+                  111,
+                  115,
+                  117,
+                  114,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner_program",
+          "address": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7"
+        },
+        {
+          "name": "delegation_program",
+          "address": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
@@ -5024,6 +5578,36 @@
           "docs": [
             "The venue pool; its settlement token is this venue's core stake."
           ]
+        },
+        {
+          "name": "pool_exposure",
+          "optional": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  45,
+                  101,
+                  120,
+                  112,
+                  111,
+                  115,
+                  117,
+                  114,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
         }
       ],
       "args": [
@@ -6743,6 +7327,67 @@
       "args": []
     },
     {
+      "name": "initialize_pool_exposure",
+      "discriminator": [
+        32,
+        253,
+        141,
+        237,
+        28,
+        119,
+        53,
+        77
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config"
+        },
+        {
+          "name": "pool"
+        },
+        {
+          "name": "pool_exposure",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  45,
+                  101,
+                  120,
+                  112,
+                  111,
+                  115,
+                  117,
+                  114,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "initialize_sol_intermediate",
       "discriminator": [
         15,
@@ -7708,6 +8353,88 @@
               3
             ]
           }
+        }
+      ]
+    },
+    {
+      "name": "publish_pool_exposure",
+      "discriminator": [
+        158,
+        199,
+        197,
+        35,
+        105,
+        45,
+        208,
+        56
+      ],
+      "accounts": [
+        {
+          "name": "publisher",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "relations": [
+            "pool_exposure"
+          ]
+        },
+        {
+          "name": "pool_exposure",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  45,
+                  101,
+                  120,
+                  112,
+                  111,
+                  115,
+                  117,
+                  114,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool_exposure.pool",
+                "account": "PoolExposure"
+              }
+            ]
+          }
+        },
+        {
+          "name": "execution",
+          "accounts": [
+            {
+              "name": "magic_program",
+              "address": "Magic11111111111111111111111111111111111111"
+            }
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "usd",
+          "type": "u64"
+        },
+        {
+          "name": "source_slot",
+          "type": "u64"
+        },
+        {
+          "name": "observed_at",
+          "type": "i64"
         }
       ]
     },
@@ -9330,6 +10057,7 @@
         },
         {
           "name": "root_inventory",
+          "writable": true,
           "pda": {
             "seeds": [
               {
@@ -10237,6 +10965,19 @@
       ]
     },
     {
+      "name": "ContributionLedger",
+      "discriminator": [
+        143,
+        22,
+        67,
+        94,
+        33,
+        213,
+        165,
+        70
+      ]
+    },
+    {
       "name": "EconomicsV1",
       "discriminator": [
         143,
@@ -10419,6 +11160,19 @@
       ]
     },
     {
+      "name": "PoolExposure",
+      "discriminator": [
+        118,
+        21,
+        235,
+        231,
+        216,
+        225,
+        225,
+        107
+      ]
+    },
+    {
       "name": "Position",
       "discriminator": [
         170,
@@ -10551,6 +11305,19 @@
       ]
     },
     {
+      "name": "LossRewardBasis",
+      "discriminator": [
+        234,
+        5,
+        93,
+        232,
+        34,
+        129,
+        80,
+        72
+      ]
+    },
+    {
       "name": "LossSplit",
       "discriminator": [
         33,
@@ -10574,6 +11341,32 @@
         234,
         94,
         35
+      ]
+    },
+    {
+      "name": "PoolContributed",
+      "discriminator": [
+        48,
+        232,
+        29,
+        93,
+        46,
+        39,
+        52,
+        44
+      ]
+    },
+    {
+      "name": "PoolTokenomicsApplied",
+      "discriminator": [
+        58,
+        106,
+        30,
+        92,
+        229,
+        47,
+        46,
+        9
       ]
     },
     {
@@ -10639,6 +11432,19 @@
         232,
         179,
         196
+      ]
+    },
+    {
+      "name": "SdicePoolContribution",
+      "discriminator": [
+        135,
+        254,
+        54,
+        186,
+        10,
+        59,
+        250,
+        244
       ]
     },
     {
@@ -11177,6 +11983,38 @@
           {
             "name": "next_settlement_seq",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ContributionLedger",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "next_nonce",
+            "type": "u64"
+          },
+          {
+            "name": "contributed",
+            "type": "u128"
+          },
+          {
+            "name": "issued",
+            "type": "u128"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
           }
         ]
       }
@@ -12003,6 +12841,26 @@
       }
     },
     {
+      "name": "LossRewardBasis",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "position",
+            "type": "pubkey"
+          },
+          {
+            "name": "loss_tokens",
+            "type": "u64"
+          },
+          {
+            "name": "issued",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
       "name": "LossSplit",
       "type": {
         "kind": "struct",
@@ -12377,6 +13235,110 @@
       }
     },
     {
+      "name": "PoolContributed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "funding_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "source",
+            "type": "pubkey"
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "pool_usd_before",
+            "type": "u64"
+          },
+          {
+            "name": "issued",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PoolExposure",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "config",
+            "type": "pubkey"
+          },
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "usd",
+            "type": "u64"
+          },
+          {
+            "name": "source_slot",
+            "type": "u64"
+          },
+          {
+            "name": "observed_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PoolTokenomicsApplied",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "position",
+            "type": "pubkey"
+          },
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "pool_usd_before",
+            "type": "u64"
+          },
+          {
+            "name": "queued",
+            "type": "bool"
+          },
+          {
+            "name": "reward_factor",
+            "type": "u64"
+          },
+          {
+            "name": "high_pool",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
       "name": "Position",
       "type": {
         "kind": "struct",
@@ -12641,6 +13603,30 @@
       }
     },
     {
+      "name": "SdicePoolContribution",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "venue",
+            "type": "pubkey"
+          },
+          {
+            "name": "quote_spent",
+            "type": "u64"
+          },
+          {
+            "name": "sdice_contributed",
+            "type": "u64"
+          },
+          {
+            "name": "root_treasury",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
       "name": "Settled",
       "type": {
         "kind": "struct",
@@ -12775,7 +13761,7 @@
           {
             "name": "sdice_burned",
             "docs": [
-              "SDICE atoms purchased and burned (never credited to root treasury)."
+              "Historical SDICE burned before pool-size tokenomics; never incremented now."
             ],
             "type": "u64"
           },

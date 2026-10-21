@@ -31,6 +31,10 @@ mod usdc_settlement;
 mod economics;
 #[path="support/mainnet_venues.rs"]
 mod venues;
+#[path="support/mainnet_pool_tokenomics.rs"]
+mod pool_tokenomics;
+#[path="support/mainnet_contributions.rs"]
+mod contributions;
 fn pk(s:&str)->Pubkey {Pubkey::from_str(s).unwrap()}
 fn key(v:&Value,n:&str)->Pubkey {pk(v[n].as_str().unwrap())}
 fn pda(s:&[&[u8]])->Pubkey {Pubkey::find_program_address(s,&p::ID).0}

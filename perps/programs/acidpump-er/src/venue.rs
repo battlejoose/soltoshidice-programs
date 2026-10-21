@@ -7,8 +7,8 @@
 //! quotes, the gas reserve and the ER commit fee payer stay shared.
 //!
 //! A venue settles losses into its own primary token exactly like the root,
-//! with 1% own-token burn and 1% SDICE buy-and-burn instead of the root's 2%
-//! SDICE burn. Pending FIFO claims suspend both burns and staker allocations.
+//! with own-token burns and SDICE purchases credited to the root payout pool.
+//! Pending source FIFO claims suspend new revenue distributions.
 use crate::*;
 
 /// Seed component that is empty for the root venue. `[prefix, ns, rest..]`
@@ -92,7 +92,7 @@ pub struct Venue {
     pub buyback_received: u64,
     /// Swap-quote atoms spent on SDICE by `route_buyback`.
     pub buyback_spent: u64,
-    /// SDICE atoms purchased and burned (never credited to root treasury).
+    /// Historical SDICE burned before pool-size tokenomics; never incremented now.
     pub sdice_burned: u64,
     pub bump: u8,
 }
@@ -122,6 +122,14 @@ pub struct SdiceBuyback {
     pub venue: Pubkey,
     pub quote_spent: u64,
     pub sdice_burned: u64,
+    pub root_treasury: u64,
+}
+
+#[event]
+pub struct SdicePoolContribution {
+    pub venue: Pubkey,
+    pub quote_spent: u64,
+    pub sdice_contributed: u64,
     pub root_treasury: u64,
 }
 
@@ -164,15 +172,14 @@ pub fn create_venue(ctx: Context<CreateVenue>) -> Result<()> {
     Ok(())
 }
 
-/// Spend a venue's accumulated buyback quote on SDICE and burn exactly the
-/// purchase output. Only the publisher may choose the minimum output, so a
+/// Spend a venue's accumulated contribution quote on SDICE and credit exactly
+/// the purchase output to root payout inventory. Only the publisher sets minimum output, so a
 /// third party cannot force a sandwiched purchase.
 pub fn route_buyback<'info>(ctx: Context<'info, RouteBuyback<'info>>, amount: u64, min_out: u64) -> Result<()> {
     let a = &ctx.accounts;
-    // Previously allocated burn quote waits too, if either affected venue owes
-    // claims. No root inventory, claim reserve or pre-existing SDICE is spent.
-    require!(!math::queue_pending(a.pool.queue_usd,a.pool.queue_head,a.pool.queue_tail)?
-        && !math::queue_pending(a.root_pool.queue_usd,a.root_pool.queue_head,a.root_pool.queue_tail)?,MixError::QueueOrder);
+    // A source queue still defers its allocated contribution. Root claims must
+    // not block incoming payout liquidity. No pre-existing root funds are spent.
+    require!(!math::queue_pending(a.pool.queue_usd,a.pool.queue_head,a.pool.queue_tail)?,MixError::QueueOrder);
     let available = pump::token_amount(&a.buyback_vault.to_account_info())?;
     let amount = if amount == 0 { available } else { amount };
     require!(amount > 0 && amount <= available && min_out > 0, MixError::Amount);
@@ -193,17 +200,13 @@ pub fn route_buyback<'info>(ctx: Context<'info, RouteBuyback<'info>>, amount: u6
     require!(pump::token_amount(&a.root_quote.to_account_info())? >= quote0, MixError::Binding);
     let out = pump::token_amount(&a.root_vault.to_account_info())?.checked_sub(sdice0).ok_or(MixError::Arithmetic)?;
     require!(out >= min_out, MixError::Quote);
-    let root_pool=a.root_pool.key();
-    let root_seeds:&[&[u8]]=&[b"authority",root_pool.as_ref(),&[a.root_pool.authority_bump]];
-    token_interface::burn(CpiContext::new_with_signer(a.sdice_program.key(),token_interface::Burn {
-        mint:a.sdice_mint.to_account_info(),from:a.root_vault.to_account_info(),authority:a.root_authority.to_account_info(),
-    },&[root_seeds]),out)?;
-    require!(pump::token_amount(&a.root_vault.to_account_info())?==sdice0,MixError::Binding);
-    let root_treasury=a.root_inventory.treasury;
+    let root_treasury=a.root_inventory.treasury.checked_add(out).ok_or(MixError::Arithmetic)?;
+    ctx.accounts.root_inventory.treasury=root_treasury;
     let v = &mut ctx.accounts.venue;
     v.buyback_spent = v.buyback_spent.checked_add(amount).ok_or(MixError::Arithmetic)?;
-    v.sdice_burned = v.sdice_burned.checked_add(out).ok_or(MixError::Arithmetic)?;
-    emit!(SdiceBuyback { venue: v.key(), quote_spent: amount, sdice_burned: out, root_treasury });
+    // Preserve the historical event decoder; this transaction burns zero SDICE.
+    emit!(SdiceBuyback { venue: v.key(), quote_spent: amount, sdice_burned: 0, root_treasury });
+    emit!(SdicePoolContribution { venue: v.key(), quote_spent: amount, sdice_contributed: out, root_treasury });
     Ok(())
 }
 
@@ -286,7 +289,7 @@ pub struct RouteBuyback<'info> {
     #[account(address=sdice.token_program)]
     pub sdice_program: Interface<'info, TokenInterface>,
     pub sdice_valuation: Valuation<'info>,
-    #[account(seeds=[b"inventory",root_pool.key().as_ref(),sdice.key().as_ref()],bump=root_inventory.bump,
+    #[account(mut,seeds=[b"inventory",root_pool.key().as_ref(),sdice.key().as_ref()],bump=root_inventory.bump,
         constraint=root_inventory.pool==root_pool.key() && root_inventory.asset==sdice.key() @ MixError::Binding)]
     pub root_inventory: Box<Account<'info, Inventory>>,
     #[account(mut,seeds=[b"vault",root_pool.key().as_ref(),sdice.key().as_ref()],bump,token::authority=root_authority,

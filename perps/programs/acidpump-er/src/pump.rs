@@ -77,6 +77,16 @@ pub fn sell_from_reserves(amount:u64,base:u64,quote:u64,fees:[u16;3])->Result<u6
     let cost=fees.iter().try_fold(0u64,|s,b|->Result<u64>{s.checked_add(math::ceil(gross as u128*(*b as u128),10000)?).ok_or_else(||error!(MixError::Arithmetic))})?;
     Ok(gross.saturating_sub(cost))
 }
+pub fn loss_reward_tokens(amount:u64,a:&Asset,v:&Valuation,to:&Asset,tv:&Valuation)->Result<u64> {
+    if amount==0 || a.mint==to.mint {return Ok(amount);}
+    let quote=sell_value(amount,a,v)?;
+    let (base,reserve,fees)=validate_pool(to,tv)?;
+    let mut net=(quote as u128*10_000/(10_000+fees.iter().map(|v|*v as u128).sum::<u128>())) as u64;
+    let costs=fees.iter().try_fold(0u64,|sum,bps|->Result<u64>{sum.checked_add(math::ceil(net as u128*(*bps as u128),10_000)?).ok_or_else(||error!(MixError::Arithmetic))})?;
+    net=net.saturating_sub(net.saturating_add(costs).saturating_sub(quote));
+    if net<=1 {return Ok(0);}
+    math::div(base as u128,(net-1) as u128,reserve as u128+(net-1) as u128)
+}
 fn leg<'info>(p:&Account<Pool>,authority:&UncheckedAccount<'info>,a:&Account<Asset>,base:&AccountInfo<'info>,quote:&AccountInfo<'info>,program:&UncheckedAccount<'info>,accounts:&[AccountInfo<'info>],sell:bool,amount:u64,min_out:u64)->Result<()> {
     require!(accounts.len()>=if sell {21}else{23},MixError::Binding);
     for (i,k) in [(0,a.dex_pool),(1,authority.key()),(3,a.mint),(4,a.quote_mint),(5,base.key()),(6,quote.key()),(11,a.token_program),(12,anchor_spl::token::ID),(16,ID)] {

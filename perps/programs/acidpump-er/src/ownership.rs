@@ -68,16 +68,23 @@ pub fn award(p: &mut OwnershipPool, t: &mut OwnershipTrader, r: &mut OwnershipRe
     award_scaled(p,t,r,tokens,0,0,0)
 }
 pub fn award_scaled(p: &mut OwnershipPool, t: &mut OwnershipTrader, r: &mut OwnershipReceipt, tokens: u64, basis_usd: u64, tracked: i128, advance: u64) -> Result<()> {
+    award_loss(p,t,r,tokens,tokens,basis_usd,tracked,advance,false)
+}
+/// Preserve actual pool receipts while awarding from the full trader loss.
+pub fn award_loss(p: &mut OwnershipPool, t: &mut OwnershipTrader, r: &mut OwnershipReceipt, pool_tokens:u64, loss_tokens: u64, basis_usd: u64, tracked: i128, advance: u64, queued:bool) -> Result<()> {
     require!(!r.awarded, MixError::Replay);
-    let (issued, highwater) = emissions::issue(tokens,basis_usd,tracked,advance,p.tail_progress_usd)?;
+    let (issued, highwater) = emissions::issue(loss_tokens,basis_usd,tracked,advance,p.tail_progress_usd)?;
+    // Sample the queue before settlement; double the tapered award, not pool receipts.
+    let issued = issued.checked_mul(if queued {2} else {1}).ok_or(MixError::Arithmetic)?;
     p.tail_progress_usd = highwater;
     t.available = t.available.checked_add(issued).ok_or(MixError::Arithmetic)?;
     t.issued = t.issued.checked_add(issued).ok_or(MixError::Arithmetic)?;
     p.supply = p.supply.checked_add(issued).ok_or(MixError::Arithmetic)?;
-    r.pool_tokens = tokens;
+    r.pool_tokens = pool_tokens;
     r.issued = issued;
     r.awarded = true;
-    emit!(OwnershipAwarded { position: r.position, pool: r.pool, owner: r.owner, pool_tokens: tokens, issued });
+    emit!(OwnershipAwarded { position: r.position, pool: r.pool, owner: r.owner, pool_tokens, issued });
+    emit!(LossRewardBasis {position:r.position,loss_tokens,issued});
     Ok(())
 }
 pub fn fund_rewards(p: &mut OwnershipPool, receipts: u64) -> Result<()> {
@@ -124,10 +131,26 @@ pub fn sweep_surplus(p: &mut OwnershipPool, inv: &mut Inventory, queue_usd:u64, 
 }
 #[event]
 pub struct OwnershipAwarded { pub position: Pubkey, pub pool: Pubkey, pub owner: Pubkey, pub pool_tokens: u64, pub issued: u128 }
+#[event]
+pub struct LossRewardBasis {pub position:Pubkey,pub loss_tokens:u64,pub issued:u128}
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn loss_reward_uses_full_loss_with_fifo_bonus_independent_of_revenue_allocation() {
+        for pool in [0,550_000*risk::USD,2_000_001*risk::USD] {
+            let expected=emissions::issue(100_000_000,0,pool as i128,0,0).unwrap().0;
+            for (receipts,queued) in [10_000_000,90_000_000,99_000_000].into_iter().flat_map(|r|[false,true].map(|q|(r,q))) {
+                let expected=expected*if queued {2} else {1};
+                let mut p=OwnershipPool::default();let mut t=OwnershipTrader::default();let mut r=OwnershipReceipt::default();
+                award_loss(&mut p,&mut t,&mut r,receipts,100_000_000,0,pool as i128,0,queued).unwrap();
+                assert_eq!(r.issued,expected);assert_eq!(r.pool_tokens,receipts);
+                assert_eq!((p.supply,t.available,t.issued),(expected,expected,expected));
+                assert!(award_loss(&mut p,&mut t,&mut r,receipts,100_000_000,0,pool as i128,0,queued).is_err());
+            }
+        }
+    }
     fn inventory(amount: u64) -> Inventory { Inventory { pool: Pubkey::default(), asset: Pubkey::default(), locked: 999, treasury: amount, losses: 0, paid: 0, dust: 0, bump: 0 } }
     #[test]
     fn actual_receipts_fund_stakers_without_touching_payouts_or_legacy_developer_fees() {

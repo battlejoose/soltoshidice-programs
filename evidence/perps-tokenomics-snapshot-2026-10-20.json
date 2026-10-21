@@ -1,0 +1,50 @@
+{
+  "at": "2026-10-21T00:16:49.487Z",
+  "cluster": "mainnet-beta",
+  "program": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+  "programData": "GngBxRxp2nvs7kHSTfjxfL9jgt7Abt3wHw4cUV92TEon",
+  "lastDeploySlot": 459424476,
+  "readSlot": 459425875,
+  "upgradeAuthority": "GqJwW3CF9XfopAmCP9zNKN1BvVo3aSPQHmfHdrGUeTzA",
+  "sha256": "a5e884d7015a62d428ef165e15626dfebd4ceb9f4db1562f082fb93bf3949eaa",
+  "bytes": 2030840,
+  "zeroTrimmedSha256": "a2f5b2c31d5f933eef5537c1b32341cb9127e0f35d328d38967d5dc165610dd4",
+  "zeroTrimmedBytes": 2030825,
+  "localPublicSourceRebuildMatch": true,
+  "erExecutableMatch": true,
+  "upgradeSignature": "5xeYEYqwkmSHiNpEYAR4KrxMNrxqiHBnbeBB4Jw6rxq5JZp8RT239UyPfvjzCJ8Qz4f9nqtAxZMFxRePrbtZjM8n",
+  "upgradeFeeLamports": 5003,
+  "uploadBufferClosed": true,
+  "upgradeAuthorityBalanceLamports": 10457299549,
+  "publisherBalanceLamports": 40274400,
+  "erSlot": 817364947,
+  "openPositionsPreserved": [
+    {
+      "owner": "Hj6dHHANcztgANqRhf76VooHGHGGFynyUu3ZQyEdgwSC",
+      "config": "HFVvFANmPCGS5ZoWiA943TsBxXzPv1MdG5WQ49aBDcGg",
+      "state": 1,
+      "kind": 1,
+      "nonce": "1470",
+      "leverage": 100,
+      "market": 2
+    },
+    {
+      "owner": "4J3h2bJtLBPM871cJtRTuvwSm1qhQMepztHjqe9uPveG",
+      "config": "HFVvFANmPCGS5ZoWiA943TsBxXzPv1MdG5WQ49aBDcGg",
+      "state": 1,
+      "kind": 1,
+      "nonce": "5",
+      "leverage": 5,
+      "market": 0
+    },
+    {
+      "owner": "7Y73bbuLemNS5pkLG6EeEyfas4fb3yfSAXRk8Z2qANXp",
+      "config": "5eAe7a5DWPxGKMGv3FbLvNQr1VKgdBS5iaBvezAk3pJD",
+      "state": 1,
+      "kind": 1,
+      "nonce": "5",
+      "leverage": 10,
+      "market": 2
+    }
+  ]
+}

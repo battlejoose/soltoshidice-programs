@@ -639,6 +639,11 @@ pub fn open(ctx: Context<OpenErPosition>, request: OpenRequest) -> Result<()> {
     require!(!ctx.accounts.config.paused, MixError::Paused);
     require!(ctx.accounts.asset.collateral_enabled, MixError::Binding);
     let now = Clock::get()?.unix_timestamp;
+    // No caller-supplied pool value. Old clients that omit the observation can
+    // use only the conservative $1M floor, never bypass the dynamic cap.
+    let pool_usd=match ctx.accounts.pool_exposure.as_ref() {Some(p)=>p.value(now)?,None=>0};
+    risk::check_pool_entry(ctx.accounts.er_quote.value(request.amount,now)?,request.leverage,
+        ctx.accounts.er_trader.notional,pool_usd)?;
     let backing = Backing::new(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint);
     if backing.requires(ctx.accounts.asset.key()) {
         crate::stake_backing::check_entry(&ctx.accounts.er_trader, &ctx.accounts.core_quote,
@@ -877,6 +882,9 @@ pub struct OpenErPosition<'info> {
     /// The venue pool; its settlement token is this venue's core stake.
     #[account(seeds=[b"pool",vns!(config.key()),&0u16.to_le_bytes()],bump=pool.bump,constraint=er_trader.pool==pool.key() @ MixError::Binding)]
     pub pool: Box<Account<'info, Pool>>,
+    #[account(seeds=[b"pool-exposure",pool.key().as_ref()],bump=pool_exposure.bump,
+        constraint=pool_exposure.config==config.key() && pool_exposure.pool==pool.key() @ MixError::Binding)]
+    pub pool_exposure: Option<Box<Account<'info,crate::pool_exposure::PoolExposure>>>,
 }
 #[derive(Accounts)]
 pub struct ObserveErTrader<'info> {

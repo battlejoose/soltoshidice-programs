@@ -67,6 +67,17 @@ pub fn value_curve(a:&Asset,v:&Valuation)->Result<ValueCurve> {
     Ok(ValueCurve{source:if is_sol(a)||is_quote(a) {None}else{Some(source_pool_quote(a,v,true)?)},payout,usd:is_quote(a),source_usdc:a.quote_mint==live::USDC})
 }
 pub fn sell_value(amount:u64,a:&Asset,v:&Valuation)->Result<u64> {value_curve(a,v)?.value(amount)}
+/// Quote the FULL trader loss in payout-token atoms before any platform split.
+/// Uses authenticated pre-swap reserves. Same-token loss is exactly its atoms.
+pub fn loss_reward_tokens(amount:u64,a:&Asset,v:&Valuation,to:&Asset,tv:&Valuation)->Result<u64> {
+    if amount==0 || a.mint==to.mint {return Ok(amount);}
+    require!(to.quote_mint==live::SOL,MixError::Binding);
+    let sol=if is_sol(a) {amount} else if is_quote(a) {payout_quote(v)?.collateral_quote_atoms(amount)?}
+        else {let q=source_pool_quote(a,v,true)?;let quote=q.collateral_quote_atoms(q.maximum_sell(amount)?)?;
+            if a.quote_mint==live::USDC {payout_quote(v)?.collateral_quote_atoms(quote)?} else {quote}};
+    if sol==0 {return Ok(0);}
+    source_pool_quote(to,tv,true)?.buy(sol)
+}
 /// Entry/closing backing uses the complete collateral sale into SOL, valued by
 /// the shared SOL/USD feed. USDC payout routing is a separate executable curve.
 pub struct CollateralCurve { source: Option<SolPoolQuote>, usd: bool, source_usdc:bool, sol_usd: u64 }

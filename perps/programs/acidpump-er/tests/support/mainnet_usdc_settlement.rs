@@ -142,7 +142,9 @@ fn usdc_collateral_settles_atomically_without_spending_other_usdc() {
         assert_eq!(token(&h.svm,h.usd_vault),custody_usd0,"USDC claims must not fund the swap");
         assert!(token(&h.svm,h.sol_vault)>=sol0);assert_eq!(token(&h.svm,a.vault),margin-if outcome=="drained"{0}else{loss});
         let reward:p::OwnershipReceipt=get(&h.svm,pda(&[b"ownership-receipt",position.as_ref()]));
-        assert!(reward.awarded);assert_eq!(reward.pool_tokens,x.swapped_out+x.coverage_tokens);assert_eq!(reward.issued,reward.pool_tokens as u128*100);
+        assert!(reward.awarded);assert_eq!(reward.pool_tokens,x.swapped_out+x.coverage_tokens);
+        if winning || outcome=="drained" {assert_eq!(reward.issued,x.coverage_tokens as u128*100);}
+        else {assert!(reward.issued>reward.pool_tokens as u128*100,"full loss reward must include tokens allocated away from the pool");}
         if winning {assert!(x.profit>0);assert_eq!((x.swapped_out,x.coverage_tokens,x.uncovered_usd),(0,0,0));}
         else if outcome=="drained" {assert_eq!((x.collateral_close_value,x.swapped_out),(0,0));assert!(x.coverage_tokens>0);}
         else {assert!(x.swapped_out>0);}

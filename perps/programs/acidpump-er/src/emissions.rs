@@ -1,62 +1,46 @@
-//! Token-based awards, with the original USD pool thresholds and ratcheted tail.
+//! Pool-size rewards. USD uses the existing executable payout-inventory valuation.
 use crate::*;
-pub const FLAT_THRESHOLD: u64 = 2_000_000 * risk::USD;
+pub const FLAT_THRESHOLD: u64 = 100_000 * risk::USD;
+pub const MIN_REWARD_THRESHOLD: u64 = 1_000_000 * risk::USD;
 pub const POOL_CAP: u64 = 5_000_000 * risk::USD;
-pub const TAIL_SCALE: u128 = 120_000_000u128 * risk::USD as u128;
 pub const FP: u128 = 1_000_000_000_000;
 
-fn tail_factor(h0: u128, h1: u128) -> u128 {
-    (TAIL_SCALE * FP / (TAIL_SCALE + h0)) * TAIL_SCALE / (TAIL_SCALE + h1)
+/// Full rewards mean the existing 100 ownership atoms per contributed token atom.
+/// Linear 100% -> 10%, then a 10% floor. Drawdowns restore the rate.
+pub fn reward_factor(pool_usd: i128) -> u128 {
+    if pool_usd <= FLAT_THRESHOLD as i128 { return FP; }
+    if pool_usd >= MIN_REWARD_THRESHOLD as i128 { return FP / 10; }
+    FP - (pool_usd - FLAT_THRESHOLD as i128) as u128 * (FP * 9 / 10)
+        / (MIN_REWARD_THRESHOLD - FLAT_THRESHOLD) as u128
 }
-pub fn issue(tokens: u64, basis_usd: u64, tracked: i128, advance: u64, hwm: u64) -> Result<(u128,u64)> {
-    if tokens == 0 { return Ok((0,hwm)); }
-    let basis = basis_usd as u128;
-    let threshold = FLAT_THRESHOLD as i128;
-    if basis == 0 { return Ok(((tokens as u128 * 100) * if tracked < threshold { FP } else { tail_factor(hwm as u128,hwm as u128) } / FP,hwm)); }
-    let mut pos=tracked;
-    let mut rem=advance.min(basis_usd) as u128;
-    let mut h=hwm as u128;
-    let mut weighted=0u128;
-    if pos < threshold && rem>0 {
-        let take=rem.min((threshold-pos) as u128);
-        weighted += take * FP; pos += take as i128; rem -= take;
-    }
-    if rem>0 {
-        let mut progress=(pos-threshold) as u128;
-        let below=rem.min(h.saturating_sub(progress));
-        weighted += below * tail_factor(h,h); progress+=below; rem-=below;
-        if rem>0 {
-            let h0=h.max(progress); h=h0.checked_add(rem).ok_or(MixError::Arithmetic)?;
-            weighted += rem * tail_factor(h0,h); progress=h;
-        }
-        pos=threshold+progress as i128;
-    }
-    let residual=basis-advance.min(basis_usd) as u128;
-    weighted += residual * if pos<threshold {FP} else {tail_factor(h,h)};
-    // Divide before multiplying by token quantity to bound intermediates. Fractions mint nothing.
-    let average=weighted/basis;
-    let issued=(tokens as u128 * 100).checked_mul(average).ok_or(MixError::Arithmetic)?/FP;
-    Ok((issued,u64::try_from(h).map_err(|_|MixError::Arithmetic)?))
+
+/// Sample the pool immediately before this settlement. Retain the historical
+/// high-water field and function ABI; it no longer changes the reward rate.
+pub fn issue(tokens: u64, _basis_usd: u64, pool_usd: i128, _advance: u64, hwm: u64) -> Result<(u128,u64)> {
+    let issued = (tokens as u128 * 100).checked_mul(reward_factor(pool_usd))
+        .ok_or(MixError::Arithmetic)? / FP;
+    Ok((issued,hwm))
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;
     #[test]
-    fn flat_and_underwater_awards_use_actual_tokens_not_usd() {
-        assert_eq!(issue(1_000_000,50_000_000,0,50_000_000,0).unwrap(),(100_000_000,0));
-        assert_eq!(issue(1_000_000,50_000_000,-10_000_000_000,50_000_000,0).unwrap(),(100_000_000,0));
+    fn full_linear_and_floor_rewards() {
+        for (usd, percent) in [(0,100),(99_999,100),(100_000,100),(250_000,85),
+            (550_000,55),(750_000,35),(1_000_000,10),(2_000_001,10)] {
+            assert_eq!(issue(1_000_000,0,usd*risk::USD as i128,0,123).unwrap(),
+                (1_000_000*percent,123));
+        }
+        assert_eq!(reward_factor(FLAT_THRESHOLD as i128+1),FP-1);
+        assert_eq!(reward_factor(MIN_REWARD_THRESHOLD as i128-1),FP/10+1);
     }
     #[test]
-    fn crosses_threshold_and_freezes_tail_on_recovery() {
-        let (first,h)=issue(2_000_000,2*risk::USD,FLAT_THRESHOLD as i128-risk::USD as i128,2*risk::USD,0).unwrap();
-        assert!(first<200_000_000 && first>199_999_990); assert_eq!(h,risk::USD);
-        let (later,h2)=issue(1_000_000,risk::USD,FLAT_THRESHOLD as i128,0,120_000_000*risk::USD).unwrap();
-        assert_eq!(later,25_000_000); assert_eq!(h2,120_000_000*risk::USD);
-        assert_eq!(issue(0,0,0,0,h2).unwrap(),(0,h2));
-    }
-    #[test]
-    fn token_amounts_and_highwater_do_not_overflow() {
-        let (n,h)=issue(u64::MAX,u64::MAX,0,u64::MAX,0).unwrap();
-        assert!(n<=u64::MAX as u128*100); assert!(h>0);
+    fn current_value_not_old_highwater_or_contribution_controls_rate() {
+        assert_eq!(issue(1_000_000,u64::MAX,0,u64::MAX,u64::MAX).unwrap(),(100_000_000,u64::MAX));
+        assert_eq!(issue(1_000_000,0,-1,0,0).unwrap().0,100_000_000);
+        assert_eq!(issue(0,0,i128::MAX,0,7).unwrap(),(0,7));
+        assert_eq!(issue(u64::MAX,0,0,0,0).unwrap().0,u64::MAX as u128*100);
+        assert_eq!(issue(u64::MAX,0,i128::MAX,0,0).unwrap().0,u64::MAX as u128*10);
     }
 }

@@ -150,9 +150,9 @@ impl Harness {
             data, owner: owner_program, executable: false, rent_epoch: 0 }).unwrap();
         let (guard_key,bump)=Pubkey::find_program_address(&[b"er-collateral-guard",trader.owner.as_ref()],&program::ID);
         let guard=program::CollateralGuard {owner:trader.owner,config:trader.config,bump,
-            floors:std::array::from_fn(|index|{let slot=trader.slots[index];program::CollateralFloor {nonce:slot.nonce,
+            floors:Box::new(std::array::from_fn(|index|{let slot=trader.slots[index];program::CollateralFloor {nonce:slot.nonce,
                 value:slot.entry_value,cursor:1,closed_at:slot.closed_at,exit:slot.exit,covered_at:slot.closed_at+1,incomplete:false,
-                #[cfg(feature="mainnet")] entry_price:1_000_000_000_000}})};
+                #[cfg(feature="mainnet")] entry_price:1_000_000_000_000}}))};
         let mut data=Vec::new();guard.try_serialize(&mut data).unwrap();
         self.svm.set_account(guard_key,Account {lamports:self.svm.minimum_balance_for_rent_exemption(data.len()),
             data,owner:owner_program,executable:false,rent_epoch:0}).unwrap();

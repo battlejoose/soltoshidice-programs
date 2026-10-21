@@ -29,7 +29,7 @@ fn economics_v1_preserves_old_entries_and_prices_new_entries_without_deadband() 
 }
 
 #[test]
-fn queued_claim_gets_all_post_gas_loss_receipts_and_no_new_rewards_or_burns() {
+fn queued_claim_gets_post_gas_receipts_and_doubles_loss_rewards_without_staker_fees_or_burns() {
     let mut h=Bank::new();let primary=h.tokens[0];let usd=h.tokens[1];let owner=h.signer.pubkey();
     for (a,n) in [(primary,100_000*UNIT),(usd,20*UNIT)] {h.send("fund queued settlement fixture",vec![h.deposit(a,n)],false);}
     let win=h.committed(usd,4,10*UNIT,false,true);
@@ -41,6 +41,8 @@ fn queued_claim_gets_all_post_gas_loss_receipts_and_no_new_rewards_or_burns() {
     let supply_before=supply(&h.svm,primary.mint);let gas:GasReserve=get(&h.svm,h.gas);
     h.send("queued loss retains 99 percent and still converts 1 percent to SOL",h.settlement(primary,loss,1),false);
     let after:OwnershipPool=get(&h.svm,h.ownership);
+    // A real pending winning claim doubles the full-loss award, not the 99% pool receipt.
+    assert_eq!(after.supply-rewards.supply,loss.margin as u128*200);
     assert_eq!(after.fee_pending,rewards.fee_pending);assert_eq!(after.reward_pool,rewards.reward_pool);
     assert_eq!(supply(&h.svm,primary.mint),supply_before);
     assert_eq!(get::<Inventory>(&h.svm,primary.inventory).treasury-inventory.treasury,loss.margin-loss.margin/100);

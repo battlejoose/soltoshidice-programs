@@ -3,22 +3,6 @@
 version = 4
 
 [[package]]
-name = "acidpump"
-version = "0.2.0"
-dependencies = [
- "anchor-lang",
- "anchor-spl",
- "litesvm",
- "serde_json",
- "solana-account 3.4.0",
- "solana-instructions-sysvar 3.0.1",
- "solana-keypair",
- "solana-message 3.1.0",
- "solana-signer",
- "solana-transaction",
-]
-
-[[package]]
 name = "acidpump-er"
 version = "0.2.0"
 dependencies = [
@@ -2034,14 +2018,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "localnet-oracle"
-version = "0.1.0"
-dependencies = [
- "anchor-lang",
- "ephemeral-rollups-sdk",
-]
-
-[[package]]
 name = "lock_api"
 version = "0.4.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2314,95 +2290,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2fd23b938276f14057220b707937bcb42fa76dda7560e57a2da30cb52d557937"
 dependencies = [
  "num",
-]
-
-[[package]]
-name = "perpderp"
-version = "0.1.0"
-dependencies = [
- "anchor-lang",
- "anchor-spl",
- "bytemuck",
- "litesvm",
- "serde_json",
- "solana-account 3.4.0",
- "solana-keypair",
- "solana-message 3.1.0",
- "solana-signer",
- "solana-transaction",
-]
-
-[[package]]
-name = "perpderp_cells"
-version = "0.1.0"
-dependencies = [
- "anchor-lang",
- "anchor-spl",
- "litesvm",
- "solana-account 3.4.0",
- "solana-keypair",
- "solana-message 3.1.0",
- "solana-signer",
- "solana-transaction",
-]
-
-[[package]]
-name = "perpderp_mix"
-version = "0.1.0"
-dependencies = [
- "anchor-lang",
- "anchor-spl",
- "litesvm",
- "solana-account 3.4.0",
- "solana-keypair",
- "solana-message 3.1.0",
- "solana-signer",
- "solana-transaction",
-]
-
-[[package]]
-name = "perpderp_mix_v2"
-version = "0.2.0"
-dependencies = [
- "anchor-lang",
- "anchor-spl",
- "litesvm",
- "solana-account 3.4.0",
- "solana-keypair",
- "solana-message 3.1.0",
- "solana-signer",
- "solana-transaction",
-]
-
-[[package]]
-name = "perpderp_perp"
-version = "0.1.0"
-dependencies = [
- "anchor-lang",
- "anchor-spl",
- "bytemuck",
- "litesvm",
- "serde_json",
- "solana-account 3.4.0",
- "solana-keypair",
- "solana-message 3.1.0",
- "solana-signer",
- "solana-transaction",
-]
-
-[[package]]
-name = "perpderp_wildswap"
-version = "0.2.0"
-dependencies = [
- "anchor-lang",
- "anchor-spl",
- "litesvm",
- "serde_json",
- "solana-account 3.4.0",
- "solana-keypair",
- "solana-message 3.1.0",
- "solana-signer",
- "solana-transaction",
 ]
 
 [[package]]

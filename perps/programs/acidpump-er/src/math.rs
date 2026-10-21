@@ -1,23 +1,53 @@
 use crate::{Feed, MixError};
 use anchor_lang::prelude::*;
 pub const PX: u128 = 1_000_000_000_000;
+pub const HIGH_POOL_THRESHOLD: u64 = 2_000_000 * crate::risk::USD;
+
+#[cfg(test)]
+mod pool_size_tests {
+    use super::*;
+    #[test]
+    fn boundary_and_high_pool_allocations() {
+        assert_eq!(acid_split_at(9900,HIGH_POOL_THRESHOLD).unwrap(),(9000,700,200));
+        assert_eq!(acid_split_at(9900,HIGH_POOL_THRESHOLD+1).unwrap(),(1000,7000,1900));
+        assert_eq!(venue_loss_split_at(10000,HIGH_POOL_THRESHOLD).unwrap(),(9800,100,100));
+        assert_eq!(venue_loss_split_at(10000,HIGH_POOL_THRESHOLD+1).unwrap(),(9000,100,900));
+        assert_eq!(venue_token_split_at(9000,HIGH_POOL_THRESHOLD+1).unwrap(),(1000,7000,1000));
+    }
+    #[test]
+    fn every_atom_is_accounted_for_in_both_regimes() {
+        for value in [0,HIGH_POOL_THRESHOLD,HIGH_POOL_THRESHOLD+1,u64::MAX] {
+            for loss in [0,1,99,100,101,9999,10000,123456789,u64::MAX] {
+                let (tokens,gas,sdice)=venue_loss_split_at(loss,value).unwrap();
+                let (pool,stakers,burn)=venue_token_split_at(tokens,value).unwrap();
+                assert_eq!(pool+stakers+burn+gas+sdice,loss);
+                let (tokens,gas)=loss_split(loss).unwrap();
+                let (pool,stakers,burn)=acid_split_at(tokens,value).unwrap();
+                assert_eq!(pool+stakers+burn+gas,loss);
+            }
+        }
+    }
+}
 pub fn loss_split(loss:u64)->Result<(u64,u64)> {
     let gas=loss/100;
     Ok((loss-gas,gas))
 }
 /// Created venues convert 98% into their token, 1% into SOL gas, and 1% into
-/// quote for a later SDICE buy-and-burn. Returns
+/// quote for a later SDICE payout-pool contribution (9% above $2M). Returns
 /// (token conversion, gas, buyback); rounding stays with the token conversion.
-pub fn venue_loss_split(loss:u64)->Result<(u64,u64,u64)> {
+pub fn venue_loss_split(loss:u64)->Result<(u64,u64,u64)> { venue_loss_split_at(loss,0) }
+pub fn venue_loss_split_at(loss:u64,pool_usd:u64)->Result<(u64,u64,u64)> {
     let gas=loss/100;
-    let buyback=loss/100;
+    let buyback=(loss as u128*if pool_usd>HIGH_POOL_THRESHOLD {9}else{1}/100) as u64;
     Ok((loss-gas-buyback,gas,buyback))
 }
-/// Split the root's 99% receipt: 90% pool, 7% stakers, 2% SDICE burn.
+/// Split the root's 99% receipt: 90/7/2 normally, 10/70/19 above $2M.
 /// Integer dust remains in the pool. Existing accrued rewards are unaffected.
-pub fn acid_split(received:u64)->Result<(u64,u64,u64)> {
-    let stakers=(received as u128*7/99) as u64;
-    let burn=(received as u128*2/99) as u64;
+pub fn acid_split(received:u64)->Result<(u64,u64,u64)> { acid_split_at(received,0) }
+pub fn acid_split_at(received:u64,pool_usd:u64)->Result<(u64,u64,u64)> {
+    let high=pool_usd>HIGH_POOL_THRESHOLD;
+    let stakers=(received as u128*if high {70}else{7}/99) as u64;
+    let burn=(received as u128*if high {19}else{2}/99) as u64;
     Ok((received-stakers-burn,stakers,burn))
 }
 /// All realizable post-gas receipts fund claims while any FIFO debt exists.
@@ -25,11 +55,14 @@ pub fn queued_acid_split(received:u64,queue_usd:u64,head:u64,tail:u64,small:bool
     require!(head<=tail,MixError::QueueOrder);
     if small || queue_usd>0 || head<tail {Ok((received,0,0))} else {acid_split(received)}
 }
-/// Created-venue receipt: 90% pool, 7% stakers, 1% native token burn.
-/// The separate 1% SDICE buy-and-burn is withheld before this conversion.
-pub fn venue_token_split(received:u64)->Result<(u64,u64,u64)> {
-    let stakers=(received as u128*7/98) as u64;
-    let burn=(received as u128/98) as u64;
+/// Created-venue receipt: 90/7/1 normally, 10/70/10 above $2M.
+/// The separate 1% (9% above $2M) SDICE contribution is withheld before conversion.
+pub fn venue_token_split(received:u64)->Result<(u64,u64,u64)> { venue_token_split_at(received,0) }
+pub fn venue_token_split_at(received:u64,pool_usd:u64)->Result<(u64,u64,u64)> {
+    let high=pool_usd>HIGH_POOL_THRESHOLD;
+    let denominator=if high {90}else{98};
+    let stakers=(received as u128*if high {70}else{7}/denominator) as u64;
+    let burn=(received as u128*if high {10}else{1}/denominator) as u64;
     Ok((received-stakers-burn,stakers,burn))
 }
 pub fn queue_pending(queue_usd:u64,head:u64,tail:u64)->Result<bool> {

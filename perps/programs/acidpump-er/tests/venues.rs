@@ -147,10 +147,11 @@ fn only_the_publisher_can_route_a_buyback_and_only_into_the_root_pool() {
     let stranger = Keypair::new_from_array([73; 32]);
     w.svm.airdrop(&stranger.pubkey(), 1_000_000_000).unwrap();
     let root_authority = pda(&[b"authority", w.root_pool.as_ref()]);
+    let sdice_mint = read::<Asset>(&w.svm,w.sdice).mint;
     let route = |publisher: Pubkey| Instruction { program_id: program::ID, accounts: program::accounts::RouteBuyback {
         publisher, root: program::ROOT_CONFIG, venue, pool, authority: pda(&[b"authority", pool.as_ref()]),
         buyback_vault: pda(&[b"buyback", pool.as_ref()]), root_pool: w.root_pool, root_authority, sdice: w.sdice,
-        sdice_mint: read::<Asset>(&w.svm,w.sdice).mint, sdice_program: spl_token::ID,
+        sdice_mint, sdice_program: spl_token::ID,
         sdice_valuation: program::accounts::Valuation { dex_pool: Pubkey::new_unique(), dex_base: Pubkey::new_unique(),
             dex_quote: Pubkey::new_unique(), fee_config: Pubkey::new_unique() },
         root_inventory: pda(&[b"inventory", w.root_pool.as_ref(), w.sdice.as_ref()]),
