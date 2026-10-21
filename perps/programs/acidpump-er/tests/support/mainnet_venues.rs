@@ -3,7 +3,8 @@
 use super::*;
 
 fn fixture()->Value {
-    serde_json::from_slice(&std::fs::read(Path::new(env!("CARGO_MANIFEST_DIR")).join("../../.cache/perps-economics-modular/venue-instructions.json")).unwrap()).unwrap()
+    let file=std::env::var("ACIDPUMP_VENUE_TEST_FIXTURE").unwrap_or_else(|_|".cache/perps-economics-modular/venue-instructions.json".into());
+    serde_json::from_slice(&std::fs::read(Path::new(env!("CARGO_MANIFEST_DIR")).join("../..").join(file)).unwrap()).unwrap()
 }
 
 #[test]

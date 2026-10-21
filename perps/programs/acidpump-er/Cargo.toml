@@ -12,6 +12,8 @@ name = "acidpump_er"
 default = ["custom-heap"]
 devnet = []
 mainnet = []
+# Opt-in cross-program bank candidate tests; never part of deployment builds.
+bank-contribution-test = []
 # Compatibility for retired private-deployment builds; policy comes from the manifest.
 mainnet-test = ["mainnet"]
 cpi = ["no-entrypoint"]

@@ -80,13 +80,9 @@ pub fn ceil(a: u128, d: u128) -> Result<u64> {
 }
 pub fn bust(entry: u64, lev: u16, long: bool) -> Result<u64> {
     require!((1..=1000).contains(&lev), MixError::Leverage);
-    // Preserve the original engine's 5 bps price buffer: 1/L - 0.0005.
-    let delta = div(
-        entry as u128,
-        10_000 - 5 * lev as u128,
-        10_000 * lev as u128,
-    )?
-    .max(1);
+    // New positions use the full 1/L adverse move, rounded to price atoms.
+    // Existing positions retain their stored bust price; never recompute it.
+    let delta = (entry / u64::from(lev)).max(1);
     if long {
         entry.checked_sub(delta)
     } else {
@@ -198,10 +194,18 @@ mod tests {
         }
     }
     #[test]
-    fn leverage_and_buffer() {
-        assert_eq!(bust(100_000_000, 1000, true).unwrap(), 99_950_000);
-        assert_eq!(bust(100_000_000, 100, true).unwrap(), 99_050_000);
-        assert_eq!(bust(100_000_000, 1, true).unwrap(), 50_000);
+    fn full_leverage_distance_without_buffer() {
+        for lev in [1, 2, 5, 10, 100, 500, 1000] {
+            let entry = 100_000_000;
+            let delta = entry / u64::from(lev);
+            assert_eq!(bust(entry, lev, true).unwrap(), entry - delta);
+            assert_eq!(bust(entry, lev, false).unwrap(), entry + delta);
+        }
+        assert_eq!(bust(100_000_000, 1000, true).unwrap(), 99_900_000);
+        assert_eq!(bust(100_000_000, 1000, false).unwrap(), 100_100_000);
+        assert_eq!(bust(1, 1000, true).unwrap(), 0);
+        assert_eq!(bust(1, 1000, false).unwrap(), 2);
+        assert!(bust(u64::MAX, 1, false).is_err());
         assert!(bust(100, 0, true).is_err());
         assert!(bust(100, 1001, true).is_err());
         let p = pnl(100_000_000, 100_000_000, 101_000_000, 10, true)

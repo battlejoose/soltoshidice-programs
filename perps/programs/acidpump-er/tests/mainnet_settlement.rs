@@ -35,6 +35,8 @@ mod venues;
 mod pool_tokenomics;
 #[path="support/mainnet_contributions.rs"]
 mod contributions;
+#[cfg(feature="bank-contribution-test")]
+mod bank_contribution { include!(env!("SDICE_BANK_CONTRIBUTION_TEST")); }
 fn pk(s:&str)->Pubkey {Pubkey::from_str(s).unwrap()}
 fn key(v:&Value,n:&str)->Pubkey {pk(v[n].as_str().unwrap())}
 fn pda(s:&[&[u8]])->Pubkey {Pubkey::find_program_address(s,&p::ID).0}

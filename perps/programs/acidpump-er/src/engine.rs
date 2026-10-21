@@ -415,6 +415,13 @@ pub fn observe_slots(trader: &mut ErTrader, engine: &ErRisk) -> Result<()> {
     Ok(())
 }
 
+pub const MIN_MANUAL_HOLD_SECONDS: i64 = 5;
+
+fn require_manual_hold(opened_at: i64, now: i64) -> Result<()> {
+    require!(now.checked_sub(opened_at).is_some_and(|age| age >= MIN_MANUAL_HOLD_SECONDS), MixError::MinimumHold);
+    Ok(())
+}
+
 pub fn close_slot(trader: &mut ErTrader, engine: &mut ErRisk, quote: &ErQuote, slot: u8, nonce: u64, expires: i64, caller: Pubkey, now: i64) -> Result<()> {
     close_slot_authorized(trader, engine, quote, slot, nonce, expires, caller, now, false)
 }
@@ -430,6 +437,9 @@ fn close_slot_authorized(trader: &mut ErTrader, engine: &mut ErRisk, quote: &ErQ
     let liquidated = market.crossed(position);
     require!(liquidated || (market.sequence >= position.cursor && market.sequence - position.cursor <= 64), MixError::History);
     require!(liquidated || caller == trader.owner || forced, MixError::Unauthorized);
+    // Owner closes (including profit-waiver recovery) must wait. Liquidation
+    // and insufficient-backing protection must remain available immediately.
+    if !liquidated && !forced { require_manual_hold(position.opened_at, now)?; }
     // No collateral swap or payout happens here. Freeze the fresh market exit
     // immediately; the guard and base settlement verify collateral separately.
     let wins = !liquidated && if position.long { market.price > position.entry } else { market.price < position.entry };
@@ -463,6 +473,7 @@ pub fn forfeit_history_gap_slot(trader: &mut ErTrader, engine: &ErRisk, slot: u8
         && exit.publish_time >= market.publish_time, MixError::Replay);
     require!(exit.publish_time > 0 && exit.publish_time <= now.saturating_add(2)
         && now.saturating_sub(exit.publish_time) <= oracle::MAX_ORACLE_AGE, MixError::Stale);
+    require_manual_hold(position.opened_at, now)?;
     position.state = ER_PENDING;
     position.exit = exit.price;
     position.closed_at = now;
@@ -1051,6 +1062,62 @@ mod tests {
     }
 
     #[test]
+    fn manual_hold_rejects_early_close_without_mutation_and_unlocks_at_five_seconds() {
+        for long in [true, false] {
+            let (mut trader, mut engine, _, quote) = setup();
+            let mut req = request(1); req.long = long; req.limit_price = if long {u64::MAX} else {0};
+            open_slot(&mut trader, &mut engine, &quote, req, 100).unwrap();
+            let owner = trader.owner;
+            for now in 100..105 {
+                price(&mut engine, 100 * PX, now);
+                let mut before = Vec::new(); trader.try_serialize(&mut before).unwrap();
+                let seq = engine.next_close_seq;
+                let failure = close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, owner, now).unwrap_err();
+                assert!(failure.to_string().contains("MinimumHold"));
+                let mut after = Vec::new(); trader.try_serialize(&mut after).unwrap();
+                assert_eq!(before, after);
+                assert_eq!(seq, engine.next_close_seq);
+            }
+            price(&mut engine, 100 * PX, 105);
+            close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, owner, 105).unwrap();
+            assert_eq!(trader.slots[0].state, ER_PENDING);
+            assert_eq!(trader.slots[0].closed_at, 105);
+            assert!(require_manual_hold(106, 105).is_err());
+            assert!(require_manual_hold(i64::MIN, i64::MAX).is_err());
+        }
+    }
+
+    #[test]
+    fn liquidation_and_protective_close_remain_immediate_and_existing_bust_is_preserved() {
+        for long in [true, false] {
+            let (mut trader, mut engine, _, quote) = setup();
+            let mut req = request(1); req.leverage = 1000; req.long = long;
+            req.limit_price = if long {u64::MAX} else {0};
+            open_slot(&mut trader, &mut engine, &quote, req, 100).unwrap();
+            let bust = trader.slots[0].bust;
+            assert_eq!(bust, if long {100 * PX - PX / 10} else {100 * PX + PX / 10});
+            // The old half-margin threshold no longer liquidates a new trade.
+            price(&mut engine, if long {100 * PX - PX / 20} else {100 * PX + PX / 20}, 100);
+            assert!(!engine.markets[0].crossed(&trader.slots[0]));
+            price(&mut engine, bust, 100);
+            close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, Pubkey::new_unique(), 100).unwrap();
+            assert!(trader.slots[0].liquidated);
+        }
+        let (mut trader, mut engine, _, quote) = setup();
+        open_slot(&mut trader, &mut engine, &quote, request(1), 100).unwrap();
+        close_slot_authorized(&mut trader, &mut engine, &quote, 0, 1, 120, Pubkey::new_unique(), 100, true).unwrap();
+        assert_eq!(trader.slots[0].state, ER_PENDING);
+        let (mut trader, mut engine, _, quote) = setup();
+        open_slot(&mut trader, &mut engine, &quote, request(1), 100).unwrap();
+        trader.slots[0].bust = 99_950 * PX / 1_000; // Stored pre-upgrade 1000x threshold.
+        let recorded = trader.slots[0].bust;
+        price(&mut engine, recorded, 101);
+        close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, Pubkey::new_unique(), 101).unwrap();
+        assert!(trader.slots[0].liquidated);
+        assert_eq!(trader.slots[0].bust, recorded);
+    }
+
+    #[test]
     fn market_orders_record_execution_price_and_value_without_client_tolerance() {
         for long in [true, false] {
             let (mut trader, mut engine, _, quote) = setup();
@@ -1084,14 +1151,14 @@ mod tests {
         open_slot(&mut trader, &mut engine, &quote, request(1), 100).unwrap();
         assert_eq!(trader.assets[0].available + trader.slots[0].margin, custody.assets[0].available);
         assert_eq!(trader.notional, 50 * USD);
-        price(&mut engine, 99 * PX, 101);
+        price(&mut engine, 99 * PX, 105);
         quote.source_slot = 102;
         let owner = trader.owner;
-        close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, owner, 101).unwrap();
+        close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, owner, 105).unwrap();
         assert_eq!(trader.slots[0].close_seq, 0);
         assert_eq!(trader.notional, 50 * USD);
         assert_eq!(engine.markets[0].long_oi, 50 * USD);
-        assert!(open_slot(&mut trader, &mut engine, &quote, request(2), 101).is_err());
+        assert!(open_slot(&mut trader, &mut engine, &quote, request(2), 105).is_err());
         let loss = math::pnl(5 * USD, 100 * PX, 99 * PX, 10, true).unwrap().1;
         settle(&mut custody, &trader, loss);
         sync_custody(&mut trader, &mut engine, &custody).unwrap();
@@ -1110,21 +1177,23 @@ mod tests {
     fn reused_slots_reject_old_open_close_and_receipt() {
         let (mut trader, mut engine, mut custody, mut quote) = setup();
         open_slot(&mut trader, &mut engine, &quote, request(1), 100).unwrap();
-        price(&mut engine, 101 * PX, 101);
+        price(&mut engine, 101 * PX, 105);
         quote.source_slot = 102;
+        quote.publish_time = 105;
         let owner = trader.owner;
-        close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, owner, 101).unwrap();
+        close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, owner, 105).unwrap();
         settle(&mut custody, &trader, 0);
         sync_custody(&mut trader, &mut engine, &custody).unwrap();
-        assert!(open_slot(&mut trader, &mut engine, &quote, request(1), 101).is_err());
-        open_slot(&mut trader, &mut engine, &quote, request(2), 101).unwrap();
+        assert!(open_slot(&mut trader, &mut engine, &quote, request(1), 105).is_err());
+        open_slot(&mut trader, &mut engine, &quote, request(2), 105).unwrap();
         quote.source_slot = 104;
+        price(&mut engine, 101 * PX, 110);
         assert!(close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, owner, 101).is_err());
         assert!(close_slot(&mut trader, &mut engine, &quote, 0, 2, 100, owner, 101).is_err());
         sync_custody(&mut trader, &mut engine, &custody).unwrap();
         assert_eq!(trader.slots[0].state, ER_OPEN);
         assert_eq!(trader.slots[0].nonce, 2);
-        close_slot(&mut trader, &mut engine, &quote, 0, 2, 120, owner, 101).unwrap();
+        close_slot(&mut trader, &mut engine, &quote, 0, 2, 120, owner, 110).unwrap();
         sync_custody(&mut trader, &mut engine, &custody).unwrap();
         assert_eq!(trader.slots[0].state, ER_PENDING);
         assert_eq!(trader.notional, 50 * USD);
@@ -1185,7 +1254,10 @@ mod tests {
     #[test]
     fn history_gap_forfeiture_requires_owner_nonce_expiry_and_a_real_gap() {
         let (mut trader, mut engine, _, quote) = setup();
-        open_slot(&mut trader, &mut engine, &quote, request(1), 100).unwrap();
+        engine.markets[0].publish_time = 96;
+        let mut quote = quote; quote.publish_time = 96;
+        open_slot(&mut trader, &mut engine, &quote, request(1), 96).unwrap();
+        quote.publish_time = 101;
         let owner = trader.owner;
         for _ in 0..64 { price(&mut engine, 105 * PX, 101); }
         let exit = oracle::OraclePrice { price: 106 * PX, publish_time: 101, posted_slot: 1000 };
@@ -1205,7 +1277,10 @@ mod tests {
     #[test]
     fn history_gap_forfeiture_preserves_backing_and_cannot_replay_after_ack() {
         let (mut trader, mut engine, mut custody, quote) = setup();
-        open_slot(&mut trader, &mut engine, &quote, request(1), 100).unwrap();
+        engine.markets[0].publish_time = 96;
+        let mut quote = quote; quote.publish_time = 96;
+        open_slot(&mut trader, &mut engine, &quote, request(1), 96).unwrap();
+        quote.publish_time = 101;
         for _ in 0..65 { price(&mut engine, 105 * PX, 101); }
         let owner = trader.owner;
         let exit = oracle::OraclePrice { price: 106 * PX, publish_time: 101, posted_slot: 1000 };
@@ -1238,7 +1313,10 @@ mod tests {
     #[test]
     fn history_gap_forfeiture_rejects_known_crossings_stale_or_rewound_prices() {
         let (mut trader, mut engine, _, quote) = setup();
-        open_slot(&mut trader, &mut engine, &quote, request(1), 100).unwrap();
+        engine.markets[0].publish_time = 96;
+        let mut quote = quote; quote.publish_time = 96;
+        open_slot(&mut trader, &mut engine, &quote, request(1), 96).unwrap();
+        quote.publish_time = 101;
         for _ in 0..65 { price(&mut engine, 105 * PX, 101); }
         let owner = trader.owner;
         let exit = oracle::OraclePrice { price: 106 * PX, publish_time: 101, posted_slot: 1000 };
@@ -1288,19 +1366,19 @@ mod tests {
     fn manual_close_freezes_winner_rank_without_waiting_for_collateral() {
         let (mut trader, mut engine, _, mut quote) = setup();
         open_slot(&mut trader, &mut engine, &quote, request(1), 100).unwrap();
-        price(&mut engine, 105 * PX, 101);
+        price(&mut engine, 105 * PX, 105);
         quote.source_slot = 100;
         quote.publish_time = 90; // even a stale collateral quote cannot delay exit
         let owner = trader.owner;
-        assert!(close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, Pubkey::new_unique(), 101).is_err());
-        close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, owner, 101).unwrap();
+        assert!(close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, Pubkey::new_unique(), 105).is_err());
+        close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, owner, 105).unwrap();
         assert_eq!(trader.slots[0].close_seq, 1);
         assert_eq!(engine.next_close_seq, 2);
-        price(&mut engine, 80 * PX, 102);
+        price(&mut engine, 80 * PX, 106);
         observe_slots(&mut trader, &engine).unwrap();
         assert_eq!(trader.slots[0].exit, 105 * PX);
         assert!(!trader.slots[0].liquidated);
-        assert!(close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, owner, 102).is_err());
+        assert!(close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, owner, 106).is_err());
     }
 
     #[test]
@@ -1347,13 +1425,14 @@ mod tests {
         second.market = 1;
         engine.markets[1].sample(oracle::OraclePrice { price: 100 * PX, publish_time: 100, posted_slot: 10 }).unwrap();
         open_slot(&mut trader, &mut engine, &quote, second, 100).unwrap();
-        price(&mut engine, 105 * PX, 101);
+        price(&mut engine, 105 * PX, 105);
         quote.source_slot = 102;
+        quote.publish_time = 105;
         let owner = trader.owner;
-        close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, owner, 101).unwrap();
+        close_slot(&mut trader, &mut engine, &quote, 0, 1, 120, owner, 105).unwrap();
         let mut third = request(3);
         third.slot = 2;
-        assert!(open_slot(&mut trader, &mut engine, &quote, third, 101).is_err());
+        assert!(open_slot(&mut trader, &mut engine, &quote, third, 105).is_err());
         assert_eq!(trader.notional, risk::MAX_NOTIONAL);
     }
 
@@ -1394,7 +1473,7 @@ mod tests {
         let mut aggregate_withdrawals = 0u64;
         let mut next_base_winner = 1u64;
         for cycle in 0..20 {
-            let now = 100 + cycle * 2;
+            let now = 100 + cycle * 6;
             quote.publish_time = now;
             quote.source_slot += 2;
             price(&mut engine, 100 * PX, now);
@@ -1416,12 +1495,12 @@ mod tests {
                 assert_eq!(trader.assets[0].available + 5 * USD, custody.assets[0].available);
             }
             assert_eq!(engine.markets[0].long_oi + engine.markets[0].short_oi, 4_000 * USD);
-            price(&mut engine, if cycle % 3 == 0 { 89 * PX } else { 105 * PX }, now + 1);
+            price(&mut engine, if cycle % 3 == 0 { 89 * PX } else { 105 * PX }, now + 5);
             quote.source_slot += 2;
             for (trader, _) in &mut users {
                 let owner = trader.owner;
                 let nonce = trader.slots[0].nonce;
-                close_slot(trader, &mut engine, &quote, 0, nonce, now + 20, owner, now + 1).unwrap();
+                close_slot(trader, &mut engine, &quote, 0, nonce, now + 20, owner, now + 5).unwrap();
             }
             for (index, (trader, custody)) in users.iter_mut().enumerate() {
                 let stale = ErCustody { owner: custody.owner, config: custody.config, pool: custody.pool,

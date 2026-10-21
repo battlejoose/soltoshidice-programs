@@ -11610,6 +11610,11 @@
       "code": 6021,
       "name": "GasBudget",
       "msg": "Gas reserve spending limit or balance reached"
+    },
+    {
+      "code": 6022,
+      "name": "MinimumHold",
+      "msg": "Wait five seconds after opening before closing this position"
     }
   ],
   "types": [

@@ -1399,6 +1399,8 @@ pub enum MixError {
     Maker,
     #[msg("Gas reserve spending limit or balance reached")]
     GasBudget,
+    #[msg("Wait five seconds after opening before closing this position")]
+    MinimumHold,
 }
 
 #[derive(Accounts)]
