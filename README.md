@@ -5,6 +5,26 @@ Solana mainnet programs behind [SoltoshiDICE](https://soltoshidice.wtf).
 This is a release-source export, not the application development repository.
 It contains no deployment keys, private RPC credentials or application history.
 
+## Bank is permanently immutable — October 20, 2026 (America/Denver)
+
+The upgrade authority of bank program `CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR`
+was permanently revoked at finalized slot **459508498** (October 21, 05:14 UTC).
+Its ProgramData `9HF5BoewAreFTHQgR6K3mvgkcG5cLy1mF4mnsUkHWBVM` now records
+**no upgrade authority**. The complete executable hash is unchanged:
+`9c382bb7d94029c097ee2edc37ad6b142fde2aa2b3695887553fa3f8def77912`.
+Verified source remains `8c86ff6a501d385508fbe4953f7aa515f2054cb7`.
+
+See the [finalized before/after receipt](evidence/bank-upgrade-authority-revocation-2026-10-21.json)
+and [Solscan transaction](https://solscan.io/tx/35NRam9o7P2pHkfgg4yfHo3cnuY7o1WPxqxuLrpEadGxmn1FG7NfLiYtLGPLxy8WWe4ZAQodMfwCajYSeYNiYHEM).
+An independent read through Solana's public mainnet RPC at slot `459508662`
+confirmed authority option `0` and the unchanged bytecode hash.
+
+**Only the bank's code was finalized.** Poker, Fights, RPS and Perps retain
+their upgrade authorities and unchanged bytecode. The bank's existing
+administrative controls and external dependencies are unchanged. Historical
+release snapshots below describe their original observation dates; this notice
+supersedes their bank-upgrade-authority status. Explorer caches may refresh later.
+
 ## Read-only game verification kit
 
 [Read the public verifier source and evidence](verification/README.txt), then run
@@ -36,7 +56,8 @@ The deployed program at slot **459487920** retains its upgrade authority. Public
 The bank now supports owner-signed partial or full stake contributions into the
 main SDICE Perps payout pool, including locked and Forever stakes. Existing
 withdrawal restrictions remain unchanged. Credited pSDICE is non-transferable.
-The bank upgrade at slot **459463816** retains its upgrade authority.
+The bank upgrade at slot **459463816** initially retained its upgrade authority;
+it was subsequently revoked as recorded above.
 Public source `8c86ff6a501d385508fbe4953f7aa515f2054cb7` independently rebuilds to
 the deployed executable; the registry reports verified. The canonical bank IDL
 now includes tag 116 (99 instruction variants, 31 account layouts).
@@ -49,7 +70,7 @@ The Perps program itself is unchanged by this bank release.
 The bank was upgraded at mainnet slot **458975234** to add separate blackjack
 and slots competitions. All three game competitions have a 100,000 SDICE minimum,
 1–24-hour selectable duration and a maximum 24-hour scheduled-start horizon.
-Upgrade authority remains unchanged. No authority revocation is claimed.
+That release retained upgrade authority; the subsequent bank-only revocation is recorded above.
 
 The exported source reproduces the complete 844,256-byte deployed executable:
 `32faf85840d3ce1ee288afc4968e9ed4007600b3a854dce8cdcefae549f25d92`.
@@ -88,8 +109,9 @@ Final verification and metadata receipts are in
 | `96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG` | Rock Paper Scissors | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG) |
 | `7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7` | SDICE Perps, pool tokenomics upgrade | Native rebuild matches; independent Docker verification passed | [Verified](https://verify.osec.io/status/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7) |
 
-No deployed program, authority, custody account or game state was changed to
-produce this evidence. Verification metadata belongs to a separate verification
+The original source-verification work changed no deployed program, authority,
+custody account or game state. The later bank authority revocation is recorded
+above. Verification metadata belongs to a separate verification
 program. Local reproduction is distinct from remote verifier acceptance.
 
 The following is historical October 18 evidence, superseded for Perps by the
