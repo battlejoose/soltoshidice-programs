@@ -116,7 +116,7 @@ pub fn change_stake(p: &mut OwnershipPool, t: &mut OwnershipTrader, inv: &mut In
 }
 pub fn sweep_surplus(p: &mut OwnershipPool, inv: &mut Inventory, queue_usd:u64, settlement:&Asset, valuation:&Valuation) -> Result<u64> {
     if queue_usd != 0 || p.total_staked == 0 { return Ok(0); }
-    let curve=pump::value_curve(settlement,valuation)?;
+    let curve=pump::spot_curve(settlement,valuation)?;
     if curve.value(inv.treasury)? <= emissions::POOL_CAP { return Ok(0); }
     let mut lo=0u64; let mut hi=inv.treasury;
     while lo<hi {

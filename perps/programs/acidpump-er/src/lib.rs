@@ -16,6 +16,9 @@ mod heap;
 static ALLOC: heap::AscendingHeap = heap::AscendingHeap;
 use anchor_spl::token_interface::{self, Mint, TokenAccount, TokenInterface, TransferChecked};
 pub mod math;
+pub mod spot;
+pub mod profit_payout;
+pub use profit_payout::*;
 pub mod emissions;
 pub mod risk;
 pub mod pool_exposure;
@@ -386,7 +389,7 @@ pub fn er_commit(ctx: Context<CommitErTrader>) -> Result<()> { engine::commit_tr
         settlement::settle(ctx, sell_count, min_swap_out, market_accounts, fee_sell_count, perp_buy_count, min_perp, min_gas, sol_quote)
     }
     pub fn redeem<'info>(ctx: Context<'info, Redeem<'info>>, amount:u64, max_debit:u64, expires:i64, convert:bool, sell_count:u8, min_out:u64) -> Result<()> {
-        // Mainnet claims are paid exclusively by redeem_usdc's verified route.
+        // Mainnet profit claims pay backing tokens through redeem_profit_tokens.
         require!(!cfg!(feature="mainnet"), MixError::ProductionDisabled);
         let now=Clock::get()?.unix_timestamp;
         require!(expires>=now && expires<=now+120,MixError::QuoteExpired);
@@ -431,9 +434,10 @@ pub fn er_commit(ctx: Context<CommitErTrader>) -> Result<()> { engine::commit_tr
     }
     /// Permissionless FIFO settlement. All sizing and destination checks are on chain;
     /// a keeper pays network fees but cannot redirect funds or choose the claim debit.
+    pub fn redeem_profit_tokens(ctx:Context<RedeemProfitTokens>)->Result<()> {profit_payout::redeem(ctx)}
     pub fn redeem_usdc<'info>(ctx: Context<'info, RedeemUsdc<'info>>) -> Result<()> {
         #[cfg(feature="mainnet")]
-        { return pump::redeem_usdc(ctx); }
+        { let _=ctx; return err!(MixError::ProductionDisabled); }
         #[cfg(not(feature="mainnet"))]
         {
         let x=&mut ctx.accounts.position;

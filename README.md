@@ -45,6 +45,25 @@ All five programs have canonical on-chain IDLs and security records. See
 Native IDLs describe decoding; they are not generic transaction-building SDKs.
 Report vulnerabilities privately through our [security policy](SECURITY.md).
 
+## Perps spot-token profit payouts — October 21, 2026 UTC
+
+Winning profits now pay directly in each market's backing token at the USD spot
+price when paid, without a swap to USDC. Existing unpaid FIFO claims follow the
+same rule; historical USDC payments remain recorded separately. Pool reward
+and risk-limit valuation also uses spot. Collateral backing and existing
+position liquidation thresholds are preserved. The bank is unchanged.
+
+The new redemption instruction only runs at the top level and requires its
+pricing accounts to be read-only for the entire transaction. This blocks atomic
+reserve manipulation followed by redemption, including a flash-loan transaction.
+It does not prevent price manipulation across separate transactions or volatility.
+
+The published source rebuilt to the deployed SHA-256
+`07578b1054b56d1dd34c2e2d1ee47405fcb2fec5f97e6aee8675d6be4fdc4966`.
+See [source/build evidence](evidence/perps-spot-payout-source-2026-10-21.json).
+Explorer metadata and remote verification are being updated. Earlier release
+records below remain historical snapshots. Perps remains upgradeable.
+
 ## Perps position rules — October 21, 2026 UTC
 
 New Perps positions liquidate at a full `1 / leverage` adverse move (0.1% at 1000×) and require five seconds before a voluntary close. Liquidations and forced backing exits remain immediate. Existing positions retain their stored liquidation thresholds; account and instruction layouts are unchanged.

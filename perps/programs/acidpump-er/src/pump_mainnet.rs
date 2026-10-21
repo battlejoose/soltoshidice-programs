@@ -1,5 +1,5 @@
 //! Base-chain settlement adapter for mainnet deployments.
-//! USD claims use USDC. Token-quoted collateral is converted through canonical
+//! USD profit claims pay backing tokens at spot. Lost collateral routes through
 //! USDC/SOL before the primary buy; unrelated intermediate balances are preserved.
 use anchor_lang::prelude::*;
 use anchor_spl::token_interface::TokenAccount;
@@ -67,6 +67,15 @@ pub fn value_curve(a:&Asset,v:&Valuation)->Result<ValueCurve> {
     Ok(ValueCurve{source:if is_sol(a)||is_quote(a) {None}else{Some(source_pool_quote(a,v,true)?)},payout,usd:is_quote(a),source_usdc:a.quote_mint==live::USDC})
 }
 pub fn sell_value(amount:u64,a:&Asset,v:&Valuation)->Result<u64> {value_curve(a,v)?.value(amount)}
+pub fn spot_curve(a:&Asset,v:&Valuation)->Result<crate::spot::SpotCurve> {
+    use crate::spot::SpotCurve;
+    if is_quote(a) {return Ok(SpotCurve{base:1,quote:1,usd_base:1,usd_quote:1});}
+    let source=if is_sol(a) {None}else{Some(source_pool_quote(a,v,true)?)};
+    let (base,quote)=match source {Some(q) if q.base==0 || q.real_quote==0 =>(1,0),Some(q)=>(q.base,q.effective_quote()?),None=>(1,1)};
+    let (usd_base,usd_quote)=if a.quote_mint==live::USDC {(1,1)}else{let q=payout_quote(v)?;(q.base,q.effective_quote()?)};
+    Ok(SpotCurve{base,quote,usd_base,usd_quote})
+}
+pub fn spot_value(amount:u64,a:&Asset,v:&Valuation)->Result<u64> {if amount==0 {return Ok(0);}spot_curve(a,v)?.value(amount)}
 /// Quote the FULL trader loss in payout-token atoms before any platform split.
 /// Uses authenticated pre-swap reserves. Same-token loss is exactly its atoms.
 pub fn loss_reward_tokens(amount:u64,a:&Asset,v:&Valuation,to:&Asset,tv:&Valuation)->Result<u64> {

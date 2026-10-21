@@ -6,7 +6,7 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
         let same = ctx.accounts.asset.key() == ctx.accounts.pool_accounts.pool.settlement;
         require!(if same {ctx.accounts.settlement_inventory.is_none() && ctx.accounts.settlement_vault.is_none()} else {ctx.accounts.settlement_inventory.is_some() && ctx.accounts.settlement_vault.is_some()},MixError::Binding);
         let treasury_before = if same {ctx.accounts.inventory.treasury} else {ctx.accounts.settlement_inventory.as_ref().ok_or(MixError::Binding)?.treasury};
-        let pool_usd_before = pump::sell_value(treasury_before,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)?;
+        let pool_usd_before = pump::spot_value(treasury_before,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)?;
         let tracked_before = pool_usd_before as i128;
         ctx.accounts.ownership.validate(&ctx.accounts.position, ctx.accounts.pool_accounts.pool.key())?;
         let trader = basebridge::committed_trader(&ctx.accounts.bridge.trader, ctx.accounts.position.owner,
@@ -170,8 +170,8 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
         emit!(CoreCoverageApplied { position: x.key(), owner: x.owner, closing_usd: x.collateral_close_value,
             core_tokens: coverage.tokens, covered_usd: x.coverage_usd, uncovered_usd: coverage.uncovered_usd });
         let ownership_tokens = payout_receipts.checked_add(coverage.tokens).ok_or(MixError::Arithmetic)?;
-        let tracked_after = pump::sell_value(settlement_inventory.treasury,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)? as i128;
-        let basis_usd = pump::sell_value(ownership_tokens,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)?;
+        let tracked_after = pump::spot_value(settlement_inventory.treasury,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)? as i128;
+        let basis_usd = pump::spot_value(ownership_tokens,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)?;
         let advance = (tracked_after-tracked_before).max(0).min(basis_usd as i128) as u64;
         let reward_basis=loss_reward_tokens.checked_add(coverage.tokens).ok_or(MixError::Arithmetic)?;
         ownership::award_loss(&mut ctx.accounts.ownership.ownership_pool, &mut ctx.accounts.ownership.ownership_trader, &mut ctx.accounts.ownership.ownership_receipt, ownership_tokens,reward_basis,basis_usd,tracked_before,advance,queued)?;

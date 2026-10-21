@@ -33,7 +33,7 @@ pub fn contribute(ctx:Context<ContributePool>,amount:u64,nonce:u64,min_issued:u1
         a.ownership_trader.bump=ctx.bumps.ownership_trader;
     }
     require!(a.ownership_trader.owner==a.owner.key() && a.ownership_trader.pool==a.pool.key(),MixError::Binding);
-    let pool_usd=pump::sell_value(a.inventory.treasury,&a.asset,&a.valuation)?;
+    let pool_usd=pump::spot_value(a.inventory.treasury,&a.asset,&a.valuation)?;
     let queued=math::queue_pending(a.pool.queue_usd,a.pool.queue_head,a.pool.queue_tail)?;
     let issued=reward(amount,pool_usd,queued)?;
     require!(issued>=min_issued,MixError::PriceLimit);

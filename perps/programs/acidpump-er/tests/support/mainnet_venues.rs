@@ -100,9 +100,9 @@ fn venue_queue_suspends_burns_and_staker_fees_but_not_loss_rewards_or_sol_fees()
     assert_eq!(after_rewards.fee_pending,before_rewards.fee_pending);assert_eq!(after_rewards.reward_pool,before_rewards.reward_pool);
     assert!(get::<Inventory>(&h.svm,own.inventory).treasury>treasury);assert!(get::<GasReserve>(&h.svm,h.gas).sol_received>gas);
     assert_eq!(get::<Position>(&h.svm,claim_key).remaining,claim.remaining);
-    let user_before=token(&h.svm,usd.wallet);
-    h.send("venue claim redeems USDC from its own pool",Bank::client_instructions(&f["payout"]),false);
-    assert!(token(&h.svm,usd.wallet)>user_before);
+    let user_before=token(&h.svm,own.wallet);let usd_before=token(&h.svm,usd.wallet);
+    h.send("venue claim pays its own backing token",Bank::client_instructions(&f["payout"]),false);
+    assert!(token(&h.svm,own.wallet)>user_before);assert_eq!(token(&h.svm,usd.wallet),usd_before);
 }
 
 #[test]

@@ -11,6 +11,11 @@ pub fn intermediate_seed()->&'static [u8] {b"quote"}
 pub struct ValueCurve {base:u64,quote:u64,fees:[u16;3]}
 impl ValueCurve {pub fn value(&self,amount:u64)->Result<u64> {sell_from_reserves(amount,self.base,self.quote,self.fees)}}
 pub fn value_curve(a:&Asset,v:&Valuation)->Result<ValueCurve> {let (base,quote,fees)=validate_pool(a,v)?;Ok(ValueCurve{base,quote,fees})}
+pub fn spot_curve(a:&Asset,v:&Valuation)->Result<crate::spot::SpotCurve> {
+    let (base,quote)=if is_quote(a) {(1,1)}else{let(b,q,_)=validate_pool(a,v)?;(b,q)};
+    Ok(crate::spot::SpotCurve{base,quote,usd_base:1,usd_quote:1})
+}
+pub fn spot_value(amount:u64,a:&Asset,v:&Valuation)->Result<u64> {if amount==0 {return Ok(0);}spot_curve(a,v)?.value(amount)}
 pub fn collateral_curve(a:&Asset,v:&Valuation,_sol_price:u64)->Result<ValueCurve> {value_curve(a,v)}
 pub fn collateral_value(amount:u64,a:&Asset,v:&Valuation,sol_price:u64)->Result<u64> {
     if a.mint==anchor_spl::token::spl_token::native_mint::ID {

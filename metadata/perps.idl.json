@@ -8914,11 +8914,190 @@
       ]
     },
     {
-      "name": "redeem_usdc",
+      "name": "redeem_profit_tokens",
       "docs": [
         "Permissionless FIFO settlement. All sizing and destination checks are on chain;",
         "a keeper pays network fees but cannot redirect funds or choose the claim debit."
       ],
+      "discriminator": [
+        153,
+        6,
+        47,
+        243,
+        201,
+        250,
+        11,
+        255
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "signer": true
+        },
+        {
+          "name": "execution",
+          "accounts": [
+            {
+              "name": "magic_program",
+              "address": "Magic11111111111111111111111111111111111111"
+            }
+          ]
+        },
+        {
+          "name": "pool",
+          "writable": true,
+          "relations": [
+            "position",
+            "inventory"
+          ]
+        },
+        {
+          "name": "authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "position",
+          "writable": true
+        },
+        {
+          "name": "asset",
+          "relations": [
+            "inventory"
+          ]
+        },
+        {
+          "name": "valuation",
+          "accounts": [
+            {
+              "name": "dex_pool"
+            },
+            {
+              "name": "dex_base"
+            },
+            {
+              "name": "dex_quote"
+            },
+            {
+              "name": "fee_config"
+            },
+            {
+              "name": "dex_mint"
+            },
+            {
+              "name": "global_config"
+            },
+            {
+              "name": "usd_pool"
+            },
+            {
+              "name": "usd_mint"
+            },
+            {
+              "name": "usd_base"
+            },
+            {
+              "name": "usd_quote"
+            },
+            {
+              "name": "source_global"
+            },
+            {
+              "name": "source_fees"
+            }
+          ]
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "inventory",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  118,
+                  101,
+                  110,
+                  116,
+                  111,
+                  114,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "asset"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "asset"
+              }
+            ]
+          }
+        },
+        {
+          "name": "destination",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "redeem_usdc",
       "discriminator": [
         101,
         142,

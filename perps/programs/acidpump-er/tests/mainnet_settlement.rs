@@ -35,6 +35,8 @@ mod venues;
 mod pool_tokenomics;
 #[path="support/mainnet_contributions.rs"]
 mod contributions;
+#[path="support/mainnet_spot_profit.rs"]
+mod spot_profit;
 #[cfg(feature="bank-contribution-test")]
 mod bank_contribution { include!(env!("SDICE_BANK_CONTRIBUTION_TEST")); }
 fn pk(s:&str)->Pubkey {Pubkey::from_str(s).unwrap()}
@@ -309,11 +311,8 @@ impl Bank {
         built
     }
     fn payout_raw(&self,position:Pubkey)->Instruction {
-        let a=self.tokens[0];let mut out=ix(p::accounts::RedeemUsdc{caller:self.signer.pubkey(),config:self.config,pool:self.pool,authority:self.authority,position,
-            asset:a.asset,valuation:self.valuation(a),mint:a.mint,token_program:a.program,inventory:a.inventory,vault:a.vault,quote_mint:USDC,quote_program:anchor_spl::token::ID,
-            quote_vault:self.usd_vault,destination:self.tokens[1].wallet,pump_program:p::pump::ID,sol_vault:self.sol_vault},p::instruction::RedeemUsdc{});
-        out.accounts.extend(self.leg(a,false,a.vault,self.sol_vault));out.accounts.extend(self.leg(self.tokens[1],true,self.usd_vault,self.sol_vault));
-        out
+        let a=self.tokens[0];ix(p::accounts::RedeemProfitTokens{caller:self.signer.pubkey(),execution:p::accounts::BaseExecution{magic_program:ephemeral_rollups_sdk::consts::MAGIC_PROGRAM_ID},pool:self.pool,authority:self.authority,position,
+            asset:a.asset,valuation:self.valuation(a),mint:a.mint,token_program:a.program,inventory:a.inventory,vault:a.vault,destination:a.wallet},p::instruction::RedeemProfitTokens{})
     }
     fn payout(&self,position:Pubkey)->Vec<Instruction> {
         let out=self.payout_raw(position);
@@ -349,15 +348,15 @@ fn fifo_payouts_support_primary_pool_modes_and_old_layouts() {
         let mut swaps=case["fixture"]["swaps"].as_array().unwrap().clone();
         swaps.extend(h.f["swaps"].as_array().unwrap().iter().filter(|r|key(r,"mint")!=primary.mint).cloned());
         h.f["swaps"]=json!(swaps);
-        let before=token(&h.svm,usd.wallet);let sol_before=token(&h.svm,h.sol_vault);
+        let before=token(&h.svm,primary.wallet);let sol_before=token(&h.svm,h.sol_vault);let usd_before=token(&h.svm,usd.wallet);
         h.send("pay actual FIFO claim using versioned pool route",vec![h.payout_raw(position)],false);
-        let paid=token(&h.svm,usd.wallet)-before;let after:Position=get(&h.svm,position);
-        assert!(paid>0 && paid<=original.profit);assert_eq!(after.remaining,0);assert!(original.profit-paid<=1);
-        assert!(token(&h.svm,h.sol_vault)>=sol_before);assert_eq!(get::<Pool>(&h.svm,h.pool).queue_usd,0);
+        let paid=token(&h.svm,primary.wallet)-before;let after:Position=get(&h.svm,position);
+        assert!(paid>0);assert_eq!(after.remaining,0);
+        assert_eq!(token(&h.svm,h.sol_vault),sol_before);assert_eq!(token(&h.svm,usd.wallet),usd_before);assert_eq!(get::<Pool>(&h.svm,h.pool).queue_usd,0);
         let remaining=get::<Inventory>(&h.svm,primary.inventory).treasury;
-        assert_eq!(remaining,token(&h.svm,primary.vault));assert!(remaining<capital);
+        assert_eq!(remaining,token(&h.svm,primary.vault));assert_eq!(capital-remaining,paid);
         h.send("mode payout cannot replay",vec![h.payout_raw(position)],true);
-        cases.push(json!({"mode":case["name"],"paidUsdc":paid,"claimUsdc":original.profit,"treasuryTokensSpent":capital-remaining,"receipts":h.receipts}));
+        cases.push(json!({"mode":case["name"],"paidBackingTokens":paid,"claimUsd":original.profit,"treasuryTokensSpent":capital-remaining,"receipts":h.receipts}));
     }
     std::fs::write(root.join(report_path("mode-payouts")),serde_json::to_vec_pretty(&json!({
         "scope":"Actual production SBF FIFO payout with real Pump programs, synthetic treasury and injected ER commit boundary",
@@ -715,10 +714,10 @@ fn complete_base_loss_routes_rewards_fifo_payout_and_withdrawal() {
     let next=h.committed(usd,5,10*UNIT,false,true);let next_position=pda(&[b"position",owner.as_ref(),&5u64.to_le_bytes()]);
     h.send("queue second winning claim",h.settlement(usd,next,1),false);
     h.send("second claim cannot skip FIFO head",h.payout(next_position),true);
-    let balance=token(&h.svm,usd.wallet);let reserve=token(&h.svm,h.sol_vault);
-    h.send("pay FIFO claim through SDICE SOL USDC",h.payout(position),false);
-    let paid=token(&h.svm,usd.wallet)-balance;let settled:Position=get(&h.svm,position);
-    assert!(paid>0&&paid<=x.profit);assert!(x.profit-paid-settled.remaining<=1);assert_eq!(settled.remaining,0);
+    let balance=token(&h.svm,primary.wallet);let reserve=token(&h.svm,h.sol_vault);
+    h.send("pay FIFO claim directly in backing tokens",h.payout(position),false);
+    let paid=token(&h.svm,primary.wallet)-balance;let settled:Position=get(&h.svm,position);
+    assert!(paid>0);assert_eq!(settled.remaining,0);
     assert_eq!(get::<Pool>(&h.svm,h.pool).queue_usd,x.profit);assert!(token(&h.svm,h.sol_vault)>=reserve);assert_eq!(token(&h.svm,h.usd_vault),100);
     h.send("paid FIFO claim cannot replay",h.payout(position),true);
     h.send("pay next FIFO claim",h.payout(next_position),false);assert_eq!(get::<Pool>(&h.svm,h.pool).queue_usd,0);
