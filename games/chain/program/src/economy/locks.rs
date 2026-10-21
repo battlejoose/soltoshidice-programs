@@ -25,20 +25,20 @@ impl Ledger {
     pub fn power(&self) -> Result<u128, ProgramError> {
         self.shares.iter().zip(MULTIPLIERS).try_fold(mul128(self.forever_shares, 20)?, |sum, (shares, multiplier)| add128(sum, mul128(*shares, multiplier)?))
     }
-    fn bucket(&self, tier: usize) -> u128 { if tier == FOREVER_TIER { self.forever_shares } else { self.shares[tier] } }
-    fn bucket_mut(&mut self, tier: usize) -> &mut u128 { if tier == FOREVER_TIER { &mut self.forever_shares } else { &mut self.shares[tier] } }
+    pub(super) fn bucket(&self, tier: usize) -> u128 { if tier == FOREVER_TIER { self.forever_shares } else { self.shares[tier] } }
+    pub(super) fn bucket_mut(&mut self, tier: usize) -> &mut u128 { if tier == FOREVER_TIER { &mut self.forever_shares } else { &mut self.shares[tier] } }
 }
 // Forever has no expiry. Withdrawal checks its tier explicitly, not a distant date.
 fn unlock_time(now: i64, tier: usize) -> Result<i64, ProgramError> {
     if tier == FOREVER_TIER { Ok(0) } else { now.checked_add(DURATIONS[tier]).ok_or(ProgramError::ArithmeticOverflow) }
 }
-fn write_ledger(account: &AccountInfo, ledger: &Ledger) -> ProgramResult {
+pub(super) fn write_ledger(account: &AccountInfo, ledger: &Ledger) -> ProgramResult {
     let size = if ledger.version == 1 { LEDGER_LEN } else { FOREVER_LEDGER_LEN };
     check(account.data_len() == size && (ledger.version == 2 || ledger.forever_shares == 0), 60)?;
     let bytes = borsh::to_vec(ledger).map_err(|_| ProgramError::InvalidAccountData)?;
     account.try_borrow_mut_data()?.copy_from_slice(&bytes[..size]); Ok(())
 }
-fn ensure_ledger<'a>(program: &Pubkey, wallet: &AccountInfo<'a>, account: &AccountInfo<'a>, system: &AccountInfo<'a>, bank: &Pubkey, ledger: &mut Ledger, tier: usize) -> ProgramResult {
+pub(super) fn ensure_ledger<'a>(program: &Pubkey, wallet: &AccountInfo<'a>, account: &AccountInfo<'a>, system: &AccountInfo<'a>, bank: &Pubkey, ledger: &mut Ledger, tier: usize) -> ProgramResult {
     if tier == FOREVER_TIER { ledger.version = 2; }
     let size = if ledger.version == 1 { LEDGER_LEN } else { FOREVER_LEDGER_LEN };
     if account.data_is_empty() {
@@ -76,7 +76,7 @@ pub(super) fn read_ledger(program: &Pubkey, account: &AccountInfo, bank: &Pubkey
         && ledger.bump == bump && total == profile.shares, 60)?;
     Ok(ledger)
 }
-fn read_position(program: &Pubkey, account: &AccountInfo, bank: &Pubkey, wallet: &Pubkey, nonce: u64) -> Result<Position, ProgramError> {
+pub(super) fn read_position(program: &Pubkey, account: &AccountInfo, bank: &Pubkey, wallet: &Pubkey, nonce: u64) -> Result<Position, ProgramError> {
     check(account.owner == program, 2)?;
     let position = Position::try_from_slice(&account.try_borrow_data()?).map_err(|_| ProgramError::InvalidAccountData)?;
     let (key, bump) = position_address(program, bank, wallet, nonce);

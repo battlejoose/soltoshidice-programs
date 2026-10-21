@@ -3,6 +3,7 @@ use super::*;
 mod staking;
 mod settlement;
 mod locks;
+mod perps_contribution;
 pub mod game_rewards;
 pub use settlement::{prepare_bet, collect_fees, fund_bet_rewards};
 pub(crate) use settlement::credit_rewards;
@@ -163,6 +164,7 @@ impl Pool {
 }
 
 pub fn process(program: &Pubkey, accounts: &[AccountInfo], data: &[u8]) -> ProgramResult {
+    if data.first() == Some(&116) { return perps_contribution::process(program, accounts, data); }
     if data.first() == Some(&71) { return game_rewards::process(program, accounts, data); }
     if data.first() == Some(&72) { return game_rewards::reclaim(program, accounts, data); }
     if data.first() == Some(&31) { return banking::activate(program, accounts, data); }
