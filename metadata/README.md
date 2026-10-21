@@ -7,6 +7,15 @@ using the `idl` and `security` seeds. Publication is signed by each program's
 existing upgrade authority. It does not upgrade executable code or alter game
 accounts, balances held by the games, or program upgrade authorities.
 
+## Perps update — October 20, 2026
+
+The new Perps IDL contains 85 instructions and 23 account layouts, including
+pool exposure and direct contributions. Its security record points to verified
+public source commit `f82f527a44a15292ededb544d9129fc6a5459804`. The replacement
+was uploaded to a temporary buffer, then installed atomically; the buffer rent
+was returned. All ten canonical records were read back successfully. See
+[finalized Perps verification and metadata receipts](../evidence/perps-tokenomics-verification-2026-10-20.json).
+
 ## Bank update — October 19, 2026
 
 The bank IDL now includes separate game competitions and selectable duration.
@@ -48,7 +57,7 @@ are recorded separately from transaction finality.
 | Poker | Anchor | 42 | 13 |
 | Block Fights | Codama | 8 | 3 |
 | Rock Paper Scissors | Codama | 8 | 3 |
-| Perps | Anchor | 81 | 21 |
+| Perps | Anchor | 85 | 23 |
 
 The Anchor IDLs come from the exact deployed releases. Their instruction and
 account discriminators were checked. See [Anchor provenance](anchor-provenance.json).

@@ -1,0 +1,358 @@
+{
+  "at": "2026-10-21T00:32:30.920Z",
+  "program": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+  "sha256": "a5e884d7015a62d428ef165e15626dfebd4ceb9f4db1562f082fb93bf3949eaa",
+  "publicSourceCommit": "f82f527a44a15292ededb544d9129fc6a5459804",
+  "verification": {
+    "is_verified": true,
+    "message": "On chain program verified",
+    "on_chain_hash": "a2f5b2c31d5f933eef5537c1b32341cb9127e0f35d328d38967d5dc165610dd4",
+    "executable_hash": "a2f5b2c31d5f933eef5537c1b32341cb9127e0f35d328d38967d5dc165610dd4",
+    "repo_url": "https://github.com/battlejoose/soltoshidice-programs/tree/f82f527a44a15292ededb544d9129fc6a5459804",
+    "commit": "f82f527a44a15292ededb544d9129fc6a5459804",
+    "last_verified_at": "2026-10-21T00:23:55.39853",
+    "is_frozen": false,
+    "is_closed": false,
+    "requestId": "8e0c5f14-15c4-497f-8c2a-0d5692d0445a",
+    "registration": {
+      "label": "register-public-verification",
+      "signature": "3dSmRHCmtbacFrmsN4D2jTqC9ThGXwpRfvKWT1N9DFR61SdtNsEWL4DjsReVxhoZwjswn9t4ogGHW6rzvUi4mdEL",
+      "debitLamports": 152320,
+      "finalized": true
+    }
+  },
+  "metadata": {
+    "idl": {
+      "at": "2026-10-21T00:24:19.426Z",
+      "metadata": "6KRvnUXACkTWMASoPmnYLH63U9z1taRjhsY8EnHrpGes",
+      "buffer": "ESAFzCeGcsJmpAgqnD5ongZr4o8t1APpV3vdLq3HixZy",
+      "contentSha256": "94741b055fa1329d9d4e22ec8fdc18e9ebbca62150425c0e5a7e46de7a2db694",
+      "published": true,
+      "bufferClosed": true,
+      "programHash": "a5e884d7015a62d428ef165e15626dfebd4ceb9f4db1562f082fb93bf3949eaa",
+      "additionalRentLamports": 5364480,
+      "transactions": [
+        {
+          "label": "create-buffer",
+          "signature": "4qQPHmKLRxf5pQPD5WBBTArib8W6bqUxy9aWVUApZjoA598sgszFaDKJU66i7Y4iZ6GYXrW6JDzYfxCfn2HHKd7K",
+          "slot": 459427580
+        },
+        {
+          "label": "write-0",
+          "signature": "Dn8eA6qoWXp8ob1zWPWqQupdHwRC7ZLNB5jbSPCFhfnqyXo53Zn1HmriJELhki9GKYXpiQm1t9rqfLGmtAef4qM",
+          "slot": 459427588
+        },
+        {
+          "label": "write-800",
+          "signature": "ZLztjSsETi7MJRDF5GLXrgDid4ZSpAsiREEq5vWwTw297mcB45NPkD9EmaZr2bW9pNWWwNQ8GQHrmqikQWhXQw2",
+          "slot": 459427597
+        },
+        {
+          "label": "write-1600",
+          "signature": "42ESLQNdXxu7KbTfxr3STxzV3G6u4o7BrxHoZ5Qi2Ei1t6Gg5bidAvqfjgXbXXBoNFSUtjDmqFgMVoqnhUPyJJP1",
+          "slot": 459427605
+        },
+        {
+          "label": "write-2400",
+          "signature": "2jt5FfZYjq57twRy3Cz1wKHFPZpkAwTKxRZFVQxpHVmZU956s3kShtkPAv9Cd3ERMfa8c5qdVLm8egJKNuYcW4zS",
+          "slot": 459427614
+        },
+        {
+          "label": "write-3200",
+          "signature": "3BtJv8DRoN9YYcqAMXNW4ckpr2c5Rs55uCnk8u9Ruyxs1qR3jGCQpF2xqVriLkCuByP2roPtc7qAbJCq8o7sD4py",
+          "slot": 459427624
+        },
+        {
+          "label": "write-4000",
+          "signature": "h6JV4ANb7EccsKgoiAqsGifNX2gH9bPS7Cc4MRwiVu3VN1c64pWzUo5W8VmWfKykJwHBzU8LJTHVjeE2KX8RTR3",
+          "slot": 459427632
+        },
+        {
+          "label": "write-4800",
+          "signature": "2uitRgq7mvHYZuV11bw4FmU6P3BxmVVhgoSWpCA9b2hfKMHnMz4cRVriG63sGrSEwEL9JrVWmugzbSjw7M7Zxjk7",
+          "slot": 459427641
+        },
+        {
+          "label": "write-5600",
+          "signature": "526dwyEWjcWpmoeq6mcD3wZcKQ1BNnWmKYe1WKhjcMqj5rqLngKATe53TPzNFRunJ6yMMNTfqcWb2WMyLiTz98w4",
+          "slot": 459427649
+        },
+        {
+          "label": "write-6400",
+          "signature": "2MkvVQmxJCSRNF8sXKoyB6bmt9bT6a2AivG59H4kCGRnmYtihGDXSZ8ZRBtrJ7xZewLgeZDbpGxs2qk5Mmr7Y5tF",
+          "slot": 459427659
+        },
+        {
+          "label": "write-7200",
+          "signature": "3tr1KL1H1saPnwE9V1jmR9jg86Z8rd4ibHvdGTKKgPePHNkqLE7bBDWPnBvzsKrTGB53W2FE7AKqxJPo9SEhnLid",
+          "slot": 459427664
+        },
+        {
+          "label": "write-8000",
+          "signature": "MzRPewVZ1dfJkcSU2hHZ7P4MNFvJsiVHn6YihDryJeYaSi3Xdwqz29gHF4DPSfbY6hYhPtq3aBC5dsQXfmD9KVZ",
+          "slot": 459427673
+        },
+        {
+          "label": "write-8800",
+          "signature": "DWjqCgzVb4csNRAtfgi2w2UmBPs5CXkKacRrXEmuRoTD7dz3xe5tVAG6T5o9q9HZfq9hA4tHqKU4qHba7fxE8yc",
+          "slot": 459427684
+        },
+        {
+          "label": "write-9600",
+          "signature": "iekw7bFNRbQ4xdLiRSGF8YdKZej6GMkfEdskGG9aNxEdHKeKkyFTTecW2k7b1PsDUx4t4Hcc74HG27WouAwEzJY",
+          "slot": 459427691
+        },
+        {
+          "label": "write-10400",
+          "signature": "F5JNFYoz7FqXoPkMaWaUuCYEH6mTUKiGXyA3hhh2LMSFFhRtVfRLbecJrqWAkVeNYCTo6qJ4KtDFyzZPr5L6m65",
+          "slot": 459427840
+        },
+        {
+          "label": "write-11200",
+          "signature": "2jWg4FYmf9JJ2opAq47tgwBjaFQEH2DSeLMB7YJHvn7JqWseqsKvKHEqVy4btFyGAo3tWYAH9Ee2pMtKLHkjVhPA",
+          "slot": 459427849
+        },
+        {
+          "label": "write-12000",
+          "signature": "WKZTSqJj5i36vmrQx1H5GKTraCQgcQqc4r9TM5KwnzmmXHWfw2k7bd8FfnVmzmdZSUcDjatTWNdsUnBzDCWzM1R",
+          "slot": 459427857
+        },
+        {
+          "label": "write-12800",
+          "signature": "2tqM2h8mRXPpg8syAc5qxhYjuxiu5S1kXT8GBv2VygxHHFM9Ke7EHUEm3GLz4Ts9D4sZyDR2ffQwovVt3bQKBsnw",
+          "slot": 459427866
+        },
+        {
+          "label": "write-13600",
+          "signature": "3paCCkysx4EEKHBRxuiDdVinVHc9qbfTFtp7fqP1Hjv8jnpEZxksE2LE4dbeTefmJ1ecNbkdpW1gaUCymWQ6MpQZ",
+          "slot": 459427877
+        },
+        {
+          "label": "write-14400",
+          "signature": "44aK891iB1EumFEgRsGyTeH4tGJb2z8tGqCTeCK2YLYNpwCcpngs3V2FGeqB7ZfzPkb6zmH9bjwJpiwtgbjjezBR",
+          "slot": 459427886
+        },
+        {
+          "label": "write-15200",
+          "signature": "2r9Q9ZwSnjCUZzMoTrEqLKtMiRhHV9V8AyJQEzdDfdmdb9WXGRcUChRBTiK5Ffro9s5Au7USUnDgWQRJ4NAFMhqi",
+          "slot": 459427896
+        },
+        {
+          "label": "write-16000",
+          "signature": "5BDJnqBVkaqNqs2KxFg297CFxuNHfwYbYkoKbVoP9xEvCAbNFbCbM2rkmcVGa9aADmq1Eu6J4bKGDz3MqPYWUfHh",
+          "slot": 459427905
+        },
+        {
+          "label": "write-16800",
+          "signature": "5dBNPJJ6pF2yuRtzcM7GJF9sd4Hf4dGPpjiv3jA9uy6seXVxzVXNiqpPzwHfR4vcHUG4DMhAACk1nju7Gd6QY2Nv",
+          "slot": 459427914
+        },
+        {
+          "label": "write-17600",
+          "signature": "2Zk4dXfvuKmnabmy9qCy4dERYAiFhCtFWY8HpFxLRcRC1AtqoPzwqqqaAUQ5M4jdi9LnTvoeTrNWVSqcF3mgX98v",
+          "slot": 459427922
+        },
+        {
+          "label": "atomic-replace",
+          "signature": "3EV2sg8TRULJPBt9iGxGvih2P3ZzRWz9St9xb5ALsCgsetWZbLUbEvzKa6yUujHiP7isBHSQkprQNw8XyYZKDfz9",
+          "slot": 459427931
+        }
+      ]
+    },
+    "idlFeeLamports": 130000,
+    "finalReadback": {
+      "verifiedAt": "2026-10-21T00:31:41.426Z",
+      "network": "mainnet-beta",
+      "metadataProgram": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
+      "programsUnchanged": true,
+      "records": [
+        {
+          "name": "bank",
+          "seed": "idl",
+          "program": "CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR",
+          "metadata": "BYQZ1X77FPffa2pNTSCmn4ub8Xy3TjaajCfcFNV2Hcus",
+          "contentSha256": "7d5a5eb576fc386bc4bc1bc02e0c4452c9dd866a958c0b9dcfcb3771e6829d97",
+          "storageLamports": 44002960,
+          "accountBytes": 8534,
+          "unchangedProgram": {
+            "programData": "9HF5BoewAreFTHQgR6K3mvgkcG5cLy1mF4mnsUkHWBVM",
+            "sha256": "32faf85840d3ce1ee288afc4968e9ed4007600b3a854dce8cdcefae549f25d92",
+            "lastDeploySlot": 458975234,
+            "upgradeAuthority": "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y"
+          }
+        },
+        {
+          "name": "bank",
+          "seed": "security",
+          "program": "CuTLp7pDmNGkFgi4aoh8Ef1YSjc2BzECQRLzYqaoVWBR",
+          "metadata": "HrYDVnjwqaPd6eFdWetjtuUgVCsjyX4fcFrbFssGqj95",
+          "contentSha256": "fe748d82bf6ae77a8b3f26f85954e15f58ccd7207e6a3b3531ed5cd4f62f5324",
+          "storageLamports": 3012440,
+          "accountBytes": 465,
+          "unchangedProgram": {
+            "programData": "9HF5BoewAreFTHQgR6K3mvgkcG5cLy1mF4mnsUkHWBVM",
+            "sha256": "32faf85840d3ce1ee288afc4968e9ed4007600b3a854dce8cdcefae549f25d92",
+            "lastDeploySlot": 458975234,
+            "upgradeAuthority": "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y"
+          }
+        },
+        {
+          "name": "poker",
+          "seed": "idl",
+          "program": "3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+          "metadata": "2reafRxjeSYETMErrWBAAJoSNv1rWh2aZEYYKCx78fD2",
+          "contentSha256": "eec348f8b91fe372af21a7fe7ab3ec0fe40494a8bcc1dce4f45c57852bba5177",
+          "storageLamports": 95448120,
+          "accountBytes": 18661,
+          "unchangedProgram": {
+            "programData": "3auvzmXxfJ5Me9rQ4SnAE6BK4fqmDPTV8BsWViYgmXqF",
+            "sha256": "1de0cf017069e97200bd0a4be9ec9c2cf1f0a79aeb95a74d182b1f4d3b214b6c",
+            "lastDeploySlot": 457004605,
+            "upgradeAuthority": "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y"
+          }
+        },
+        {
+          "name": "poker",
+          "seed": "security",
+          "program": "3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+          "metadata": "DmjbwnZsYS3Nqgo7S58shpFTHhABUUunCresj2PZT7oz",
+          "contentSha256": "f094110fb84a5a6ba2d1663f676bafc2c9cef5935076f80727ca46bf1a9fb5c5",
+          "storageLamports": 2910840,
+          "accountBytes": 445,
+          "unchangedProgram": {
+            "programData": "3auvzmXxfJ5Me9rQ4SnAE6BK4fqmDPTV8BsWViYgmXqF",
+            "sha256": "1de0cf017069e97200bd0a4be9ec9c2cf1f0a79aeb95a74d182b1f4d3b214b6c",
+            "lastDeploySlot": 457004605,
+            "upgradeAuthority": "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y"
+          }
+        },
+        {
+          "name": "fights",
+          "seed": "idl",
+          "program": "5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q",
+          "metadata": "2L8iroswNctPsmNzBiB3aJV1j9iZdWdDWH5XQNrcePho",
+          "contentSha256": "d52ee8d19b124ccbafc680b13e1fd0417e92db8ce6cb5d6f58e8724ca715c740",
+          "storageLamports": 8630920,
+          "accountBytes": 1571,
+          "unchangedProgram": {
+            "programData": "EgXHy4FtawhR5n1ByyYg3Tnnp53pZmcBAGdgS419roeo",
+            "sha256": "ea634b57ebf7cc3555626d5fa26fcdcca2a82fac73846219382544e399f0be32",
+            "lastDeploySlot": 446664066,
+            "upgradeAuthority": "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y"
+          }
+        },
+        {
+          "name": "fights",
+          "seed": "security",
+          "program": "5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q",
+          "metadata": "5pKVqeobh17fbyL8RY6fjhWH8FPqKGMcNZia23eSmjmY",
+          "contentSha256": "5ca11ed0767ede8b8bfaf39982c4aa4470dfee73d2f9f5739768e0987a6e5730",
+          "storageLamports": 2941320,
+          "accountBytes": 451,
+          "unchangedProgram": {
+            "programData": "EgXHy4FtawhR5n1ByyYg3Tnnp53pZmcBAGdgS419roeo",
+            "sha256": "ea634b57ebf7cc3555626d5fa26fcdcca2a82fac73846219382544e399f0be32",
+            "lastDeploySlot": 446664066,
+            "upgradeAuthority": "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y"
+          }
+        },
+        {
+          "name": "rps",
+          "seed": "idl",
+          "program": "96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG",
+          "metadata": "4BrAJVBfHcgqc2VGW3vS7GDTJNqA9q3f1QLVrhzy3xzN",
+          "contentSha256": "dee5455a19c6c0144598afbab5c6573d35a51fed9235d6053d7fc467a7286ba7",
+          "storageLamports": 9017000,
+          "accountBytes": 1647,
+          "unchangedProgram": {
+            "programData": "59ApPSxdhNBDtRuuwKnUBH7TjtmQEW2WVPTxEPrgMfKi",
+            "sha256": "dd04422c966b04ae13d5953e18eae60b028875e945e655beb7bf6d8aeee63a4e",
+            "lastDeploySlot": 446768753,
+            "upgradeAuthority": "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y"
+          }
+        },
+        {
+          "name": "rps",
+          "seed": "security",
+          "program": "96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG",
+          "metadata": "HxqJoXTzd1Bh22fnCGbu1KxMpoYmVs2Q1CFZahAXcudW",
+          "contentSha256": "62f7675f0f7f78e0e0015199e647b54a44e46f0a795388de966f44ce1082da42",
+          "storageLamports": 2981960,
+          "accountBytes": 459,
+          "unchangedProgram": {
+            "programData": "59ApPSxdhNBDtRuuwKnUBH7TjtmQEW2WVPTxEPrgMfKi",
+            "sha256": "dd04422c966b04ae13d5953e18eae60b028875e945e655beb7bf6d8aeee63a4e",
+            "lastDeploySlot": 446768753,
+            "upgradeAuthority": "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y"
+          }
+        },
+        {
+          "name": "perps",
+          "seed": "idl",
+          "program": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+          "metadata": "6KRvnUXACkTWMASoPmnYLH63U9z1taRjhsY8EnHrpGes",
+          "contentSha256": "94741b055fa1329d9d4e22ec8fdc18e9ebbca62150425c0e5a7e46de7a2db694",
+          "storageLamports": 93162120,
+          "accountBytes": 18211,
+          "unchangedProgram": {
+            "programData": "GngBxRxp2nvs7kHSTfjxfL9jgt7Abt3wHw4cUV92TEon",
+            "sha256": "a5e884d7015a62d428ef165e15626dfebd4ceb9f4db1562f082fb93bf3949eaa",
+            "lastDeploySlot": 459424476,
+            "upgradeAuthority": "GqJwW3CF9XfopAmCP9zNKN1BvVo3aSPQHmfHdrGUeTzA"
+          }
+        },
+        {
+          "name": "perps",
+          "seed": "security",
+          "program": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+          "metadata": "3VNHV5hcSaxHeByJfmvPsPC3ybwhmNtJqJTgghcVeZei",
+          "contentSha256": "d2e504dd34e0ceb2d99bd63ca1ea77bb2087d98456218f628e25a8e35d2fc43e",
+          "storageLamports": 2895600,
+          "accountBytes": 438,
+          "unchangedProgram": {
+            "programData": "GngBxRxp2nvs7kHSTfjxfL9jgt7Abt3wHw4cUV92TEon",
+            "sha256": "a5e884d7015a62d428ef165e15626dfebd4ceb9f4db1562f082fb93bf3949eaa",
+            "lastDeploySlot": 459424476,
+            "upgradeAuthority": "GqJwW3CF9XfopAmCP9zNKN1BvVo3aSPQHmfHdrGUeTzA"
+          }
+        }
+      ],
+      "transactions": [
+        {
+          "name": "perps",
+          "seed": "security",
+          "index": 0,
+          "signature": "5fXBzSCiqqxDABnC1DjKunzWS3DMfRLw6fVttACSoK2ea5h4961EFu63ZuCy5JbDG31oSKszGpew8Wx77T5ao7Xb",
+          "slot": 459428063,
+          "status": "finalized",
+          "rentLamports": 25400,
+          "refundedLamports": 0,
+          "feeLamports": 5206,
+          "invokedPrograms": [
+            "ComputeBudget111111111111111111111111111111",
+            "11111111111111111111111111111111",
+            "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+          ]
+        }
+      ],
+      "authorities": [
+        {
+          "address": "GqJwW3CF9XfopAmCP9zNKN1BvVo3aSPQHmfHdrGUeTzA",
+          "remainingLamports": 10451617143
+        }
+      ],
+      "storageLamports": 265003280,
+      "transactionFeeLamports": 5206,
+      "netStorageChangeLamports": 25400,
+      "incrementalUpdate": true,
+      "totalLamports": 30606
+    },
+    "securityCanonicalUpdate": {
+      "label": "security-canonical-lf",
+      "signature": "2JUp3sQ28QKhV41pq5XKCBbobf5BXJyKE69Mc6zNZT2ZY1YocCiENUndLTomAgozGbe7BwA61nuR1zYTiwNk4FD9",
+      "debitLamports": 5000,
+      "finalized": true
+    }
+  },
+  "upgradeAuthorityRetained": true
+}

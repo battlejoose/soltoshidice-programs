@@ -51,9 +51,13 @@ Existing position layouts and upgrade authority are unchanged.
 The exported source rebuilds to the complete 2,030,840-byte mainnet executable:
 `a5e884d7015a62d428ef165e15626dfebd4ceb9f4db1562f082fb93bf3949eaa`.
 The executable served by MagicBlock matches too. The native pinned-toolchain
-rebuild passed; independent remote verification for this new hash is pending.
+rebuild passed, and the independent Docker verifier accepted public source commit
+`f82f527a44a15292ededb544d9129fc6a5459804` with matching on-chain and executable
+hashes. The canonical on-chain IDL and security record were updated and read back.
 See [the current chain snapshot](evidence/perps-tokenomics-snapshot-2026-10-20.json)
 and [source provenance](evidence/perps-tokenomics-source-2026-10-20.json).
+Final verification and metadata receipts are in
+[the October 20 evidence](evidence/perps-tokenomics-verification-2026-10-20.json).
 
 ## Status — October 20, 2026
 
@@ -63,7 +67,7 @@ and [source provenance](evidence/perps-tokenomics-source-2026-10-20.json).
 | `3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ` | Hold'em and tournaments | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ) |
 | `5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q` | Street Fights | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/5PrHPCCbKpW4SvBZfXmt23RKMaShSM4XGTJdBh8qpw3q) |
 | `96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG` | Rock Paper Scissors | Exact deployed bytes reproduced | [Verified](https://verify.osec.io/status/96hGHn4JD3AyzXvNPdx4RyNtS8y7sQ5NizagMsdMAXhG) |
-| `7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7` | SDICE Perps, pool tokenomics upgrade | Native rebuild matches; Docker result pending | [New release pending verification](https://verify.osec.io/status/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7) |
+| `7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7` | SDICE Perps, pool tokenomics upgrade | Native rebuild matches; independent Docker verification passed | [Verified](https://verify.osec.io/status/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7) |
 
 No deployed program, authority, custody account or game state was changed to
 produce this evidence. Verification metadata belongs to a separate verification

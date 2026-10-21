@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-21T00:16:49.487Z",
+  "at": "2026-10-21T00:32:30.920Z",
   "cluster": "mainnet-beta",
   "solanaVerifyVersion": "0.5.2",
   "image": "solanafoundation/solana-verifiable-build@sha256:f71be5ca7620b7e40933b7f1294fa44e01d08c1fc5ba1f375a2478f5a01580d3",
@@ -106,10 +106,13 @@
         "mainnet"
       ],
       "localDockerMatch": false,
-      "publicRegistryStatus": "pending-current-release",
+      "publicRegistryStatus": "verified",
       "previousVerifiedCommit": "a67357f6fe18755b8a33e337bcb8350dc5fd7020",
       "previousVerifiedAt": "2026-10-18T12:28:22.983806",
-      "localNativeMatch": true
+      "localNativeMatch": true,
+      "verifiedCommit": "f82f527a44a15292ededb544d9129fc6a5459804",
+      "verifiedAt": "2026-10-21T00:23:55.39853",
+      "remoteDockerMatch": true
     }
   ]
 }

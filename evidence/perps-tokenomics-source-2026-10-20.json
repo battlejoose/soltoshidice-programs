@@ -1,6 +1,6 @@
 {
   "at": "2026-10-21T00:02:59.596Z",
-  "status": "deployed-local-rebuild-matched-remote-verification-pending",
+  "status": "deployed-independently-verified",
   "sourceCommit": "7f0f4372c01a41bda9bed2793e5ee243efa60c9a",
   "expectedProgramSha256": "a5e884d7015a62d428ef165e15626dfebd4ceb9f4db1562f082fb93bf3949eaa",
   "expectedProgramBytes": 2030840,
@@ -68,5 +68,6 @@
   ],
   "otherProgramsChanged": false,
   "lastDeploySlot": 459424476,
-  "upgradeSignature": "5xeYEYqwkmSHiNpEYAR4KrxMNrxqiHBnbeBB4Jw6rxq5JZp8RT239UyPfvjzCJ8Qz4f9nqtAxZMFxRePrbtZjM8n"
+  "upgradeSignature": "5xeYEYqwkmSHiNpEYAR4KrxMNrxqiHBnbeBB4Jw6rxq5JZp8RT239UyPfvjzCJ8Qz4f9nqtAxZMFxRePrbtZjM8n",
+  "publicSourceCommit": "f82f527a44a15292ededb544d9129fc6a5459804"
 }
