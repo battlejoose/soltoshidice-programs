@@ -25,6 +25,12 @@ All five programs have canonical on-chain IDLs and security records. See
 Native IDLs describe decoding; they are not generic transaction-building SDKs.
 Report vulnerabilities privately through our [security policy](SECURITY.md).
 
+## Perps position rules — October 21, 2026 UTC
+
+New Perps positions liquidate at a full `1 / leverage` adverse move (0.1% at 1000×) and require five seconds before a voluntary close. Liquidations and forced backing exits remain immediate. Existing positions retain their stored liquidation thresholds; account and instruction layouts are unchanged.
+
+The deployed program at slot **459487920** retains its upgrade authority. Public source `dba12051b0ca9c735dd94409d215211a1b903ec9` independently matches its executable; canonical IDL now includes error 6022 MinimumHold. See [final verification and IDL receipts](evidence/perps-position-rules-verification-2026-10-21.json) and [chain snapshot](evidence/perps-position-rules-snapshot-2026-10-21.json). Other programs are unchanged.
+
 ## Bank stake contributions — October 21, 2026 UTC
 
 The bank now supports owner-signed partial or full stake contributions into the

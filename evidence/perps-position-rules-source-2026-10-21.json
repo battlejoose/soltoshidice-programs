@@ -1,9 +1,9 @@
 {
   "at": "2026-10-21T03:47:02.064Z",
-  "status": "candidate-not-yet-deployed",
+  "status": "deployed-independently-verified",
   "sourceCommit": "5f75f0d3dea263601d630e6578a47c822a3d088b",
-  "expectedProgramSha256": "3c1eedcad2296066dd025e741caa9f775f4ca121a8c549fece25323532a32c18",
-  "expectedProgramBytes": 2031656,
+  "expectedProgramSha256": "67faba5e6aa439746dc5bf9215db5e6dbba18e9ea4571cfd2fcc123a0fb9400d",
+  "expectedProgramBytes": 2041080,
   "canonicalIdlSha256": "73eef72f47e00078f91d227c2757b7a591c0d5bfd85ce9622dcdb466a208b98d",
   "exported": [
     "programs/acidpump-er/Cargo.toml",
@@ -67,5 +67,11 @@
     "Cargo.lock",
     "deployments/acidpump-mainnet-production.json"
   ],
-  "otherProgramsChanged": false
+  "otherProgramsChanged": false,
+  "lastDeploySlot": 459487920,
+  "upgradeSignature": "45d11HJFtr1HbBgwGFZKU5V5eWcLJD3e6Mu6WuvHuTyfYXNDY3Fj2UPdmg8ozqQAuoptRs5jNSqpcKKDoJfmHPxw",
+  "publicSourceCommit": "dba12051b0ca9c735dd94409d215211a1b903ec9",
+  "elfSha256": "3c1eedcad2296066dd025e741caa9f775f4ca121a8c549fece25323532a32c18",
+  "allocatedBytes": 2041080,
+  "elfBytes": 2031656
 }
