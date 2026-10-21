@@ -17,4 +17,6 @@ Direct runner: https://soltoshidice.wtf/verification/verify-platform.mjs
 Dice verifier: https://soltoshidice.wtf/verification/verify-fairness.mjs
 No access to the private application repository is needed.
 Offchain Workers coordinate sessions/views and submit transactions; they are not Solana programs. Inspect games/index.json execution roles and native program receipts separately.
+Bank upgrade authority was permanently revoked at finalized slot 459508498. Poker, Fights, RPS and Perps remain upgradeable; existing bank administrative controls remain. Current receipt: https://soltoshidice.wtf/verification/bank-upgrade-authority-revocation.json
+Archived result files predate that revocation and retain their historical authority wording. Use current ProgramData evidence for authority status, separately from game replay.
 See games/index.json and each result for exact limitations.

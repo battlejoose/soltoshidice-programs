@@ -208,7 +208,7 @@ export async function verifyEvidence(bundle) {
       'Live mode trusts the selected Solana RPC and consensus for finalized inclusion and transaction/log authenticity. Archived mode checks supplied evidence, not fresh chain inclusion.',
       'Oracle signatures and XOR are verified independently. Historical authority-set membership/quorum is trusted to the ORAO program that accepted those responses; historical configuration and executable bytes are not reconstructed here.',
       'PDA seeds and stored bumps are checked; canonical off-curve selection is trusted to the deployed program. Token totals exclude SOL transaction costs and refundable deposits.',
-      'Programs remain upgradeable. This proof does not remove upgrade-authority, oracle, custody or availability risks.',
+      'Bank code is now immutable; Poker, Fights, RPS and Perps remain upgradeable. Current authority evidence: https://soltoshidice.wtf/verification#bank-immutable. This proof does not remove upgrade-authority, oracle, custody or availability risks.',
     ] };
 }
 export async function loadLiveEvidence(manifest, rpcUrl = 'https://api.mainnet-beta.solana.com', progress = () => {}) {

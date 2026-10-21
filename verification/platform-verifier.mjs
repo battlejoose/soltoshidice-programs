@@ -47715,7 +47715,7 @@ async function verifyDelegationEvidence(b) {
       "Current root SDICE risk delegation and one historical delegation transaction only; not all markets or every ER transaction.",
       "Does not verify Perps prices, owner authorization of a trade, liquidations, commitments, USDC payouts or poker shuffles.",
       "Live reads trust the selected RPC and finalized Solana consensus. Archived evidence alone does not establish fresh inclusion.",
-      "Programs remain upgradeable. Delegation does not imply Solana L1 consensus for every ER execution."
+      "Perps remains upgradeable. Delegation does not imply Solana L1 consensus for every ER execution."
     ]
   };
 }
@@ -47802,7 +47802,7 @@ async function verifyGameEvidence(bundle) {
     transactionsSubmitted: 0,
     ...result,
     receipts: bundle.records.map((r) => ({ signature: r.signature, slot: r.receipt.slot, explorer: "https://solscan.io/tx/" + r.signature })),
-    limits: [...result.limits, "One historical example; no new gameplay session, aggregate payout audit or guarantee. Archived receipts do not establish fresh chain inclusion. Live RPC verification trusts the selected RPC and finalized Solana consensus. Programs remain upgradeable."]
+    limits: [...result.limits, "One historical example; no new gameplay session, aggregate payout audit or guarantee. Archived receipts do not establish fresh chain inclusion. Live RPC verification trusts the selected RPC and finalized Solana consensus. Bank code is now immutable; Poker, Fights, RPS and Perps remain upgradeable. Current authority evidence: https://soltoshidice.wtf/verification#bank-immutable."]
   };
 }
 async function refreshGameEvidence(manifest, rpcUrl = "https://api.mainnet-beta.solana.com", progress = (_) => {

@@ -69,11 +69,11 @@
     },
     {
       "path": "platform-verifier.mjs",
-      "sha256": "f8d3e77637e4d431bb86e131243a15f1215b771e0347befa93060b52caf16cd0"
+      "sha256": "19a0178548ea7276cb1ebf864e0868a72bddd123bd66af5418abec1f8e341550"
     },
     {
       "path": "verify-fairness.mjs",
-      "sha256": "a44182bf41672ed20d8428d47678f401a55536c5261780456eb14e9d7f3d786a"
+      "sha256": "e584c25ecafbb5cb9ac9213ca4de06b21cb911d2724588bc3123695072a682b7"
     },
     {
       "path": "verify-delegation.mjs",
@@ -85,7 +85,7 @@
     },
     {
       "path": "README.txt",
-      "sha256": "8c309f774a03638e7a11ac9d394b4a3f19eecfa243d4b614f8fb5e11eb9ea9dd"
+      "sha256": "3f1685ca9b529af24169c08fa30a4030e580f429ca69a5bf1ef4f69b598df2e7"
     }
   ]
 }
