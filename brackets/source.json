@@ -1,0 +1,42 @@
+{
+  "sourceRepository": "https://github.com/battlejoose/hooddice",
+  "sourceCommit": "a856376bb6da4449085b26964ce8afc5dc75e7c4",
+  "sources": [
+    {
+      "path": "chain/bracket-program/src/lib.rs",
+      "sha256": "1c08e8b9f6d2476fe48cd32eef18fb7d3d6f6a1ab49ed83c1cda732c7456c385"
+    },
+    {
+      "path": "chain/bracket-program/src/matches.rs",
+      "sha256": "8296331f4374a290ce06234815da09cb46898988764702554cdf0e29592db7ba"
+    },
+    {
+      "path": "chain/bracket-program/src/rules.rs",
+      "sha256": "cba116405786186838261d44e14f23d11505c6aca28bbd84fbedbbb8d52d03a2"
+    },
+    {
+      "path": "chain/bracket-program/src/tournament.rs",
+      "sha256": "8033c4e22d99255feef2ef69a5b802d82a079512e72fa5f9b4d49ab07beeb9c7"
+    },
+    {
+      "path": "chain/bracket-program/Cargo.toml",
+      "sha256": "522399ad28f65494fee9bb711abc978f3b18d7edbac4a64d7c766a5bd7a9b95e"
+    },
+    {
+      "path": "chain/bracket-program/Cargo.lock",
+      "sha256": "97be8f70e15fa80df1b087ec6191b57422f583fd9fd6b2b1f178fe1dd0fca5c6"
+    },
+    {
+      "path": "chain/fight-program/src/combat.rs",
+      "sha256": "b55c1f8c5f40bf6a476f5ab714fe1163df8fb57aa98a77a1fee2fcb8702264e3"
+    },
+    {
+      "path": "chain/rps-program/src/rules.rs",
+      "sha256": "38942aa31a515e479c59deeedf8b6e6074d657a90c902fd877e5301f3fe916e4"
+    },
+    {
+      "path": "chain/program/src/orao.rs",
+      "sha256": "31e14cc63d25ed68cb1ba070af6834673af897773fa5437ca457a92a35753fd1"
+    }
+  ]
+}

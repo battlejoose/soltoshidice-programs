@@ -1,5 +1,10 @@
 # SoltoshiDICE program source verification
 
+October 21 addition: [separate RPS/fighting bracket program source and finalized mainnet receipts](brackets/README.md).
+Poker stays at four tables / 40 players; none of the existing five programs was
+upgraded by this release. Explorer build verification for the new bracket program
+is not claimed; its source, tested binary hash and deployment receipts are published.
+
 Public contract source and reproducible build instructions for the existing
 Solana mainnet programs behind [SoltoshiDICE](https://soltoshidice.wtf).
 This is a release-source export, not the application development repository.
