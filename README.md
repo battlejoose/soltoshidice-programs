@@ -1,10 +1,16 @@
 # SoltoshiDICE program source verification
 
+October 22 poker update: [finalized AFK board-unlock recovery release](evidence/poker-afk-release-2026-10-22.json).
+The independent pinned Docker build matches the deployed executable. Remote
+registry refresh is pending for this revision. Four tables / 40 players,
+account layouts, chips and operator authority are unchanged. The current poker
+source is in `games/poker`; run `bash verify.sh poker` to reproduce its build.
+
 October 21 addition: [separate RPS/fighting bracket program source and finalized mainnet receipts](brackets/README.md).
 Poker stays at four tables / 40 players; none of the existing five programs was
 upgraded by this release. The bracket program now has independent reproducible-build
 verification: [exact source, matching hashes and finalized registration](brackets/verification.json).
-Run `bash verify.sh brackets` to repeat it. Six program executables are verified;
+Run `bash verify.sh brackets` to repeat it. This October 21 snapshot verified six program executables;
 IDL/security records below cover the original five programs.
 
 Public contract source and reproducible build instructions for the existing

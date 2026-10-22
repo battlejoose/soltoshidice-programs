@@ -55,7 +55,8 @@ pub const DEAL_STALL_MS: i64 = 60_000;
 /// publishing one mid-hand rewrote a betting round's allowance down to sixty
 /// seconds. The next street then parked with the deadline already expired and
 /// no grace at all for whoever was about to publish. Progress can only ever buy
-/// a deal more time.
+/// a deal more time within its current phase. The first due board share starts
+/// a new phase's clock below; a hole share can never do that.
 fn made_progress(deal: &mut MentalDeal, now: i64) {
     deal.deadline = deal.deadline.max(now.saturating_add(DEAL_STALL_MS));
 }
@@ -69,7 +70,7 @@ fn made_progress(deal: &mut MentalDeal, now: i64) {
 /// so the first person to notice could void a hand that was merely being played
 /// slowly. Betting is bounded, so the allowance is computed rather than
 /// guessed: one action timer per seat, plus the usual stall grace. The tight
-/// deadline comes back the moment the next deal step lands.
+/// deadline comes back when the next street's first due board unlock lands.
 fn betting_reopened(deal: &mut MentalDeal, now: i64) {
     let round = crate::rules::ACTION_TIME_MS
         .saturating_mul(i64::from(deal.players))
@@ -530,10 +531,9 @@ fn slot_is_due(slot: &DealSlot, hand_state: &HandState, board_slots_from: usize,
 ///
 /// It is enforced here rather than in the clients because a client-side grace
 /// binds only honest clients, and invariant 12 says cranks are clock-gated.
-/// Measured against `deal.deadline`, which `made_progress` only ever extends —
-/// so this is at least `RECOVERY_GRACE_MS` after the last thing that happened,
-/// and longer while a betting allowance is still running, which errs the safe
-/// way.
+/// Measured against `deal.deadline`. The first due board unlock replaces the
+/// finished betting allowance with the street's own clock; later progress only
+/// extends it. Recovery therefore retains its grace after actual card activity.
 pub const RECOVERY_GRACE_MS: i64 = 20_000;
 
 /// Puts an absent seat's layer on the board, without that seat.
@@ -669,14 +669,10 @@ pub fn recover_unlocks(
         record.card = working.card;
     }
 
-    // Deliberately not recorded on the account, and the reason is deployment
-    // rather than design. A `recovered` bitmask here would be the one
-    // uninterested record that a seat stopped answering — a recovered layer is
-    // otherwise identical to a self-published one — but `MentalDeal` is created
-    // `init_if_needed` and reused for the life of a table, so a longer struct
-    // fails to deserialize against every account already out there. Adding an
-    // instruction does not break a live table; adding a field does. Worth doing
-    // as its own change, with the table clear-out that implies.
+    // Use the existing per-hand absence mask, indexed by SEAT, not deal player.
+    // Completion clears readiness, without folding this hand, changing awards,
+    // cashing out the seat, or changing either account's wire layout.
+    ctx.accounts.hand_state.timed_out |= 1u16 << deal.seats[absent as usize];
     made_progress(deal, now);
     Ok(())
 }
@@ -773,7 +769,22 @@ pub fn publish_unlocks(
         record.card = working.card;
     }
     require!(proof == keys.len(), RiverproofError::WrongDealSlotCount);
-    made_progress(deal, clock.unix_timestamp.saturating_mul(1_000));
+    let now = clock.unix_timestamp.saturating_mul(1_000);
+    // A completed betting round must not make an absent board key wait out
+    // another ACTION_TIME_MS per player. Only an actual due BOARD unlock may
+    // start this street's 60-second stall / 20-second recovery clock. Hole
+    // shares during betting retain the longer allowance. Reuse the sealed
+    // deal's existing per-street marker (also used by abandonment's grace).
+    let street = hand_state.board_len.saturating_add(1);
+    if (1..=4).contains(&hand_state.awaiting)
+        && slots.iter().any(|index| *index as usize >= board_slots_from)
+        && deal.next_round != street
+    {
+        deal.next_round = street;
+        deal.deadline = now.saturating_add(DEAL_STALL_MS);
+    } else {
+        made_progress(deal, now);
+    }
 
     // The deal is finished the moment every hole card can be read.
     //

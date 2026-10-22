@@ -2381,6 +2381,9 @@ mod tournament_takeover;
 #[path = "scenarios/away_mode.rs"]
 mod away_mode;
 
+#[path = "scenarios/afk_recovery.rs"]
+mod afk_recovery;
+
 #[test]
 fn upgraded_legacy_table_gives_each_new_actor_forty_seconds() {
     let (mut harness, wallets, config) = seated(3);
