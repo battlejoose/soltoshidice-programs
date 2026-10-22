@@ -40,5 +40,25 @@
     "workspace": "games/poker"
   },
   "statusUrl": "https://verify.osec.io/status/3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
-  "publicRegistryStatus": "pending"
+  "publicRegistryStatus": "verified",
+  "publicSourceCommit": "ad183cf73079b61ca5170f68e78227ee6d0da08e",
+  "registration": {
+    "signature": "4nWUvvM1WeVLVXxVz668BQj1QMj9ZL2w6G32n1wqg2ye4st9pwnipoNi53BgKXfzzzWDdrDDpfQar5uMuFH6No3C",
+    "slot": 460162636,
+    "finalized": true
+  },
+  "authorityBalanceAfterMetadataLamports": 7798976989,
+  "registry": {
+    "is_verified": true,
+    "message": "On chain program verified",
+    "on_chain_hash": "8fd361f5f75bce0379ab4436e76f2c20c7c9f2c9a8e40a9a7f8a498be9077185",
+    "executable_hash": "8fd361f5f75bce0379ab4436e76f2c20c7c9f2c9a8e40a9a7f8a498be9077185",
+    "repo_url": "https://github.com/battlejoose/soltoshidice-programs/tree/ad183cf73079b61ca5170f68e78227ee6d0da08e",
+    "commit": "ad183cf73079b61ca5170f68e78227ee6d0da08e",
+    "last_verified_at": "2026-10-22T20:01:35.995664",
+    "is_frozen": false,
+    "is_closed": false
+  },
+  "remoteDockerMatch": true,
+  "jobUrl": "https://verify.osec.io/job/7b141333-a2b7-4040-9949-33c9cdda5c20"
 }

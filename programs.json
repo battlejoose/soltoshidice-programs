@@ -44,10 +44,13 @@
       "workspace": "games/poker",
       "library": "riverproof",
       "localDockerMatch": true,
-      "publicRegistryStatus": "pending",
+      "publicRegistryStatus": "verified",
       "previousVerifiedCommit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
       "previousVerifiedAt": "2026-10-17T14:21:07.017456",
-      "releaseReceipt": "evidence/poker-afk-release-2026-10-22.json"
+      "releaseReceipt": "evidence/poker-afk-release-2026-10-22.json",
+      "remoteDockerMatch": true,
+      "verifiedCommit": "ad183cf73079b61ca5170f68e78227ee6d0da08e",
+      "verifiedAt": "2026-10-22T20:01:35.995664"
     },
     {
       "name": "fights",

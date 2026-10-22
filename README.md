@@ -1,8 +1,8 @@
 # SoltoshiDICE program source verification
 
 October 22 poker update: [finalized AFK board-unlock recovery release](evidence/poker-afk-release-2026-10-22.json).
-The independent pinned Docker build matches the deployed executable. Remote
-registry refresh is pending for this revision. Four tables / 40 players,
+The local and independent remote Docker builds match the deployed executable.
+The public registry verifies source `ad183cf73079b61ca5170f68e78227ee6d0da08e`. Four tables / 40 players,
 account layouts, chips and operator authority are unchanged. The current poker
 source is in `games/poker`; run `bash verify.sh poker` to reproduce its build.
 
