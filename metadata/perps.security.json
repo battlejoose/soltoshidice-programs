@@ -8,7 +8,7 @@
   "preferred_languages": [
     "en"
   ],
-  "source_code": "https://github.com/battlejoose/soltoshidice-programs/tree/f82f527a44a15292ededb544d9129fc6a5459804/perps",
-  "source_revision": "f82f527a44a15292ededb544d9129fc6a5459804",
+  "source_code": "https://github.com/battlejoose/soltoshidice-programs/tree/3e92f7bbea38f9e93679bf99459fc614c3105e22/perps",
+  "source_revision": "3e92f7bbea38f9e93679bf99459fc614c3105e22",
   "description": "Report suspected vulnerabilities privately through GitHub. See the policy for responsible disclosure guidance."
 }

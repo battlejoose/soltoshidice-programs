@@ -1423,5 +1423,21 @@
     "matched": true,
     "sha256": "ca6e22ecaee311b067fc8ebe088b332c3a4c1fbcce535901c3aa2a4de849dd24",
     "image": "solanafoundation/solana-verifiable-build@sha256:f71be5ca7620b7e40933b7f1294fa44e01d08c1fc5ba1f375a2478f5a01580d3"
+  },
+  "publicVerification": {
+    "sourceCommit": "3e92f7bbea38f9e93679bf99459fc614c3105e22",
+    "sourceUrl": "https://github.com/battlejoose/soltoshidice-programs/tree/3e92f7bbea38f9e93679bf99459fc614c3105e22/perps",
+    "registration": {
+      "signature": "3mUZ8FwZH56d5nnYWKnXBdDdPLmgLfB52RS34kUUHg8DqQGwjXzzFgNYE6yrAPkUDDQia3mAv1ziCZHdLr1PFKh",
+      "finalized": true,
+      "feeLamports": 5000
+    },
+    "security": {
+      "signature": "5oSY4eLs4uNc9bLKopy5uhBWsGBmHW4N4pdT6h5cVVxozQsP6hi4Kjt242enWQiaAhZy1WjNJhgphvBBJSJyvv7L",
+      "finalized": true,
+      "feeLamports": 5000
+    },
+    "requestId": "520cf185-5af8-487c-ab5b-5c7cc45317f7",
+    "status": "pending"
   }
 }
