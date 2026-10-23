@@ -265,6 +265,10 @@ pub fn delegate_guard(ctx: Context<DelegateCollateralGuard>) -> Result<()> {
     // Delegation is publicly sponsored; reject legacy layouts so a third
     // party cannot race the paused return/resize migration.
     require!(ctx.accounts.guard.data_len()==8+CollateralGuard::INIT_SPACE,MixError::Binding);
+    // The guard's size is unchanged by the backing extension. A public sponsor
+    // must not redelegate it between the paired return and trader resize.
+    #[cfg(feature="mainnet")]
+    require!(!ctx.accounts.config.paused || ctx.accounts.payer.key()==ctx.accounts.config.admin,MixError::Paused);
     let owner = ctx.accounts.owner.key();
     let n = ns(ctx.accounts.config.key());
     let seeds = crate::venue::ns_seeds(b"er-collateral-guard", &n, &[owner.as_ref()]);

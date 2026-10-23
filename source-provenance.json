@@ -1,6 +1,6 @@
 {
   "gameCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
-  "perpsCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+  "perpsCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
   "transformations": [
     "Poker declare_id substituted with existing mainnet identity, as in original release build.",
     "Perps workspace members limited to acidpump-er; release profile unchanged.",
@@ -491,27 +491,6 @@
       "sha256": "58bd01b4f3ee3afa786355d313ede314d5f6de34c9cb719c87c50155d435b0d3"
     },
     {
-      "path": "perps/programs/acidpump-er/tests/mainnet-proxy/Cargo.lock",
-      "sourcePath": "programs/acidpump-er/tests/mainnet-proxy/Cargo.lock",
-      "sourceCommit": "4bdf1057c95ee5e701b41452c4aa356ae60ad506",
-      "originalSha256": "cfc2ba13779a1b9593ff784554b685fd106007bcb0b9b5318855a0b0f8d11aad",
-      "sha256": "cfc2ba13779a1b9593ff784554b685fd106007bcb0b9b5318855a0b0f8d11aad"
-    },
-    {
-      "path": "perps/Cargo.toml",
-      "sourcePath": "Cargo.toml",
-      "sourceCommit": "4bdf1057c95ee5e701b41452c4aa356ae60ad506",
-      "originalSha256": "dbd714c64166d92c8550badcd0964293191a945a0de4a756d1d69486e772c57f",
-      "sha256": "ed704e2e086d55b0bd6dbb6f4f8e161985a94a4ed8f24ca131f2d65ebfef54bc"
-    },
-    {
-      "path": "perps/projects/acidpump-er/src/production-policy.json",
-      "sourcePath": "projects/acidpump-er/src/production-policy.json",
-      "sourceCommit": "4bdf1057c95ee5e701b41452c4aa356ae60ad506",
-      "originalSha256": "4064b83c2aabf545e8d1df7e65c41147c5e3c601f1379516bdc4d52806edbdab",
-      "sha256": "4064b83c2aabf545e8d1df7e65c41147c5e3c601f1379516bdc4d52806edbdab"
-    },
-    {
       "path": "games/chain/program/Cargo.lock",
       "sourcePath": "game/chain/program/Cargo.lock",
       "sourceCommit": "158465cf007db585e7aece09582ffc004ae24d62",
@@ -722,452 +701,508 @@
       "sha256": "b21d72803dc32010b92363a707ea9a8a4c827ffa01aa2a3dfa0ea485e6926730"
     },
     {
+      "path": "games/poker/tests/tests/scenarios/afk_recovery.rs",
+      "sourcePath": "game/vendor/holdem/program/tests/tests/scenarios/afk_recovery.rs",
+      "sourceCommit": "c297ad81f3b202f722f2ebb5af165f05eb916feb",
+      "originalSha256": "a3e650284c2a770feb5bda265f6b2c242ffd6238ee6e3a519f9479c7e767e297",
+      "sha256": "a3e650284c2a770feb5bda265f6b2c242ffd6238ee6e3a519f9479c7e767e297"
+    },
+    {
       "path": "perps/programs/acidpump-er/Cargo.toml",
       "sourcePath": "programs/acidpump-er/Cargo.toml",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "6fcdc3d2fc019c86ad4e51bffa2e047cdbc03696f0d43717d717ce4545fba1e3",
       "sha256": "6fcdc3d2fc019c86ad4e51bffa2e047cdbc03696f0d43717d717ce4545fba1e3"
     },
     {
       "path": "perps/programs/acidpump-er/build.rs",
       "sourcePath": "programs/acidpump-er/build.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "61b6c13b11434d190ee200c5df15abd88c8f52b7e2aecd1562a8f13f0d673847",
       "sha256": "61b6c13b11434d190ee200c5df15abd88c8f52b7e2aecd1562a8f13f0d673847"
     },
     {
+      "path": "perps/programs/acidpump-er/src/backing_basket.rs",
+      "sourcePath": "programs/acidpump-er/src/backing_basket.rs",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "0d5ee03081ce5029ff0de1504c2e7a1835a0ac316abab4f11755e1be9446b09c",
+      "sha256": "0d5ee03081ce5029ff0de1504c2e7a1835a0ac316abab4f11755e1be9446b09c"
+    },
+    {
+      "path": "perps/programs/acidpump-er/src/backing_settlement.rs",
+      "sourcePath": "programs/acidpump-er/src/backing_settlement.rs",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "fd4ed31a5dde60ba186bb9601cc409c36a4b6cfa23ad48a51147c046bb988c5e",
+      "sha256": "fd4ed31a5dde60ba186bb9601cc409c36a4b6cfa23ad48a51147c046bb988c5e"
+    },
+    {
       "path": "perps/programs/acidpump-er/src/basebridge.rs",
       "sourcePath": "programs/acidpump-er/src/basebridge.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "8c37b0f622918ed77d9b21c4613fc787ddb63117c8e678834a42816015bea478",
       "sha256": "8c37b0f622918ed77d9b21c4613fc787ddb63117c8e678834a42816015bea478"
     },
     {
       "path": "perps/programs/acidpump-er/src/collateral_floor.rs",
       "sourcePath": "programs/acidpump-er/src/collateral_floor.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "8ef1f734be0d9089ec9cbeeee9ac5265df10317707bfedead89bf75ae2212967",
-      "sha256": "8ef1f734be0d9089ec9cbeeee9ac5265df10317707bfedead89bf75ae2212967"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "e25e01d1f2f71d2cdd88024b0d4436e81a80f6a679d202d5fffa02784f18bfbb",
+      "sha256": "e25e01d1f2f71d2cdd88024b0d4436e81a80f6a679d202d5fffa02784f18bfbb"
     },
     {
       "path": "perps/programs/acidpump-er/src/core_migration.rs",
       "sourcePath": "programs/acidpump-er/src/core_migration.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "dc82758235df6bc7dc15fa7f156cb496bc65688a06e63e155bebff12203950db",
-      "sha256": "dc82758235df6bc7dc15fa7f156cb496bc65688a06e63e155bebff12203950db"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "864bd61546fa40c58f588dbd9ecd86706af38e2cebe60a368d24bffe071c9519",
+      "sha256": "864bd61546fa40c58f588dbd9ecd86706af38e2cebe60a368d24bffe071c9519"
     },
     {
       "path": "perps/programs/acidpump-er/src/economics.rs",
       "sourcePath": "programs/acidpump-er/src/economics.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "0615357866a76bc15568577b521443fc003da837124136e1c9fc534a1c853312",
       "sha256": "0615357866a76bc15568577b521443fc003da837124136e1c9fc534a1c853312"
     },
     {
       "path": "perps/programs/acidpump-er/src/emissions.rs",
       "sourcePath": "programs/acidpump-er/src/emissions.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "452a1f57e16997f474aed7b31eb30f4d1f72f9f0a843a0955865c478f8357c9c",
       "sha256": "452a1f57e16997f474aed7b31eb30f4d1f72f9f0a843a0955865c478f8357c9c"
     },
     {
       "path": "perps/programs/acidpump-er/src/engine.rs",
       "sourcePath": "programs/acidpump-er/src/engine.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "4ee99ba3568f402a4d4e73e6917859a7086b7e988a90d66b67b058d0e0b6e293",
-      "sha256": "4ee99ba3568f402a4d4e73e6917859a7086b7e988a90d66b67b058d0e0b6e293"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "3b31cd78cf6da97d8b02881c04548a8bc422e4a027fc63d83bcd68c604098988",
+      "sha256": "3b31cd78cf6da97d8b02881c04548a8bc422e4a027fc63d83bcd68c604098988"
     },
     {
       "path": "perps/programs/acidpump-er/src/fee_surplus.rs",
       "sourcePath": "programs/acidpump-er/src/fee_surplus.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "42978b6b370614ec4e60ab511b18ce6df4cb17ce75410449a85d71085968528c",
       "sha256": "42978b6b370614ec4e60ab511b18ce6df4cb17ce75410449a85d71085968528c"
     },
     {
       "path": "perps/programs/acidpump-er/src/heap.rs",
       "sourcePath": "programs/acidpump-er/src/heap.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "81c120fae1552c3a6ad145b5f9494679511205c02f59b2fa4ee7e61781323aba",
       "sha256": "81c120fae1552c3a6ad145b5f9494679511205c02f59b2fa4ee7e61781323aba"
     },
     {
       "path": "perps/programs/acidpump-er/src/lib.rs",
       "sourcePath": "programs/acidpump-er/src/lib.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "4c64f856015261c4d24eab445f336665eadd5dfb13dee1f704fa48255483e358",
-      "sha256": "4c64f856015261c4d24eab445f336665eadd5dfb13dee1f704fa48255483e358"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "e092ba90ee0bfc0410fa506afbffffc3fea8f591d975a7e7de624e79ec0a763c",
+      "sha256": "e092ba90ee0bfc0410fa506afbffffc3fea8f591d975a7e7de624e79ec0a763c"
     },
     {
       "path": "perps/programs/acidpump-er/src/mainnet_collateral.rs",
       "sourcePath": "programs/acidpump-er/src/mainnet_collateral.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "d2da535dd31d64d7931fdf8ad10475444b6e6e920c5a77b2e3b047cd9580b3c9",
       "sha256": "d2da535dd31d64d7931fdf8ad10475444b6e6e920c5a77b2e3b047cd9580b3c9"
     },
     {
       "path": "perps/programs/acidpump-er/src/mainnet_config.rs",
       "sourcePath": "programs/acidpump-er/src/mainnet_config.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "5a13fb2c041df610854e2251af401bb7a03e898210022aaf46f8f0080235064b",
       "sha256": "5a13fb2c041df610854e2251af401bb7a03e898210022aaf46f8f0080235064b"
     },
     {
       "path": "perps/programs/acidpump-er/src/mainnet_curve.rs",
       "sourcePath": "programs/acidpump-er/src/mainnet_curve.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "69a76e23ee7d72a80973a4a66b676d11e29371a3848e9e4cf42224b65e1b940e",
       "sha256": "69a76e23ee7d72a80973a4a66b676d11e29371a3848e9e4cf42224b65e1b940e"
     },
     {
       "path": "perps/programs/acidpump-er/src/mainnet_pump.rs",
       "sourcePath": "programs/acidpump-er/src/mainnet_pump.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "71150561bbc0b9992b90a0a2190df9361ce88424374caece02006be103c96301",
       "sha256": "71150561bbc0b9992b90a0a2190df9361ce88424374caece02006be103c96301"
     },
     {
       "path": "perps/programs/acidpump-er/src/mainnet_quote_path.rs",
       "sourcePath": "programs/acidpump-er/src/mainnet_quote_path.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "f2382f6f2c9b0dcd9e042f1946f27498bd15de803506d8a869a1c381b1ec7a63",
       "sha256": "f2382f6f2c9b0dcd9e042f1946f27498bd15de803506d8a869a1c381b1ec7a63"
     },
     {
       "path": "perps/programs/acidpump-er/src/math.rs",
       "sourcePath": "programs/acidpump-er/src/math.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "9d9c1ab540f39cc56c0670dcb4abbd4a26c01dc4c670be7fca2f6666a5599cef",
       "sha256": "9d9c1ab540f39cc56c0670dcb4abbd4a26c01dc4c670be7fca2f6666a5599cef"
     },
     {
+      "path": "perps/programs/acidpump-er/src/native_market.rs",
+      "sourcePath": "programs/acidpump-er/src/native_market.rs",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "cb05015a81ea762e1c40c7abb8557c0e25b3f22ac66cfe034d727e0c9cf91bc8",
+      "sha256": "cb05015a81ea762e1c40c7abb8557c0e25b3f22ac66cfe034d727e0c9cf91bc8"
+    },
+    {
       "path": "perps/programs/acidpump-er/src/oracle.rs",
       "sourcePath": "programs/acidpump-er/src/oracle.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "27854b38da809df2bfb9735172caf9cdec472ddd7cd85933646446dcc570675a",
       "sha256": "27854b38da809df2bfb9735172caf9cdec472ddd7cd85933646446dcc570675a"
     },
     {
       "path": "perps/programs/acidpump-er/src/ownership.rs",
       "sourcePath": "programs/acidpump-er/src/ownership.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "629d836da8a02d3c7ecbb9e944caeb0d0c81b1ec7da626bfe0588846e16aae3b",
       "sha256": "629d836da8a02d3c7ecbb9e944caeb0d0c81b1ec7da626bfe0588846e16aae3b"
     },
     {
       "path": "perps/programs/acidpump-er/src/pool_contribution.rs",
       "sourcePath": "programs/acidpump-er/src/pool_contribution.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "cb7364dbbdf34ba80c158b59a7e88480429db81a549767c80acebd77dcc91281",
       "sha256": "cb7364dbbdf34ba80c158b59a7e88480429db81a549767c80acebd77dcc91281"
     },
     {
       "path": "perps/programs/acidpump-er/src/pool_exposure.rs",
       "sourcePath": "programs/acidpump-er/src/pool_exposure.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "ca1e467781977956af118b1d9b8688bca201b1bfead5cefa7f827c0fe012be45",
       "sha256": "ca1e467781977956af118b1d9b8688bca201b1bfead5cefa7f827c0fe012be45"
     },
     {
       "path": "perps/programs/acidpump-er/src/profit_payout.rs",
       "sourcePath": "programs/acidpump-er/src/profit_payout.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "16cb026112fc6fcd983dfeca4654aaf0225f450eb292a87af3e4c7c682516686",
       "sha256": "16cb026112fc6fcd983dfeca4654aaf0225f450eb292a87af3e4c7c682516686"
     },
     {
       "path": "perps/programs/acidpump-er/src/pump.rs",
       "sourcePath": "programs/acidpump-er/src/pump.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "ba7020b1db71ded122d132e8b71e7cec36962fd458e9c99efe5b10fa9aa09f26",
       "sha256": "ba7020b1db71ded122d132e8b71e7cec36962fd458e9c99efe5b10fa9aa09f26"
     },
     {
       "path": "perps/programs/acidpump-er/src/pump_mainnet.rs",
       "sourcePath": "programs/acidpump-er/src/pump_mainnet.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "95bdff2619b8834a775c8c27dc6cfee87f6531c7e7b6d2b81573d35863241511",
-      "sha256": "95bdff2619b8834a775c8c27dc6cfee87f6531c7e7b6d2b81573d35863241511"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "622621585f7b4a1a209eadfebc8ec66beb83c1acd0059d02527a8734f6059323",
+      "sha256": "622621585f7b4a1a209eadfebc8ec66beb83c1acd0059d02527a8734f6059323"
     },
     {
       "path": "perps/programs/acidpump-er/src/recovery.rs",
       "sourcePath": "programs/acidpump-er/src/recovery.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "fe3ac6b79f2dbf1567f3f0a8b0b4bda8c1ac8cd3d9dea03470432b7b25af198b",
-      "sha256": "fe3ac6b79f2dbf1567f3f0a8b0b4bda8c1ac8cd3d9dea03470432b7b25af198b"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "1d5936b6218909b47a846b50087eea2f30db8ac0eda5549a53d1cd803c77a137",
+      "sha256": "1d5936b6218909b47a846b50087eea2f30db8ac0eda5549a53d1cd803c77a137"
     },
     {
       "path": "perps/programs/acidpump-er/src/risk.rs",
       "sourcePath": "programs/acidpump-er/src/risk.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "cf14be83a41d8c94cace296e19e36db895fd1eb1c8597eec330df4458e958413",
       "sha256": "cf14be83a41d8c94cace296e19e36db895fd1eb1c8597eec330df4458e958413"
     },
     {
       "path": "perps/programs/acidpump-er/src/settlement.rs",
       "sourcePath": "programs/acidpump-er/src/settlement.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "85f521b07d75f1bab27be9b01661b86c350ddf29d5530b3b4b85948942960934",
-      "sha256": "85f521b07d75f1bab27be9b01661b86c350ddf29d5530b3b4b85948942960934"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "649b090175a550049978ff800269fbee5109e753bca7a340490a7b69d76bcd8f",
+      "sha256": "649b090175a550049978ff800269fbee5109e753bca7a340490a7b69d76bcd8f"
     },
     {
       "path": "perps/programs/acidpump-er/src/spot.rs",
       "sourcePath": "programs/acidpump-er/src/spot.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "eee35e146f662e1a76ff3d81bce8419b02d0df855e96fb2b233ad83c3914562f",
       "sha256": "eee35e146f662e1a76ff3d81bce8419b02d0df855e96fb2b233ad83c3914562f"
     },
     {
       "path": "perps/programs/acidpump-er/src/stake_backing.rs",
       "sourcePath": "programs/acidpump-er/src/stake_backing.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "834dbd17ecc98e7c07fbbf149ef1e3e9f8f28964e9e60d2404d1057c58a85e1a",
-      "sha256": "834dbd17ecc98e7c07fbbf149ef1e3e9f8f28964e9e60d2404d1057c58a85e1a"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "afac616fc63f0a7af74af53aea624f78ab43fac04cabb18439a0540d5a3d2d3d",
+      "sha256": "afac616fc63f0a7af74af53aea624f78ab43fac04cabb18439a0540d5a3d2d3d"
     },
     {
       "path": "perps/programs/acidpump-er/src/venue.rs",
       "sourcePath": "programs/acidpump-er/src/venue.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "d730d2d2b6a40f215e82fe45f1a0183d000b7b4160555d76762f8dd7f08e6369",
-      "sha256": "d730d2d2b6a40f215e82fe45f1a0183d000b7b4160555d76762f8dd7f08e6369"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "fb70b093af2f9585279790ec69aa02864fda6f1e0cff9f5131fabffd6287283c",
+      "sha256": "fb70b093af2f9585279790ec69aa02864fda6f1e0cff9f5131fabffd6287283c"
     },
     {
       "path": "perps/programs/acidpump-er/src/wallet_capacity.rs",
       "sourcePath": "programs/acidpump-er/src/wallet_capacity.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "7567eb6b4ca8ee35cb96fc5433e2746797158ea9e3d14960e67b4fd2eb429868",
-      "sha256": "7567eb6b4ca8ee35cb96fc5433e2746797158ea9e3d14960e67b4fd2eb429868"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "7f93eee7dc51b3d0ae861b25a309039c15c9f686f9382ddd56d6307feb9b664a",
+      "sha256": "7f93eee7dc51b3d0ae861b25a309039c15c9f686f9382ddd56d6307feb9b664a"
     },
     {
       "path": "perps/programs/acidpump-er/tests/collateral_records.rs",
       "sourcePath": "programs/acidpump-er/tests/collateral_records.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "a09c30dd1a8bc967bdf3c196d28392a94661f8a75d84a58b74465390202e6947",
       "sha256": "a09c30dd1a8bc967bdf3c196d28392a94661f8a75d84a58b74465390202e6947"
     },
     {
       "path": "perps/programs/acidpump-er/tests/core_migration.rs",
       "sourcePath": "programs/acidpump-er/tests/core_migration.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "5b6b1e3d7ae7fe568b8bab058e884fdccb8b021a1088bcfc7473ca432ff25758",
       "sha256": "5b6b1e3d7ae7fe568b8bab058e884fdccb8b021a1088bcfc7473ca432ff25758"
     },
     {
       "path": "perps/programs/acidpump-er/tests/er_collateral_floor.rs",
       "sourcePath": "programs/acidpump-er/tests/er_collateral_floor.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "b463abf03851cadbe7c38a18cd08a79a874ae41401df497c10cd39cf17dfa3f1",
-      "sha256": "b463abf03851cadbe7c38a18cd08a79a874ae41401df497c10cd39cf17dfa3f1"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "9df7cda166b505d21d327c041564aa64e005f1feb9a16def4a229b78b7a58379",
+      "sha256": "9df7cda166b505d21d327c041564aa64e005f1feb9a16def4a229b78b7a58379"
     },
     {
       "path": "perps/programs/acidpump-er/tests/er_history_gap.rs",
       "sourcePath": "programs/acidpump-er/tests/er_history_gap.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "8cd7873a53c435925b8832c727a4e90ce5e6174f2a9156d63879e8b7a59f1b91",
-      "sha256": "8cd7873a53c435925b8832c727a4e90ce5e6174f2a9156d63879e8b7a59f1b91"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "a3ccf12da8d7eb14ac1c4b03b0822f615ec6cd2f45443e5a24a4bf03ef5f86b2",
+      "sha256": "a3ccf12da8d7eb14ac1c4b03b0822f615ec6cd2f45443e5a24a4bf03ef5f86b2"
     },
     {
       "path": "perps/programs/acidpump-er/tests/er_onboarding.rs",
       "sourcePath": "programs/acidpump-er/tests/er_onboarding.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "07a1050089f63688bcb85a804ca11660ad0a5e8b61d566e13d9827f6455bcd7d",
       "sha256": "07a1050089f63688bcb85a804ca11660ad0a5e8b61d566e13d9827f6455bcd7d"
     },
     {
       "path": "perps/programs/acidpump-er/tests/er_settlement.rs",
       "sourcePath": "programs/acidpump-er/tests/er_settlement.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "470cdd400401d067932f88b1922aba1379b59fb93c2d72466dd6b5b563b730c2",
       "sha256": "470cdd400401d067932f88b1922aba1379b59fb93c2d72466dd6b5b563b730c2"
     },
     {
+      "path": "perps/programs/acidpump-er/tests/mainnet-proxy/Cargo.lock",
+      "sourcePath": "programs/acidpump-er/tests/mainnet-proxy/Cargo.lock",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "cfc2ba13779a1b9593ff784554b685fd106007bcb0b9b5318855a0b0f8d11aad",
+      "sha256": "cfc2ba13779a1b9593ff784554b685fd106007bcb0b9b5318855a0b0f8d11aad"
+    },
+    {
       "path": "perps/programs/acidpump-er/tests/mainnet-proxy/Cargo.toml",
       "sourcePath": "programs/acidpump-er/tests/mainnet-proxy/Cargo.toml",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "56baafba17f15ce22b6bd65e32ec7a18d68ce96391022e4041504686093d78b7",
       "sha256": "56baafba17f15ce22b6bd65e32ec7a18d68ce96391022e4041504686093d78b7"
     },
     {
       "path": "perps/programs/acidpump-er/tests/mainnet-proxy/src/lib.rs",
       "sourcePath": "programs/acidpump-er/tests/mainnet-proxy/src/lib.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "f4767173e1a8da703d44c9f2f2c4f59661a6fa24d2f8c2860332dff0b47daecb",
       "sha256": "f4767173e1a8da703d44c9f2f2c4f59661a6fa24d2f8c2860332dff0b47daecb"
     },
     {
       "path": "perps/programs/acidpump-er/tests/mainnet_collateral.rs",
       "sourcePath": "programs/acidpump-er/tests/mainnet_collateral.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "05f15574c28740316470596edd37c758310437d695a8f0929a4d48fad55da85c",
       "sha256": "05f15574c28740316470596edd37c758310437d695a8f0929a4d48fad55da85c"
     },
     {
       "path": "perps/programs/acidpump-er/tests/mainnet_curve.rs",
       "sourcePath": "programs/acidpump-er/tests/mainnet_curve.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "0af17d294d2a55ed481219b37298d602f0da73e31b58cabb8314a68e2e89a447",
       "sha256": "0af17d294d2a55ed481219b37298d602f0da73e31b58cabb8314a68e2e89a447"
     },
     {
       "path": "perps/programs/acidpump-er/tests/mainnet_curve_custody.rs",
       "sourcePath": "programs/acidpump-er/tests/mainnet_curve_custody.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "26ae4bc9c30bdb7292e2bd14fa1250a2d6a02a8908192406e30d8af0353848ed",
       "sha256": "26ae4bc9c30bdb7292e2bd14fa1250a2d6a02a8908192406e30d8af0353848ed"
     },
     {
       "path": "perps/programs/acidpump-er/tests/mainnet_curve_execution.rs",
       "sourcePath": "programs/acidpump-er/tests/mainnet_curve_execution.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "8b972c5b0124f38f4df8cb75ffb2bc9066cdff0593e26035768a527a27fe8f86",
       "sha256": "8b972c5b0124f38f4df8cb75ffb2bc9066cdff0593e26035768a527a27fe8f86"
     },
     {
       "path": "perps/programs/acidpump-er/tests/mainnet_pool.rs",
       "sourcePath": "programs/acidpump-er/tests/mainnet_pool.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "0978666271a251afdb201fbb30bd206215f17ff88e6d459349423bdbc1f5a534",
       "sha256": "0978666271a251afdb201fbb30bd206215f17ff88e6d459349423bdbc1f5a534"
     },
     {
       "path": "perps/programs/acidpump-er/tests/mainnet_quote_fees.rs",
       "sourcePath": "programs/acidpump-er/tests/mainnet_quote_fees.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "513dcf576ce462cb5e9619d939d2acc37ffd6e7797d344398eb68d720cfc52fc",
       "sha256": "513dcf576ce462cb5e9619d939d2acc37ffd6e7797d344398eb68d720cfc52fc"
     },
     {
       "path": "perps/programs/acidpump-er/tests/mainnet_settlement.rs",
       "sourcePath": "programs/acidpump-er/tests/mainnet_settlement.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "e7e44818044c9a38de7ae7eba01edc5013acfe88c309c5c637d0bc0668863f8b",
-      "sha256": "e7e44818044c9a38de7ae7eba01edc5013acfe88c309c5c637d0bc0668863f8b"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "3cea68aaf1754c28f004384ff0fc65bd26f6ca02d6d4f4ac6a250dbc61f21699",
+      "sha256": "3cea68aaf1754c28f004384ff0fc65bd26f6ca02d6d4f4ac6a250dbc61f21699"
     },
     {
       "path": "perps/programs/acidpump-er/tests/mainnet_swaps.rs",
       "sourcePath": "programs/acidpump-er/tests/mainnet_swaps.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "7b89a3d40bfdf779b12940650a0cb82dac868b0c2c9301d529af7cecdb2ca5dd",
       "sha256": "7b89a3d40bfdf779b12940650a0cb82dac868b0c2c9301d529af7cecdb2ca5dd"
     },
     {
       "path": "perps/programs/acidpump-er/tests/mainnet_token_curve.rs",
       "sourcePath": "programs/acidpump-er/tests/mainnet_token_curve.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "df252b8326fc82085bcc2ad3c1ae4f711a356db165652a9246399025bab0b9f7",
       "sha256": "df252b8326fc82085bcc2ad3c1ae4f711a356db165652a9246399025bab0b9f7"
     },
     {
       "path": "perps/programs/acidpump-er/tests/mainnet_token_curve_custody.rs",
       "sourcePath": "programs/acidpump-er/tests/mainnet_token_curve_custody.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "42008adb30fa32b07252d0c8791dc292743e3954a3acdd7ae0d70c3bf581c4fa",
       "sha256": "42008adb30fa32b07252d0c8791dc292743e3954a3acdd7ae0d70c3bf581c4fa"
     },
     {
       "path": "perps/programs/acidpump-er/tests/mainnet_token_pool.rs",
       "sourcePath": "programs/acidpump-er/tests/mainnet_token_pool.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "a781466b1f8684706ce4f2bba1b7b111dc0dd096490d29c4b3499d6b2e8ab0af",
       "sha256": "a781466b1f8684706ce4f2bba1b7b111dc0dd096490d29c4b3499d6b2e8ab0af"
     },
     {
       "path": "perps/programs/acidpump-er/tests/mainnet_usdc_valuation.rs",
       "sourcePath": "programs/acidpump-er/tests/mainnet_usdc_valuation.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "2a71cfc7f0af9edf2b2da2e1472bf45d9b2322d5e7306d2ffdbf345e275f80dd",
       "sha256": "2a71cfc7f0af9edf2b2da2e1472bf45d9b2322d5e7306d2ffdbf345e275f80dd"
     },
     {
       "path": "perps/programs/acidpump-er/tests/position_rules.rs",
       "sourcePath": "programs/acidpump-er/tests/position_rules.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "c86c23e37514ce663d0636f839d4f4e036637249094809c92f5070b046bc6030",
-      "sha256": "c86c23e37514ce663d0636f839d4f4e036637249094809c92f5070b046bc6030"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "25b8ec6b54446ce50cf0fba9e136233d43c952c7089ad98ff51ff991d231f34b",
+      "sha256": "25b8ec6b54446ce50cf0fba9e136233d43c952c7089ad98ff51ff991d231f34b"
     },
     {
       "path": "perps/programs/acidpump-er/tests/support/mainnet_bootstrap.rs",
       "sourcePath": "programs/acidpump-er/tests/support/mainnet_bootstrap.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "03430024e8e3a9b655d2f623b725f6a0226fe3ef0eb0d999317a7878d77d14ca",
       "sha256": "03430024e8e3a9b655d2f623b725f6a0226fe3ef0eb0d999317a7878d77d14ca"
     },
     {
       "path": "perps/programs/acidpump-er/tests/support/mainnet_contributions.rs",
       "sourcePath": "programs/acidpump-er/tests/support/mainnet_contributions.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "6b0c027a140d9bff5703a4704823b5e32aef1cb4306a26e1e6bf1c71b7169be5",
       "sha256": "6b0c027a140d9bff5703a4704823b5e32aef1cb4306a26e1e6bf1c71b7169be5"
     },
     {
       "path": "perps/programs/acidpump-er/tests/support/mainnet_economics.rs",
       "sourcePath": "programs/acidpump-er/tests/support/mainnet_economics.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "2f90ed266d52c6ee89667c15a869f0173170501edb02e659d4ccbf80f73a7a79",
       "sha256": "2f90ed266d52c6ee89667c15a869f0173170501edb02e659d4ccbf80f73a7a79"
     },
     {
+      "path": "perps/programs/acidpump-er/tests/support/mainnet_mixed_backing.rs",
+      "sourcePath": "programs/acidpump-er/tests/support/mainnet_mixed_backing.rs",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "946de0793b0f9153dccb2b06ebe247f54e2a39b9231ffd3654917471886ff5e2",
+      "sha256": "946de0793b0f9153dccb2b06ebe247f54e2a39b9231ffd3654917471886ff5e2"
+    },
+    {
+      "path": "perps/programs/acidpump-er/tests/support/mainnet_native_markets.rs",
+      "sourcePath": "programs/acidpump-er/tests/support/mainnet_native_markets.rs",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "864e441d35077275ed427a2fa31a1a8674314e32979699be86ba4e4afd797ace",
+      "sha256": "864e441d35077275ed427a2fa31a1a8674314e32979699be86ba4e4afd797ace"
+    },
+    {
       "path": "perps/programs/acidpump-er/tests/support/mainnet_pool_tokenomics.rs",
       "sourcePath": "programs/acidpump-er/tests/support/mainnet_pool_tokenomics.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "85b342606837305eb327a345123b55ff34885b6a17fbcbfca68368f2df7f8330",
       "sha256": "85b342606837305eb327a345123b55ff34885b6a17fbcbfca68368f2df7f8330"
     },
     {
       "path": "perps/programs/acidpump-er/tests/support/mainnet_spot_profit.rs",
       "sourcePath": "programs/acidpump-er/tests/support/mainnet_spot_profit.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "98d52f6fe1afe023c7d73bdf33de25447c0588cd31704ed3d3afc8ca262fd82e",
       "sha256": "98d52f6fe1afe023c7d73bdf33de25447c0588cd31704ed3d3afc8ca262fd82e"
     },
     {
       "path": "perps/programs/acidpump-er/tests/support/mainnet_usdc_settlement.rs",
       "sourcePath": "programs/acidpump-er/tests/support/mainnet_usdc_settlement.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "fcf1c4f86661b345de7d78d491f64ec8941023bb2404baee2c19f90c2d5e4dcb",
       "sha256": "fcf1c4f86661b345de7d78d491f64ec8941023bb2404baee2c19f90c2d5e4dcb"
     },
     {
       "path": "perps/programs/acidpump-er/tests/support/mainnet_venues.rs",
       "sourcePath": "programs/acidpump-er/tests/support/mainnet_venues.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "d40e3819956a9591c5153892a6864320e8311199978e46123c46b0902ab0428a",
       "sha256": "d40e3819956a9591c5153892a6864320e8311199978e46123c46b0902ab0428a"
     },
     {
       "path": "perps/programs/acidpump-er/tests/venues.rs",
       "sourcePath": "programs/acidpump-er/tests/venues.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "62abe7271e490a8b571838986531a3a81fbf23eaa99dced8cee430f27be5e4ee",
       "sha256": "62abe7271e490a8b571838986531a3a81fbf23eaa99dced8cee430f27be5e4ee"
     },
     {
       "path": "perps/programs/acidpump-er/tests/wallet_capacity.rs",
       "sourcePath": "programs/acidpump-er/tests/wallet_capacity.rs",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "9d3a16e6db40b78412e74202aec390b705fa1a3394fbf4e630c14ef1788a677f",
-      "sha256": "9d3a16e6db40b78412e74202aec390b705fa1a3394fbf4e630c14ef1788a677f"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "5aa31ce9f7c955dcba23b6823b6b3f32b467f515e38a722f71b142f3aac2b180",
+      "sha256": "5aa31ce9f7c955dcba23b6823b6b3f32b467f515e38a722f71b142f3aac2b180"
+    },
+    {
+      "path": "perps/Cargo.toml",
+      "sourcePath": "Cargo.toml",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "dbd714c64166d92c8550badcd0964293191a945a0de4a756d1d69486e772c57f",
+      "sha256": "ed704e2e086d55b0bd6dbb6f4f8e161985a94a4ed8f24ca131f2d65ebfef54bc"
     },
     {
       "path": "perps/Cargo.lock",
       "sourcePath": "Cargo.lock",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
-      "originalSha256": "a55f00e7212c590ebcff12d59af5ab2a2cbffab00a2a9d9885246305ad045555",
-      "sha256": "a55f00e7212c590ebcff12d59af5ab2a2cbffab00a2a9d9885246305ad045555"
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "49316771f9f7cefc195d0a0942d97839a772529b2db4107de74158f883b826ec",
+      "sha256": "49316771f9f7cefc195d0a0942d97839a772529b2db4107de74158f883b826ec"
     },
     {
       "path": "perps/deployments/acidpump-mainnet-production.json",
       "sourcePath": "deployments/acidpump-mainnet-production.json",
-      "sourceCommit": "24acfc42e65049d0be8a8f6473d434770b5a67f9",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
       "originalSha256": "d4e94bbd273d0551a73058f974b16a02c3a057c439c027489e053e354a9d67bb",
       "sha256": "d4e94bbd273d0551a73058f974b16a02c3a057c439c027489e053e354a9d67bb"
     },
     {
-      "path": "games/poker/tests/tests/scenarios/afk_recovery.rs",
-      "sourcePath": "game/vendor/holdem/program/tests/tests/scenarios/afk_recovery.rs",
-      "sourceCommit": "c297ad81f3b202f722f2ebb5af165f05eb916feb",
-      "originalSha256": "a3e650284c2a770feb5bda265f6b2c242ffd6238ee6e3a519f9479c7e767e297",
-      "sha256": "a3e650284c2a770feb5bda265f6b2c242ffd6238ee6e3a519f9479c7e767e297"
+      "path": "perps/projects/acidpump-er/src/production-policy.json",
+      "sourcePath": "projects/acidpump-er/src/production-policy.json",
+      "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
+      "originalSha256": "4064b83c2aabf545e8d1df7e65c41147c5e3c601f1379516bdc4d52806edbdab",
+      "sha256": "4064b83c2aabf545e8d1df7e65c41147c5e3c601f1379516bdc4d52806edbdab"
     }
   ],
   "bankCommit": "158465cf007db585e7aece09582ffc004ae24d62",

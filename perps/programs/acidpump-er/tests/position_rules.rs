@@ -54,14 +54,14 @@ impl Harness {
         let mut r:ErRisk=read(&self.svm,self.risk);r.markets[0].sample(oracle::OraclePrice{price,publish_time:NOW+age,posted_slot:clock.slot}).unwrap();put(&mut self.svm,self.risk,&r);
     }
     fn open(&mut self,long:bool) {
-        let accounts=p::accounts::OpenErPosition{owner:self.owner.pubkey(),config:self.config,er_trader:self.trader,er_risk:self.risk,asset:self.asset,
+        let accounts=p::accounts::OpenErPosition{sol_backing_quote:None,usd_backing_quote:None,owner:self.owner.pubkey(),config:self.config,er_trader:self.trader,er_risk:self.risk,asset:self.asset,
             er_quote:self.quote,history:self.history,guard:self.guard,execution:p::accounts::ErExecution{magic_program:self.magic},core_quote:self.quote,
             gas_authority:self.owner.pubkey(),pool:self.pool,pool_exposure:None};
         self.send(Instruction{program_id:p::ID,accounts:accounts.to_account_metas(None),data:p::instruction::ErOpen{slot:0,nonce:1,market:0,amount:10_000_000,leverage:1000,long,
             limit_price:if long {u64::MAX}else{0},min_value:0,max_value:u64::MAX,expires:NOW+60}.data()},None);
     }
     fn close(&mut self,expected:Option<&str>) {
-        let accounts=p::accounts::CloseErPosition{caller:self.owner.pubkey(),er_trader:self.trader,er_risk:self.risk,er_quote:self.quote,history:self.history,guard:self.guard,
+        let accounts=p::accounts::CloseErPosition{sol_backing_quote:None,usd_backing_quote:None,caller:self.owner.pubkey(),er_trader:self.trader,er_risk:self.risk,er_quote:self.quote,history:self.history,guard:self.guard,
             execution:p::accounts::ErExecution{magic_program:self.magic},core_quote:self.quote,config:self.config,pool:self.pool};
         self.send(Instruction{program_id:p::ID,accounts:accounts.to_account_metas(None),data:p::instruction::ErClose{slot:0,nonce:1,expires:NOW+60}.data()},expected);
     }
@@ -99,4 +99,38 @@ fn root_and_venue_can_liquidate_during_countdown() {
         h.price(2,if long {100*PX-PX/10}else{100*PX+PX/10});h.close(None);
         let closed:ErTrader=read(&h.svm,h.trader);assert!(closed.slots[0].liquidated);assert_eq!(closed.slots[0].closed_at,NOW+2);
     }}
+}
+
+#[test]
+fn mixed_reserve_entry_unlock_and_stale_quote_rules_execute_in_sbf() {
+    for venue in [false,true] {
+        let mut h=Harness::new(venue);let core=h.asset;let core_quote=h.quote;
+        let mint=Pubkey::new_unique();let(asset,ab)=derive(&[b"asset",mint.as_ref()]);let(quote,qb)=derive(&[b"er-quote",asset.as_ref()]);
+        let(history,hb)=derive(&[b"er-collateral-history",asset.as_ref()]);
+        let sol=sol_collateral_asset();let(sol_quote,sb)=derive(&[b"er-quote",sol.as_ref()]);
+        put(&mut h.svm,asset,&Asset{id:110,feed:Pubkey::default(),mint,token_program:anchor_spl::token::ID,source_mint:mint,source_pool:Pubkey::default(),
+            quote_mint:p::mainnet_pump::SOL,dex_pool:Pubkey::default(),collateral_enabled:true,decimals:6,bump:ab});
+        put(&mut h.svm,quote,&ErQuote{config:p::ROOT_CONFIG,asset,base_reserve:1_000_000_000,quote_reserve:10_000_000_000,publish_time:NOW,source_slot:1,bump:qb,
+            mainnet:p::MainnetCollateralContext{real_quote_reserve:10_000_000_000,pool_source_slot:1,usd_per_quote_atom_e21:100*PX,conversion_publish_time:NOW,conversion_source_slot:1},..ErQuote::default()});
+        put(&mut h.svm,history,&CollateralHistory{config:p::ROOT_CONFIG,asset,sequence:0,source_slot:1,publish_time:NOW,last_gap:0,last_gap_start:0,is_quote:false,decimals:6,samples:vec![],bump:hb});
+        put(&mut h.svm,sol_quote,&ErQuote{config:p::ROOT_CONFIG,asset:sol,quote_reserve:100*PX,publish_time:NOW,source_slot:1,bump:sb,..ErQuote::default()});
+        let mut t:ErTrader=read(&h.svm,h.trader);t.assets[1]=ErBalance{asset:sol,available:200_000_000,..ErBalance::default()};
+        t.assets[2]=ErBalance{asset,available:100_000_000,..ErBalance::default()};put(&mut h.svm,h.trader,&t);
+        let change=|h:&Harness,asset,amount,unstake|Instruction{program_id:p::ID,
+            accounts:p::accounts::ChangeErCoreStake{owner:h.owner.pubkey(),config:h.config,pool:h.pool,er_trader:h.trader,execution:p::accounts::ErExecution{magic_program:h.magic}}.to_account_metas(None),
+            data:p::instruction::ErChangeBacking{asset,amount,unstake}.data()};
+        h.send(change(&h,core,10_000_000,false),None);h.send(change(&h,sol,200_000_000,false),None);
+        let open=|h:&Harness,sol_quote|Instruction{program_id:p::ID,accounts:p::accounts::OpenErPosition{owner:h.owner.pubkey(),config:h.config,pool:h.pool,
+            er_trader:h.trader,er_risk:h.risk,asset,er_quote:quote,history,guard:h.guard,core_quote,sol_backing_quote:sol_quote,usd_backing_quote:None,
+            gas_authority:h.owner.pubkey(),pool_exposure:None,execution:p::accounts::ErExecution{magic_program:h.magic}}.to_account_metas(None),
+            data:p::instruction::ErOpen{slot:0,nonce:1,market:0,amount:25_000_000,leverage:10,long:true,limit_price:u64::MAX,min_value:0,max_value:u64::MAX,expires:NOW+60}.data()};
+        h.send(open(&h,None),Some("Stale"));
+        let mut stale:ErQuote=read(&h.svm,sol_quote);stale.publish_time=NOW-10;put(&mut h.svm,sol_quote,&stale);
+        h.send(open(&h,Some(sol_quote)),Some("Stale"));stale.publish_time=NOW;put(&mut h.svm,sol_quote,&stale);
+        h.send(open(&h,Some(sol_quote)),None);
+        let t:ErTrader=read(&h.svm,h.trader);assert!(t.slots[0].entry_value>20_000_000&&t.slots[0].entry_value<30_000_000);
+        assert_eq!(t.core_stake.tokens,10_000_000);assert_eq!(t.auxiliary_stakes[0].tokens,200_000_000);assert_eq!(t.auxiliary_stakes[1].tokens,0);
+        h.send(change(&h,core,1,true),Some("Closed"));h.send(change(&h,sol,1,true),Some("Closed"));
+        h.send(change(&h,Pubkey::new_unique(),1,false),Some("Binding"));
+    }
 }

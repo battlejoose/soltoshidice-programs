@@ -98,6 +98,9 @@ pub struct ErTrader {
     pub core_stake: crate::stake_backing::CoreStakeState,
     #[cfg(feature="mainnet")]
     pub custody_generation: u64,
+    /// Auxiliary backing, in canonical SOL / USDC order. When primary is the
+    /// same asset its auxiliary slot stays zero (the primary reserve wins).
+    pub auxiliary_stakes: [crate::stake_backing::CoreStakeState; 2],
 }
 impl Default for ErTrader {
     fn default()->Self {
@@ -105,13 +108,14 @@ impl Default for ErTrader {
             assets:vec![ErBalance::default();ER_ASSETS].into_boxed_slice().try_into().unwrap_or_else(|_| unreachable!()),
             slots:vec![ErSlot::default();ER_SLOTS].into_boxed_slice().try_into().unwrap_or_else(|_| unreachable!()),
             bump:0,core_stake:crate::stake_backing::CoreStakeState::default(),
-            #[cfg(feature="mainnet")] custody_generation:0}
+            #[cfg(feature="mainnet")] custody_generation:0,
+            auxiliary_stakes:[crate::stake_backing::CoreStakeState::default();2]}
     }
 }
 impl Space for ErTrader {
     const INIT_SPACE: usize = 3 * 32 + 2 * 8 + ER_ASSETS * ErBalance::INIT_SPACE
         + ER_SLOTS * ErSlot::INIT_SPACE + 1
-        + crate::stake_backing::CoreStakeState::INIT_SPACE + if cfg!(feature="mainnet"){8}else{0};
+        + 3 * crate::stake_backing::CoreStakeState::INIT_SPACE + if cfg!(feature="mainnet"){8}else{0};
 }
 
 #[account]
@@ -127,6 +131,7 @@ pub struct ErCustody {
     pub core_coverage: crate::stake_backing::CoreCoverageState,
     #[cfg(feature="mainnet")]
     pub generation: u64,
+    pub auxiliary_coverage: [crate::stake_backing::CoreCoverageState; 2],
 }
 impl Default for ErCustody {
     fn default()->Self {
@@ -134,13 +139,14 @@ impl Default for ErCustody {
             assets:vec![CustodyAsset::default();ER_ASSETS].into_boxed_slice().try_into().unwrap_or_else(|_| unreachable!()),
             receipts:vec![ErReceipt::default();ER_SLOTS].into_boxed_slice().try_into().unwrap_or_else(|_| unreachable!()),
             bump:0,core_coverage:crate::stake_backing::CoreCoverageState::default(),
-            #[cfg(feature="mainnet")] generation:0}
+            #[cfg(feature="mainnet")] generation:0,
+            auxiliary_coverage:[crate::stake_backing::CoreCoverageState::default();2]}
     }
 }
 impl Space for ErCustody {
     const INIT_SPACE: usize = 3 * 32 + ER_ASSETS * CustodyAsset::INIT_SPACE
         + ER_SLOTS * ErReceipt::INIT_SPACE + 1
-        + crate::stake_backing::CoreCoverageState::INIT_SPACE + if cfg!(feature="mainnet"){8}else{0};
+        + 3 * crate::stake_backing::CoreCoverageState::INIT_SPACE + if cfg!(feature="mainnet"){8}else{0};
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, InitSpace)]
@@ -288,6 +294,9 @@ impl ErQuote {
 
 pub fn sol_collateral_asset() -> Pubkey {
     Pubkey::find_program_address(&[b"asset", anchor_spl::token::spl_token::native_mint::ID.as_ref()], &crate::ID).0
+}
+pub fn usd_collateral_asset(mint:Pubkey)->Pubkey {
+    Pubkey::find_program_address(&[b"asset",mint.as_ref()],&crate::ID).0
 }
 /// Lamports * USD price (12 decimals) -> USD (6 decimals), rounded down.
 pub fn sol_collateral_value(amount: u64, price: u64) -> Result<u64> {
@@ -519,6 +528,7 @@ pub fn sync_custody(trader: &mut ErTrader, engine: &mut ErRisk, custody: &ErCust
     if custody.generation < trader.custody_generation { return Ok(()); }
     // A settlement must debit the stake before its receipt releases a slot.
     trader.core_stake.sync(custody.core_coverage)?;
+    for i in 0..2 { trader.auxiliary_stakes[i].sync(custody.auxiliary_coverage[i])?; }
     acknowledge_receipts(trader, engine, custody)?;
     #[cfg(feature="mainnet")]
     {
@@ -646,6 +656,11 @@ pub fn change_core_stake(ctx: Context<ChangeErCoreStake>, amount: u64, unstake: 
     let backing = Backing::new(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint);
     crate::stake_backing::change_stake(&mut ctx.accounts.er_trader, amount, unstake, &backing)
 }
+pub fn change_backing(ctx: Context<ChangeErCoreStake>, asset: Pubkey, amount: u64, unstake: bool) -> Result<()> {
+    require!(unstake || !ctx.accounts.config.paused, MixError::Paused);
+    let backing = Backing::new(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint);
+    crate::stake_backing::change_backing(&mut ctx.accounts.er_trader, asset, amount, unstake, &backing)
+}
 pub fn open(ctx: Context<OpenErPosition>, request: OpenRequest) -> Result<()> {
     require!(!ctx.accounts.config.paused, MixError::Paused);
     require!(ctx.accounts.asset.collateral_enabled, MixError::Binding);
@@ -657,7 +672,8 @@ pub fn open(ctx: Context<OpenErPosition>, request: OpenRequest) -> Result<()> {
         ctx.accounts.er_trader.notional,pool_usd)?;
     let backing = Backing::new(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint);
     if backing.requires(ctx.accounts.asset.key()) {
-        crate::stake_backing::check_entry(&ctx.accounts.er_trader, &ctx.accounts.core_quote,
+        crate::stake_backing::check_entry_mixed(&ctx.accounts.er_trader, &ctx.accounts.core_quote,
+            [ctx.accounts.sol_backing_quote.as_deref().map(|q| &**q),ctx.accounts.usd_backing_quote.as_deref().map(|q| &**q)],
             ctx.accounts.er_quote.value(request.amount,now)?, now, &backing)?;
     }
     open_slot(&mut ctx.accounts.er_trader, &mut ctx.accounts.er_risk, &ctx.accounts.er_quote, request, now)
@@ -672,7 +688,8 @@ pub fn close(ctx: Context<CloseErPosition>, slot: u8, nonce: u64, expires: i64) 
 pub fn force_core_close(ctx: Context<CloseErPosition>, slot: u8, nonce: u64, expires: i64) -> Result<()> {
     let now = Clock::get()?.unix_timestamp;
     let backing = Backing::new(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint);
-    crate::stake_backing::check_forced_close(&ctx.accounts.er_trader, &ctx.accounts.core_quote, slot, now, &backing)?;
+    crate::stake_backing::check_forced_close_mixed(&ctx.accounts.er_trader, &ctx.accounts.core_quote,
+        [ctx.accounts.sol_backing_quote.as_deref().map(|q| &**q),ctx.accounts.usd_backing_quote.as_deref().map(|q| &**q)], slot, now, &backing)?;
     close_slot_authorized(&mut ctx.accounts.er_trader, &mut ctx.accounts.er_risk, &ctx.accounts.er_quote,
         slot, nonce, expires, ctx.accounts.caller.key(), now, true)
 }
@@ -723,6 +740,8 @@ pub fn delegate_trader(ctx: Context<DelegateErTrader>) -> Result<()> {
     // An owner must not redelegate a returned legacy wallet before its atomic
     // capacity migration. Typed ER instructions require the current layout.
     require!(ctx.accounts.er_trader.data_len()==8+ErTrader::INIT_SPACE,MixError::Binding);
+    #[cfg(feature="mainnet")]
+    require!(!ctx.accounts.config.paused || ctx.accounts.payer.key()==ctx.accounts.config.admin,MixError::Paused);
     let owner = ctx.accounts.owner.key();
     let n = ns(ctx.accounts.config.key());
     let seeds = crate::venue::ns_seeds(b"er-trader", &n, &[owner.as_ref()]);
@@ -884,7 +903,7 @@ pub struct OpenErPosition<'info> {
     #[account(mut,seeds=[b"er-collateral-guard",vns!(config.key()),owner.key().as_ref()],bump=guard.bump,has_one=owner,has_one=config)] pub guard: Box<Account<'info,CollateralGuard>>,
     pub execution: ErExecution<'info>,
     #[account(seeds=[b"er-quote",pool.settlement.as_ref()],bump=core_quote.bump,constraint=shared(config.key(),core_quote.config) @ MixError::Binding)]
-    pub core_quote: Account<'info, ErQuote>,
+    pub core_quote: Box<Account<'info, ErQuote>>,
     // Admission co-signature protects prepaid settlement funding even when an
     // owner submits directly to ER instead of using the public HTTP endpoint.
     #[cfg(feature="mainnet")]
@@ -896,6 +915,10 @@ pub struct OpenErPosition<'info> {
     #[account(seeds=[b"pool-exposure",pool.key().as_ref()],bump=pool_exposure.bump,
         constraint=pool_exposure.config==config.key() && pool_exposure.pool==pool.key() @ MixError::Binding)]
     pub pool_exposure: Option<Box<Account<'info,crate::pool_exposure::PoolExposure>>>,
+    #[account(seeds=[b"er-quote",sol_collateral_asset().as_ref()],bump=sol_backing_quote.bump)]
+    pub sol_backing_quote: Option<Box<Account<'info,ErQuote>>>,
+    #[account(constraint=usd_backing_quote.key()==Pubkey::find_program_address(&[b"er-quote",usd_collateral_asset(config.quote_mint).as_ref()],&crate::ID).0 @ MixError::Binding)]
+    pub usd_backing_quote: Option<Box<Account<'info,ErQuote>>>,
 }
 #[derive(Accounts)]
 pub struct ObserveErTrader<'info> {
@@ -913,11 +936,15 @@ pub struct CloseErPosition<'info> {
     #[account(mut,seeds=[b"er-collateral-guard",vns!(er_trader.config),er_trader.owner.as_ref()],bump=guard.bump)] pub guard: Box<Account<'info,CollateralGuard>>,
     pub execution: ErExecution<'info>,
     #[account(seeds=[b"er-quote",pool.settlement.as_ref()],bump=core_quote.bump)]
-    pub core_quote: Account<'info, ErQuote>,
+    pub core_quote: Box<Account<'info, ErQuote>>,
     #[account(address=er_trader.config)]
     pub config: Box<Account<'info, Config>>,
     #[account(seeds=[b"pool",vns!(er_trader.config),&0u16.to_le_bytes()],bump=pool.bump,constraint=er_trader.pool==pool.key() @ MixError::Binding)]
     pub pool: Box<Account<'info, Pool>>,
+    #[account(seeds=[b"er-quote",sol_collateral_asset().as_ref()],bump=sol_backing_quote.bump)]
+    pub sol_backing_quote: Option<Box<Account<'info,ErQuote>>>,
+    #[account(constraint=usd_backing_quote.key()==Pubkey::find_program_address(&[b"er-quote",usd_collateral_asset(config.quote_mint).as_ref()],&crate::ID).0 @ MixError::Binding)]
+    pub usd_backing_quote: Option<Box<Account<'info,ErQuote>>>,
 }
 #[derive(Accounts)]
 pub struct ForfeitErHistoryGap<'info> {

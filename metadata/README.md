@@ -7,6 +7,14 @@ using the `idl` and `security` seeds. Publication is signed by each program's
 existing upgrade authority. It does not upgrade executable code or alter game
 accounts, balances held by the games, or program upgrade authorities.
 
+## Perps mixed backing update — October 23, 2026
+
+The current canonical IDL SHA-256 is
+`27548bb39c9d227d8202e389e804d0d8ce4aff5a5c5c81bc40abda9c73c6cce3`. It includes mixed native/token backing and the
+append-only wallet migration. The atomic replacement finalized, its temporary
+buffer closed, and the published contents were read back exactly.
+See [finalized publication receipts](../evidence/perps-mixed-backing-idl-2026-10-23.json).
+
 ## Perps spot payout update — October 21, 2026
 
 The canonical IDL now includes `redeem_profit_tokens`. Its SHA-256 is

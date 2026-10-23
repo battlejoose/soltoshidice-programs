@@ -26,6 +26,10 @@ pub use pool_exposure::*;
 pub mod pool_contribution;
 pub use pool_contribution::*;
 pub mod stake_backing;
+pub mod backing_basket;
+pub mod native_market;
+pub mod backing_settlement;
+pub use backing_settlement::{BackingRoute,BackingRoutes};
 pub mod core_migration;
 pub use core_migration::*;
 pub mod recovery;
@@ -121,6 +125,7 @@ pub fn recover_core_trader(ctx: Context<RecoverCoreTrader>, expected_hash:[u8;32
 pub fn migrate_core_account(ctx: Context<MigrateCoreAccount>, kind:u8) -> Result<()> { core_migration::migrate(ctx,kind) }
 pub fn redelegate_core_trader(ctx: Context<RedelegateCoreTrader>) -> Result<()> { core_migration::redelegate(ctx) }
 pub fn er_change_core_stake(ctx: Context<ChangeErCoreStake>, amount:u64, unstake:bool) -> Result<()> { engine::change_core_stake(ctx,amount,unstake) }
+pub fn er_change_backing(ctx: Context<ChangeErCoreStake>, asset:Pubkey, amount:u64, unstake:bool) -> Result<()> { engine::change_backing(ctx,asset,amount,unstake) }
 pub fn er_open(ctx: Context<OpenErPosition>, slot: u8, nonce: u64, market: u16, amount: u64, leverage: u16, long: bool, limit_price: u64, min_value: u64, max_value: u64, expires: i64) -> Result<()> {
     engine::open(ctx, engine::OpenRequest { slot, nonce, market, amount, leverage, long, limit_price, min_value, max_value, expires })
 }
@@ -386,7 +391,12 @@ pub fn er_commit(ctx: Context<CommitErTrader>) -> Result<()> { engine::commit_tr
     }
     pub fn close_backed<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap_out: u64, market_accounts:u8, fee_sell_count:u8, perp_buy_count:u8, min_perp:u64, min_gas:u64, sol_quote:SolUsdQuote) -> Result<()> {
         require_keys_eq!(ctx.accounts.quote_publisher.key(), ctx.accounts.bridge.config.publisher, MixError::Unauthorized);
-        settlement::settle(ctx, sell_count, min_swap_out, market_accounts, fee_sell_count, perp_buy_count, min_perp, min_gas, sol_quote)
+        settlement::settle(ctx, sell_count, min_swap_out, market_accounts, fee_sell_count, perp_buy_count, min_perp, min_gas, sol_quote, None)
+    }
+    pub fn close_backed_mixed<'info>(ctx: Context<'info, Close<'info>>, sell_count:u8,min_swap_out:u64,market_accounts:u8,
+        fee_sell_count:u8,perp_buy_count:u8,min_perp:u64,min_gas:u64,sol_quote:SolUsdQuote,backing_routes:BackingRoutes)->Result<()> {
+        require_keys_eq!(ctx.accounts.quote_publisher.key(),ctx.accounts.bridge.config.publisher,MixError::Unauthorized);
+        settlement::settle(ctx,sell_count,min_swap_out,market_accounts,fee_sell_count,perp_buy_count,min_perp,min_gas,sol_quote,Some(backing_routes))
     }
     pub fn redeem<'info>(ctx: Context<'info, Redeem<'info>>, amount:u64, max_debit:u64, expires:i64, convert:bool, sell_count:u8, min_out:u64) -> Result<()> {
         // Mainnet profit claims pay backing tokens through redeem_profit_tokens.
@@ -725,6 +735,8 @@ pub struct LossRouting<'info> {
     /// Created venues only: the venue record and its SDICE buyback vault.
     #[account(mut)] pub venue:Option<Box<Account<'info,Venue>>>,
     #[account(mut)] pub buyback_vault:Option<Box<InterfaceAccount<'info,TokenAccount>>>,
+    #[cfg(feature="mainnet")]
+    #[account(mut)] pub native_revenue:Option<Box<Account<'info,NativeRevenue>>>,
 }
 #[event]
 pub struct LossSplit {

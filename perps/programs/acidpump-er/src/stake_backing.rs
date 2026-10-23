@@ -74,6 +74,23 @@ impl Backing {
 /// Compiled root identities; mainnet roots and historical tests use these.
 pub fn root_backing() -> Backing { Backing { core: core_asset(), exempt: exempt_assets() } }
 
+pub fn basket_assets(backing:&Backing)->Result<crate::backing_basket::Assets> {
+    crate::backing_basket::Assets::new(backing.core,backing.exempt[1],backing.exempt[2])
+}
+pub fn basket(trader:&ErTrader)->crate::backing_basket::Basket {
+    crate::backing_basket::Basket {stakes:[trader.core_stake,trader.auxiliary_stakes[0],trader.auxiliary_stakes[1]]}
+}
+pub fn basket_value(trader:&ErTrader,core:&crate::engine::ErQuote,aux:[Option<&crate::engine::ErQuote>;2],now:i64,backing:&Backing)->Result<u64> {
+    let ids=basket_assets(backing)?;
+    let values=basket(trader).values(&ids,&mut |i,n| {
+        let q=if i==0 {core}else{aux[i-1].ok_or(MixError::Stale)?};
+        require!(q.asset==ids.0[i] && crate::venue::shared(trader.config,q.config)
+            && q.is_quote==(q.asset==backing.exempt[2]),MixError::Binding);
+        q.value(n,now)
+    })?;
+    values.into_iter().try_fold(0u64,|a,b|a.checked_add(b).ok_or_else(||error!(MixError::Arithmetic)))
+}
+
 pub fn positions(trader: &ErTrader, backing: &Backing) -> Vec<BackedPosition> {
     trader.slots.iter().filter(|s| s.kind == ER_TRADE && s.state != ER_FREE && backing.requires(s.asset))
         .map(|s| BackedPosition { nonce: s.nonce, opened_at: s.opened_at,
@@ -81,21 +98,25 @@ pub fn positions(trader: &ErTrader, backing: &Backing) -> Vec<BackedPosition> {
 }
 
 pub fn check_entry(trader: &ErTrader, core: &crate::engine::ErQuote, value: u64, now: i64, backing: &Backing) -> Result<()> {
-    require!(core.asset == backing.core && crate::venue::shared(trader.config, core.config) && !core.is_quote, MixError::Binding);
-    check_open(core.value(trader.core_stake.tokens, now)?, &positions(trader, backing), value, trader.core_stake.uncovered_usd()?)
+    check_entry_mixed(trader,core,[None,None],value,now,backing)
+}
+pub fn check_entry_mixed(trader:&ErTrader,core:&crate::engine::ErQuote,aux:[Option<&crate::engine::ErQuote>;2],value:u64,now:i64,backing:&Backing)->Result<()> {
+    check_open(basket_value(trader,core,aux,now,backing)?, &positions(trader,backing), value, 0)
 }
 
 /// Force one oldest close, then reconcile its real base charge before forcing
 /// another. Pending entry reservations must not trigger a cascade of unnecessary
 /// closes, and estimated shortfalls must never release backing.
 pub fn check_forced_close(trader: &ErTrader, core: &crate::engine::ErQuote, slot: u8, now: i64, backing: &Backing) -> Result<()> {
-    require!(core.asset == backing.core && crate::venue::shared(trader.config, core.config) && !core.is_quote, MixError::Binding);
+    check_forced_close_mixed(trader,core,[None,None],slot,now,backing)
+}
+pub fn check_forced_close_mixed(trader:&ErTrader,core:&crate::engine::ErQuote,aux:[Option<&crate::engine::ErQuote>;2],slot:u8,now:i64,backing:&Backing)->Result<()> {
     let positions = positions(trader, backing);
     require!(!positions.iter().any(|p| p.closing_usd.is_some()), MixError::Closed);
     let oldest = trader.slots.iter().enumerate().filter(|(_,s)| s.state == crate::engine::ER_OPEN && positions.iter().any(|p|p.nonce==s.nonce))
         .min_by_key(|(_,s)| (s.opened_at, s.nonce)).map(|(i,_)| i).ok_or(MixError::Closed)?;
     require!(oldest == slot as usize, MixError::QueueOrder);
-    require!(core.value(trader.core_stake.tokens, now)? < reserved_usd(&positions)?, MixError::Exposure);
+    require!(basket_value(trader,core,aux,now,backing)? < reserved_usd(&positions)?, MixError::Exposure);
     Ok(())
 }
 
@@ -108,20 +129,17 @@ pub fn available_stake(custody: &ErCustody, committed: &ErTrader) -> Result<u64>
 /// Tokens are already held in base custody. Reserving them on the canonical ER
 /// trader removes them from spendable collateral without issuing new credits.
 pub fn change_stake(trader: &mut ErTrader, amount: u64, unstake: bool, backing: &Backing) -> Result<()> {
-    require!(amount > 0, MixError::Amount);
-    let index = trader.asset_index(backing.core)?;
-    if unstake {
-        require!(positions(trader, backing).is_empty(), MixError::Closed);
-        let staked = trader.core_stake.tokens.checked_sub(amount).ok_or(MixError::Inventory)?;
-        let available = trader.assets[index].available.checked_add(amount).ok_or(MixError::Arithmetic)?;
-        trader.core_stake.tokens = staked;
-        trader.assets[index].available = available;
-    } else {
-        let available = trader.assets[index].available.checked_sub(amount).ok_or(MixError::Inventory)?;
-        let staked = trader.core_stake.tokens.checked_add(amount).ok_or(MixError::Arithmetic)?;
-        trader.assets[index].available = available;
-        trader.core_stake.tokens = staked;
-    }
+    change_backing(trader,backing.core,amount,unstake,backing)
+}
+pub fn change_backing(trader:&mut ErTrader,asset:Pubkey,amount:u64,unstake:bool,backing:&Backing)->Result<()> {
+    let ids=basket_assets(backing)?;
+    ids.index(asset)?;
+    let index=trader.asset_index(asset)?;
+    let mut next=basket(trader);
+    let positions=positions(trader,backing);
+    next.change(&ids,asset,&mut trader.assets[index].available,amount,unstake,&positions)?;
+    trader.core_stake=next.stakes[0];
+    trader.auxiliary_stakes=[next.stakes[1],next.stakes[2]];
     Ok(())
 }
 

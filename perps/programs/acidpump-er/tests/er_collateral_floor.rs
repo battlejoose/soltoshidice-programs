@@ -13,13 +13,16 @@ use std::{path::Path,str::FromStr};
 const NOW:i64=1_800_000_000;
 const USD:u64=1_000_000;
 const PX:u64=1_000_000_000_000;
+// Collateral fixtures use mature slots. position_rules.rs separately exercises
+// the real five-second close boundary without changing the recorded open time.
+fn mature(s:&mut LiteSVM,trader:Pubkey){let mut t:ErTrader=get(s,trader);for slot in t.slots.iter_mut().filter(|s|s.state==ER_OPEN){slot.opened_at=NOW-5;}put(s,trader,&t);}
 
 #[test]
 fn prepaid_gas_returns_only_excess_rent_from_a_returned_empty_owner_signed_ledger() {
     let mut s=LiteSVM::new();s.add_program(p::ID,&std::fs::read(candidate_binary()).unwrap()).unwrap();
     let publisher=Keypair::new_from_array([111;32]);let owner=Keypair::new_from_array([112;32]);let other=Keypair::new_from_array([113;32]);
     for k in [&publisher,&owner,&other]{s.airdrop(&k.pubkey(),1_000_000_000).unwrap();}
-    let(config,cb)=key(&[b"config"]);let(pool,_)=key(&[b"pool",&0u16.to_le_bytes()]);
+    let(config,cb)=key(&[b"config"]);let(pool,pb)=key(&[b"pool",&0u16.to_le_bytes()]);put(&mut s,pool,&p::Pool{id:0,settlement:p::stake_backing::core_asset(),authority_bump:0,queue_head:0,queue_tail:0,queue_usd:0,trades:0,bump:pb});
     let(trader,tb)=key(&[b"er-trader",owner.pubkey().as_ref()]);
     put(&mut s,config,&Config{admin:publisher.pubkey(),publisher:publisher.pubkey(),quote_mint:p::mainnet_pump::USDC,paused:false,bump:cb,next_settlement_seq:1});
     let empty=ErTrader{owner:owner.pubkey(),config,pool,next_nonce:1,bump:tb,..ErTrader::default()};
@@ -108,7 +111,7 @@ fn core_staking_entrypoint_enforces_owner_locks_and_cumulative_coverage_debits()
     let t:ErTrader=get(&s,trader);assert_eq!((t.core_stake.tokens,t.assets[0].available),(60,40));
     send(&mut s,&payer,&owner,stake(owner.pubkey(),41,false),Some("Inventory"));
     for state in [ER_OPEN,ER_PENDING] {
-        let mut t:ErTrader=get(&s,trader);t.slots[0]=ErSlot{state,kind:ER_TRADE,nonce:1,..ErSlot::default()};put(&mut s,trader,&t);
+        let mut t:ErTrader=get(&s,trader);t.slots[0]=ErSlot{state,kind:ER_TRADE,nonce:1,opened_at:NOW,entry_value:1,..ErSlot::default()};put(&mut s,trader,&t);
         send(&mut s,&payer,&owner,stake(owner.pubkey(),1,true),Some("Closed"));
     }
     let mut t:ErTrader=get(&s,trader);t.slots[0]=ErSlot::default();put(&mut s,trader,&t);
@@ -152,7 +155,7 @@ fn usdc_quoted_collateral_publishes_opens_and_closes_in_micro_usd() {
     for k in [&payer,&owner]{s.airdrop(&k.pubkey(),1_000_000_000).unwrap();}
     let magic=ephemeral_rollups_sdk::consts::MAGIC_PROGRAM_ID;
     s.set_account(magic,Account{lamports:1_000_000,data:vec![],executable:true,owner:Pubkey::from_str("NativeLoader1111111111111111111111111111111").unwrap(),rent_epoch:0}).unwrap();
-    let(config,cb)=key(&[b"config"]);let(pool,_)=key(&[b"pool",&0u16.to_le_bytes()]);
+    let(config,cb)=key(&[b"config"]);let(pool,pb)=key(&[b"pool",&0u16.to_le_bytes()]);put(&mut s,pool,&p::Pool{id:0,settlement:p::stake_backing::core_asset(),authority_bump:0,queue_head:0,queue_tail:0,queue_usd:0,trades:0,bump:pb});
     put(&mut s,config,&Config{admin:payer.pubkey(),publisher:payer.pubkey(),quote_mint:p::mainnet_pump::USDC,paused:false,bump:cb,next_settlement_seq:1});
     let mint=Pubkey::new_unique();let(asset,ab)=key(&[b"asset",mint.as_ref()]);
     put(&mut s,asset,&Asset{id:140,feed:Pubkey::new_unique(),mint,token_program:anchor_spl::token::ID,source_mint:mint,
@@ -182,7 +185,7 @@ fn usdc_quoted_collateral_publishes_opens_and_closes_in_micro_usd() {
     put(&mut s,risk,&r);put(&mut s,guard,&CollateralGuard{owner:owner.pubkey(),config,floors:CollateralGuard::empty_floors(),bump:gb});
     put(&mut s,core_quote,&ErQuote{config,asset:core_asset(),base_reserve:1000*USD,quote_reserve:10_000_000_000,source_slot:1,publish_time:NOW,bump:kb,
         mainnet:MainnetCollateralContext{real_quote_reserve:10_000_000_000,pool_source_slot:1,usd_per_quote_atom_e21:100*PX,conversion_publish_time:NOW,conversion_source_slot:1},..ErQuote::default()});
-    let open=Instruction{program_id:p::ID,accounts:p::accounts::OpenErPosition{pool,owner:owner.pubkey(),config,er_trader:trader,er_risk:risk,asset,er_quote:quote,
+    let open=Instruction{program_id:p::ID,accounts:p::accounts::OpenErPosition{#[cfg(feature="mainnet")] pool_exposure:None,sol_backing_quote:None,usd_backing_quote:None,pool,owner:owner.pubkey(),config,er_trader:trader,er_risk:risk,asset,er_quote:quote,
         history,guard,execution:p::accounts::ErExecution{magic_program:magic},core_quote,gas_authority:payer.pubkey()}.to_account_metas(None),
         data:p::instruction::ErOpen{slot:0,nonce:1,market:0,amount:100*USD,leverage:1000,long:true,limit_price:u64::MAX,min_value:0,max_value:u64::MAX,expires:NOW+60}.data()};
     let mut unpaid=open.clone();unpaid.accounts.iter_mut().find(|a|a.pubkey==payer.pubkey()).unwrap().pubkey=owner.pubkey();
@@ -195,7 +198,8 @@ fn usdc_quoted_collateral_publishes_opens_and_closes_in_micro_usd() {
     send(&mut s,&payer,&payer,publish(lower),None);
     assert_eq!(get::<ErQuote>(&s,quote).value(100*USD,NOW).unwrap(),45_340_907);
     // Market price is unchanged; only the collateral denomination declined.
-    let close=Instruction{program_id:p::ID,accounts:p::accounts::CloseErPosition{config,pool,caller:owner.pubkey(),er_trader:trader,er_risk:risk,er_quote:quote,
+    mature(&mut s,trader);
+    let close=Instruction{program_id:p::ID,accounts:p::accounts::CloseErPosition{sol_backing_quote:None,usd_backing_quote:None,config,pool,caller:owner.pubkey(),er_trader:trader,er_risk:risk,er_quote:quote,
         history,guard,execution:p::accounts::ErExecution{magic_program:magic},core_quote}.to_account_metas(None),
         data:p::instruction::ErClose{slot:0,nonce:1,expires:NOW+60}.data()};
     send(&mut s,&payer,&owner,close,None);
@@ -213,7 +217,7 @@ fn backing_entrypoints(mint:Pubkey,exempt:bool,fill_wallet:bool) {
     for k in [&payer,&owner]{s.airdrop(&k.pubkey(),1_000_000_000).unwrap();}
     let magic=ephemeral_rollups_sdk::consts::MAGIC_PROGRAM_ID;
     s.set_account(magic,Account{lamports:1_000_000,data:vec![],executable:true,owner:Pubkey::from_str("NativeLoader1111111111111111111111111111111").unwrap(),rent_epoch:0}).unwrap();
-    let(config,cb)=key(&[b"config"]);let(pool,_)=key(&[b"pool",&0u16.to_le_bytes()]);
+    let(config,cb)=key(&[b"config"]);let(pool,pb)=key(&[b"pool",&0u16.to_le_bytes()]);put(&mut s,pool,&p::Pool{id:0,settlement:p::stake_backing::core_asset(),authority_bump:0,queue_head:0,queue_tail:0,queue_usd:0,trades:0,bump:pb});
     put(&mut s,config,&Config{admin:payer.pubkey(),publisher:payer.pubkey(),quote_mint:p::mainnet_pump::USDC,paused:false,bump:cb,next_settlement_seq:1});
     let(asset,ab)=key(&[b"asset",mint.as_ref()]);
     put(&mut s,asset,&Asset{id:104,feed:Pubkey::new_unique(),mint,token_program:anchor_spl::token::ID,source_mint:Pubkey::default(),source_pool:Pubkey::default(),quote_mint:p::mainnet_pump::SOL,dex_pool:Pubkey::from_str("Gf7sXMoP8iRw4iiXmJ1nq4vxcRycbGXy5RL8a8LnTd3v").unwrap(),collateral_enabled:true,decimals:6,bump:ab});
@@ -232,7 +236,7 @@ fn backing_entrypoints(mint:Pubkey,exempt:bool,fill_wallet:bool) {
         #[cfg(feature="mainnet")]
         decimals:6,samples:vec![CollateralSample::default();64],bump:hb});
     put(&mut s,guard,&CollateralGuard{owner:owner.pubkey(),config,floors:CollateralGuard::empty_floors(),bump:gb});time(&mut s,NOW);
-    let open=|slot,nonce,amount|Instruction{program_id:p::ID,accounts:p::accounts::OpenErPosition{pool,owner:owner.pubkey(),config,er_trader:trader,er_risk:risk,asset,er_quote:quote,history,guard,execution:p::accounts::ErExecution{magic_program:magic},core_quote,gas_authority:payer.pubkey()}.to_account_metas(None),data:p::instruction::ErOpen{slot,nonce,market:0,amount,leverage:1000,long:true,limit_price:u64::MAX,min_value:0,max_value:u64::MAX,expires:NOW+60}.data()};
+    let open=|slot,nonce,amount|Instruction{program_id:p::ID,accounts:p::accounts::OpenErPosition{#[cfg(feature="mainnet")] pool_exposure:None,sol_backing_quote:None,usd_backing_quote:None,pool,owner:owner.pubkey(),config,er_trader:trader,er_risk:risk,asset,er_quote:quote,history,guard,execution:p::accounts::ErExecution{magic_program:magic},core_quote,gas_authority:payer.pubkey()}.to_account_metas(None),data:p::instruction::ErOpen{slot,nonce,market:0,amount,leverage:1000,long:true,limit_price:u64::MAX,min_value:0,max_value:u64::MAX,expires:NOW+60}.data()};
     if fill_wallet {
         assert_eq!(ER_SLOTS,10);
         for slot in 0..ER_SLOTS {send(&mut s,&payer,&owner,open(slot as u8,slot as u64+1,USD),None);}
@@ -247,7 +251,8 @@ fn backing_entrypoints(mint:Pubkey,exempt:bool,fill_wallet:bool) {
             execution:p::accounts::ErExecution{magic_program:magic}}.to_account_metas(None),data:p::instruction::ErObserve{}.data()};
         send(&mut s,&payer,&payer,observe,None);
         assert!(get::<ErTrader>(&s,trader).slots.iter().all(|x|x.cursor==65));
-        let close=|slot,nonce|Instruction{program_id:p::ID,accounts:p::accounts::CloseErPosition{config,pool,caller:owner.pubkey(),er_trader:trader,er_risk:risk,
+        mature(&mut s,trader);
+        let close=|slot,nonce|Instruction{program_id:p::ID,accounts:p::accounts::CloseErPosition{sol_backing_quote:None,usd_backing_quote:None,config,pool,caller:owner.pubkey(),er_trader:trader,er_risk:risk,
             er_quote:quote,history,guard,execution:p::accounts::ErExecution{magic_program:magic},core_quote}.to_account_metas(None),
             data:p::instruction::ErClose{slot,nonce,expires:NOW+60}.data()};
         send(&mut s,&payer,&owner,close(9,10),None);
@@ -274,8 +279,9 @@ fn backing_entrypoints(mint:Pubkey,exempt:bool,fill_wallet:bool) {
         if asset!=core_asset() {q.publish_time=NOW-30;put(&mut s,core_quote,&q);}
         else {put(&mut s,quote,&ErQuote{config,asset,is_quote:true,publish_time:NOW,source_slot:1,bump:qb,..ErQuote::default()});}
         send(&mut s,&payer,&owner,open(0,1,40*USD),None);
-        let close=|forced|Instruction{program_id:p::ID,accounts:p::accounts::CloseErPosition{config,pool,caller:if forced {payer.pubkey()}else{owner.pubkey()},er_trader:trader,er_risk:risk,er_quote:quote,history,guard,execution:p::accounts::ErExecution{magic_program:magic},core_quote}.to_account_metas(None),data:if forced {p::instruction::ErForceCoreClose{slot:0,nonce:1,expires:NOW+60}.data()}else{p::instruction::ErClose{slot:0,nonce:1,expires:NOW+60}.data()}};
-        send(&mut s,&payer,&payer,close(true),Some(if asset==core_asset(){"Binding"}else{"Closed"}));
+        mature(&mut s,trader);
+        let close=|forced|Instruction{program_id:p::ID,accounts:p::accounts::CloseErPosition{sol_backing_quote:None,usd_backing_quote:None,config,pool,caller:if forced {payer.pubkey()}else{owner.pubkey()},er_trader:trader,er_risk:risk,er_quote:quote,history,guard,execution:p::accounts::ErExecution{magic_program:magic},core_quote}.to_account_metas(None),data:if forced {p::instruction::ErForceCoreClose{slot:0,nonce:1,expires:NOW+60}.data()}else{p::instruction::ErClose{slot:0,nonce:1,expires:NOW+60}.data()}};
+        send(&mut s,&payer,&payer,close(true),Some("Closed"));
         send(&mut s,&payer,&owner,close(false),None);
         let t:ErTrader=get(&s,trader);assert_eq!(t.slots[0].state,ER_PENDING);assert_eq!(t.core_stake.tokens,0);
         return;
@@ -286,7 +292,7 @@ fn backing_entrypoints(mint:Pubkey,exempt:bool,fill_wallet:bool) {
     send(&mut s,&payer,&owner,open(1,2,40*USD),None);
     assert_eq!(get::<ErTrader>(&s,trader).notional,80_000*USD);
     send(&mut s,&payer,&owner,open(2,3,20*USD),Some("Exposure"));
-    let close=|slot,nonce,forced|Instruction{program_id:p::ID,accounts:p::accounts::CloseErPosition{config,pool,caller:if forced {payer.pubkey()}else{owner.pubkey()},er_trader:trader,er_risk:risk,er_quote:quote,history,guard,execution:p::accounts::ErExecution{magic_program:magic},core_quote}.to_account_metas(None),data:if forced {p::instruction::ErForceCoreClose{slot,nonce,expires:NOW+60}.data()}else{p::instruction::ErClose{slot,nonce,expires:NOW+60}.data()}};
+    let close=|slot,nonce,forced|Instruction{program_id:p::ID,accounts:p::accounts::CloseErPosition{sol_backing_quote:None,usd_backing_quote:None,config,pool,caller:if forced {payer.pubkey()}else{owner.pubkey()},er_trader:trader,er_risk:risk,er_quote:quote,history,guard,execution:p::accounts::ErExecution{magic_program:magic},core_quote}.to_account_metas(None),data:if forced {p::instruction::ErForceCoreClose{slot,nonce,expires:NOW+60}.data()}else{p::instruction::ErClose{slot,nonce,expires:NOW+60}.data()}};
     send(&mut s,&payer,&payer,close(0,1,true),Some("Exposure"));
     q.quote_reserve/=2;
     #[cfg(feature="mainnet")]
@@ -302,6 +308,6 @@ fn backing_entrypoints(mint:Pubkey,exempt:bool,fill_wallet:bool) {
     send(&mut s,&payer,&owner,open(2,3,USD),Some("Exposure"));
     // Manual concurrent closes remain available while the first settles, even
     // when the collateral history is empty and cannot be recovered.
-    send(&mut s,&payer,&owner,close(1,2,false),None);
+    mature(&mut s,trader);send(&mut s,&payer,&owner,close(1,2,false),None);
     assert_eq!(get::<ErTrader>(&s,trader).slots[1].state,ER_PENDING);
 }

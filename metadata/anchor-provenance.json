@@ -11,12 +11,11 @@
   },
   {
     "name": "perps",
-    "sourceCommit": "7f0f4372c01a41bda9bed2793e5ee243efa60c9a",
+    "sourceCommit": "f13964d2566acafabdfe58758a0dc3c87ebcf227",
     "sourcePath": "projects/acidpump-er/idl.mainnet-test.json",
-    "sourceSha256": "94741b055fa1329d9d4e22ec8fdc18e9ebbca62150425c0e5a7e46de7a2db694",
-    "idlSha256": "94741b055fa1329d9d4e22ec8fdc18e9ebbca62150425c0e5a7e46de7a2db694",
-    "instructions": 85,
-    "accounts": 23,
-    "verifiedCommit": "f82f527a44a15292ededb544d9129fc6a5459804"
+    "sourceSha256": "27548bb39c9d227d8202e389e804d0d8ce4aff5a5c5c81bc40abda9c73c6cce3",
+    "idlSha256": "27548bb39c9d227d8202e389e804d0d8ce4aff5a5c5c81bc40abda9c73c6cce3",
+    "instructions": 88,
+    "accounts": 24
   }
 ]

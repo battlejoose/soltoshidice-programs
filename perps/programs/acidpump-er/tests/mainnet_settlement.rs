@@ -37,6 +37,10 @@ mod pool_tokenomics;
 mod contributions;
 #[path="support/mainnet_spot_profit.rs"]
 mod spot_profit;
+#[path="support/mainnet_mixed_backing.rs"]
+mod mixed_backing;
+#[path="support/mainnet_native_markets.rs"]
+mod native_markets;
 #[cfg(feature="bank-contribution-test")]
 mod bank_contribution { include!(env!("SDICE_BANK_CONTRIBUTION_TEST")); }
 fn pk(s:&str)->Pubkey {Pubkey::from_str(s).unwrap()}
@@ -114,7 +118,7 @@ impl Bank {
     fn admin(&mut self,label:&str,instructions:Vec<Instruction>,reject:bool) { self.transact(label,instructions,reject,true); }
     fn transact(&mut self,label:&str,mut instructions:Vec<Instruction>,reject:bool,simulate_admin_signature:bool) {
         let compute=pk("ComputeBudget111111111111111111111111111111");
-        let units=if instructions.iter().any(|i|i.program_id==p::ID&&i.data.starts_with(p::instruction::CloseBacked::DISCRIMINATOR)){1_200_000}
+        let units=if instructions.iter().any(|i|i.program_id==p::ID&&(i.data.starts_with(p::instruction::CloseBacked::DISCRIMINATOR)||i.data.starts_with(p::instruction::CloseBackedMixed::DISCRIMINATOR))){1_400_000}
             else if instructions.iter().any(|i|i.program_id==p::ID&&i.data.starts_with(p::instruction::ErDelegateQuote::DISCRIMINATOR)){500_000}else{1_000_000};
         for(tag,n)in [(1,128*1024u32),(2,units)] {let mut data=vec![tag];data.extend_from_slice(&n.to_le_bytes());instructions.insert(0,Instruction{program_id:compute,accounts:vec![],data});}
         let addresses:Vec<_>=instructions.iter().flat_map(|i|i.accounts.iter().map(|a|a.pubkey)).collect::<BTreeSet<_>>().into_iter().collect();
@@ -292,7 +296,7 @@ impl Bank {
             ownership:p::accounts::CloseOwnership{exposure:pda(&[b"exposure",owner.as_ref()]),ownership_pool:self.ownership,ownership_trader:trader,ownership_receipt:receipt,settlement_valuation:self.valuation(primary)},
             mint:a.mint,token_program:a.program,inventory:a.inventory,vault:a.vault,
             fees:p::accounts::LossRouting{gas_reserve:self.gas,perp:primary.asset,perp_mint:primary.mint,perp_program:primary.program,perp_vault:primary.vault,
-                main_pool:None,main_ownership_pool:None,main_inventory:None,main_vault:None,gas_asset:self.tokens[2].asset,gas_mint:SOL,gas_vault:self.gas_vault,gas_program:anchor_spl::token::ID,system_program:Pubkey::default(),venue:None,buyback_vault:None},
+                main_pool:None,main_ownership_pool:None,main_inventory:None,main_vault:None,gas_asset:self.tokens[2].asset,gas_mint:SOL,gas_vault:self.gas_vault,gas_program:anchor_spl::token::ID,system_program:Pubkey::default(),venue:None,buyback_vault:None,native_revenue:None},
             bridge:p::accounts::ErCloseBridge{config:self.config,custody:self.custody,trader:self.trader,guard:self.guard},
         },p::instruction::CloseBacked{sell_count:0,min_swap_out:1,market_accounts:0,fee_sell_count:sell_count,perp_buy_count:buy_count,min_perp,min_gas:0,
             sol_quote:p::SolUsdQuote{price:110*PX,publish_time:self.f["now"].as_i64().unwrap()}});

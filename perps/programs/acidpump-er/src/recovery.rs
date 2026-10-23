@@ -5,7 +5,7 @@ use ephemeral_rollups_sdk::ephem::{FoldableIntentBuilder,MagicIntentBundleBuilde
 
 pub fn idle(trader:&ErTrader)->Result<()> {
     require!(trader.notional==0 && trader.slots.iter().all(|s|s.state==ER_FREE)
-        && trader.core_stake.tokens==0,MixError::Closed);
+        && trader.core_stake.tokens==0 && trader.auxiliary_stakes.iter().all(|s|s.tokens==0),MixError::Closed);
     Ok(())
 }
 pub fn release(ctx:Context<ReleaseLegacyTrader>)->Result<()> {
@@ -54,6 +54,7 @@ pub fn debit(trader:&mut ErTrader,custody:&mut ErCustody,asset:Pubkey,amount:u64
     require!(trader.owner==custody.owner&&trader.config==custody.config&&trader.pool==custody.pool,MixError::Binding);
     idle(trader)?;
     require!(trader.core_stake.acknowledged_debits==custody.core_coverage.debited_tokens,MixError::Binding);
+    for i in 0..2 {require!(trader.auxiliary_stakes[i].acknowledged_debits==custody.auxiliary_coverage[i].debited_tokens,MixError::Binding);}
     #[cfg(feature="mainnet")]
     require!(custody.generation>=trader.custody_generation,MixError::Replay);
     // No live/pending slot or backing remains, so reconciliation cannot alter

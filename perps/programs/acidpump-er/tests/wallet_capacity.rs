@@ -38,20 +38,30 @@ fn send(s:&mut LiteSVM,admin:&Keypair,ix:Instruction,error:Option<&str>){
 
 #[test]
 fn ten_slot_migration_preserves_funds_requires_returned_accounts_and_is_idempotent(){
-    migrate_fixture(false);
+    migrate_fixture(false,false,false,false);
 }
 #[test]
 fn fifty_to_ten_slot_shrink_preserves_funds_and_rejects_unfinished_tail(){
-    migrate_fixture(true);
+    migrate_fixture(true,false,false,false);
 }
-fn migrate_fixture(previous_fifty:bool){
+#[test]
+fn current_ten_slot_backing_extension_preserves_every_byte_in_root_and_created_markets(){
+    migrate_fixture(false,true,false,false);migrate_fixture(false,true,true,false);
+}
+#[test]
+fn append_only_migration_preserves_open_trades_notional_and_liquidation_fields_in_both_namespaces(){
+    migrate_fixture(false,true,false,true);migrate_fixture(false,true,true,true);
+}
+fn migrate_fixture(previous_fifty:bool,old_ten:bool,venue:bool,open:bool){
     let mut s=LiteSVM::new();let root=std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let binary=std::env::var("ACIDPUMP_TEST_BINARY").expect("explicit candidate binary required");
     s.add_program(p::ID,&std::fs::read(root.join(binary)).unwrap()).unwrap();
     let admin=Keypair::new_from_array([46;32]);s.airdrop(&admin.pubkey(),10_000_000_000).unwrap();let owner=Pubkey::new_unique();
-    let(config,cb)=pda(&[b"config"]);let(pool,_)=pda(&[b"pool",&0u16.to_le_bytes()]);
-    let(trader,tb)=pda(&[b"er-trader",owner.as_ref()]);let(custody,bb)=pda(&[b"er-custody",owner.as_ref()]);
-    let(guard,gb)=pda(&[b"er-collateral-guard",owner.as_ref()]);
+    let(config,cb)=if venue {pda(&[b"venue-config",Pubkey::new_unique().as_ref()])}else{pda(&[b"config"])};
+    let pool=p::venue::pool_address(config);
+    let wallet_pda=|seed:&[u8]|if venue {pda(&[seed,config.as_ref(),owner.as_ref()])}else{pda(&[seed,owner.as_ref()])};
+    let(trader,tb)=wallet_pda(b"er-trader");let(custody,bb)=wallet_pda(b"er-custody");
+    let(guard,gb)=wallet_pda(b"er-collateral-guard");
     let mut t=ErTrader{owner,config,pool,next_nonce:35,bump:tb,
         core_stake:p::stake_backing::CoreStakeState{tokens:49_000_000,acknowledged_debits:71,incurred_usd:19,repaid_usd:0},..ErTrader::default()};
     let mut c=ErCustody{owner,config,pool,bump:bb,
@@ -64,7 +74,18 @@ fn migrate_fixture(previous_fifty:bool){
     let mut g=p::CollateralGuard{owner,config,floors:p::CollateralGuard::empty_floors(),bump:gb};
     for i in 0..8 {c.receipts[i]=ErReceipt{nonce:i as u64+1,position:Pubkey::new_unique(),kind:ER_TRADE,settled:true};
         g.floors[i]=p::CollateralFloor{nonce:i as u64+1,value:800,entry_price:95,closed_at:86,..p::CollateralFloor::default()};}
-    let full=[bytes(&t),bytes(&c),bytes(&g)];let old=if previous_fifty {
+    if open {
+        for (i,leverage,long) in [(0,5,false),(9,10,true)] {
+            t.slots[i]=ErSlot{state:ER_OPEN,kind:ER_TRADE,nonce:20+i as u64,asset:t.assets[i].asset,market:2,
+                margin:12345,entry_value:70_000_000,entry:100_000_000_000,bust:if long {90_000_000_000}else{120_000_000_000},
+                leverage,long,opened_at:123456,opened_source_slot:98765,cursor:88,bust_observed:i==9,..ErSlot::default()};
+            t.notional+=t.slots[i].entry_value*leverage as u64;
+            g.floors[i]=p::CollateralFloor{nonce:t.slots[i].nonce,value:67_000_000,entry_price:95,cursor:51,..p::CollateralFloor::default()};
+        }
+    }
+    let full=[bytes(&t),bytes(&c),bytes(&g)];let old=if old_ten {
+        [full[0][..full[0].len()-64].to_vec(),full[1][..full[1].len()-48].to_vec(),full[2].clone()]
+    }else if previous_fifty {
         let wide=|data:&[u8],prefix:usize,item:usize| {
             let mut b=data[..prefix+16*64].to_vec();b.resize(prefix+51*64,0);
             // Preserve a token held in the highest previous asset record.
@@ -74,7 +95,7 @@ fn migrate_fixture(previous_fifty:bool){
             b.resize(prefix+51*64+50*item,0);b.extend_from_slice(&data[at+ER_SLOTS*item..]);b
         };
         let mut guard=full[2][..full[2].len()-1].to_vec();guard.resize(72+50*p::CollateralFloor::INIT_SPACE,0);guard.push(gb);
-        [wide(&full[0],120,ErSlot::INIT_SPACE),wide(&full[1],104,ErReceipt::INIT_SPACE),guard]
+        [wide(&full[0][..full[0].len()-64],120,ErSlot::INIT_SPACE),wide(&full[1][..full[1].len()-48],104,ErReceipt::INIT_SPACE),guard]
     }else{[legacy_ledger(&full[0],8+96+16,ErSlot::INIT_SPACE,33),
         legacy_ledger(&full[1],8+96,ErReceipt::INIT_SPACE,25),legacy(full[2].clone(),8+64,p::CollateralFloor::INIT_SPACE)]};
     let keys=[trader,custody,guard];let mut originals=vec![];
@@ -89,7 +110,7 @@ fn migrate_fixture(previous_fifty:bool){
     // Stale copies on base cannot be resized until both delegations finish.
     for i in [0,2] {let mut delegated=originals[i].clone();delegated.owner=p::basebridge::DELEGATION_OWNER;s.set_account(keys[i],delegated).unwrap();
         send(&mut s,&admin,ix.clone(),Some("ConstraintOwner"));s.set_account(keys[i],originals[i].clone()).unwrap();}
-    let asset_bytes=if previous_fifty {51*64}else{16*56};
+    let asset_bytes=if previous_fifty {51*64}else if old_ten {16*64}else{16*56};
     let mut active=originals[0].clone();active.data[120+asset_bytes]=ER_PENDING;s.set_account(trader,active).unwrap();
     send(&mut s,&admin,ix.clone(),Some("Closed"));s.set_account(trader,originals[0].clone()).unwrap();
     let mut pending=originals[1].clone();pending.data[104+asset_bytes+41]=0;s.set_account(custody,pending).unwrap();
@@ -149,11 +170,20 @@ fn returned_legacy_records_cannot_be_redelegated_before_migration(){
             s.set_account(key,Account{lamports:s.minimum_balance_for_rent_exemption(data.len()),data,owner:p::ID,executable:false,rent_epoch:0}).unwrap();
             send(&mut s,&payer,ix.clone(),Some("Binding"));
         }
+        s.set_account(key,Account{lamports:s.minimum_balance_for_rent_exemption(full.len()),data:full,owner:p::ID,executable:false,rent_epoch:0}).unwrap();
+        send(&mut s,&payer,ix,Some("Paused"));
     }
 }
 
 #[test]
 fn paused_admin_redelegates_current_idle_trader_with_backing_using_captured_mainnet_dlp(){
+    redelegate_fixture(false,false);
+}
+#[test]
+fn paused_admin_redelegates_preserved_open_trades_with_captured_mainnet_dlp(){
+    redelegate_fixture(true,false);redelegate_fixture(true,true);
+}
+fn redelegate_fixture(open:bool,venue:bool){
     let mut s=LiteSVM::new();let root=std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let binary=std::env::var("ACIDPUMP_TEST_BINARY").expect("explicit candidate binary required");
     let dlp=std::env::var("ACIDPUMP_TEST_DLP_BINARY").expect("explicit captured mainnet DLP required");
@@ -162,11 +192,17 @@ fn paused_admin_redelegates_current_idle_trader_with_backing_using_captured_main
     s.add_program(delegation,&std::fs::read(root.join(dlp)).unwrap()).unwrap();
     let admin=Keypair::new_from_array([48;32]);s.airdrop(&admin.pubkey(),10_000_000_000).unwrap();
     let owner=Pubkey::new_unique(); // No owner private key or signature is used.
-    let(config,cb)=pda(&[b"config"]);let(pool,_)=pda(&[b"pool",&0u16.to_le_bytes()]);
-    let(trader,tb)=pda(&[b"er-trader",owner.as_ref()]);
+    let(config,cb)=if venue {pda(&[b"venue-config",Pubkey::new_unique().as_ref()])}else{pda(&[b"config"])};
+    let pool=p::venue::pool_address(config);
+    let(trader,tb)=if venue {pda(&[b"er-trader",config.as_ref(),owner.as_ref()])}else{pda(&[b"er-trader",owner.as_ref()])};
     let mut t=ErTrader{owner,config,pool,next_nonce:800,bump:tb,..ErTrader::default()};
     t.assets[0]=ErBalance{asset:p::stake_backing::core_asset(),credited_deposits:9100,available:100,credited_returns:22,generation:8};
     t.core_stake.tokens=9000;t.custody_generation=8;
+    if open {
+        t.notional=350;
+        t.slots[0]=ErSlot{state:ER_OPEN,kind:ER_TRADE,nonce:5,asset:t.assets[0].asset,entry_value:70,
+            margin:90,entry:100,bust:120,leverage:5,opened_at:123,cursor:45,bust_observed:true,..ErSlot::default()};
+    }
     let original=bytes(&t);
     let put=|s:&mut LiteSVM,key:Pubkey,data:Vec<u8>|s.set_account(key,Account{lamports:s.minimum_balance_for_rent_exemption(data.len()),data,owner:p::ID,executable:false,rent_epoch:0}).unwrap();
     put(&mut s,trader,original.clone());

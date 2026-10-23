@@ -85,6 +85,8 @@ pub fn loss_reward_tokens(amount:u64,a:&Asset,v:&Valuation,to:&Asset,tv:&Valuati
         else {let q=source_pool_quote(a,v,true)?;let quote=q.collateral_quote_atoms(q.maximum_sell(amount)?)?;
             if a.quote_mint==live::USDC {payout_quote(v)?.collateral_quote_atoms(quote)?} else {quote}};
     if sol==0 {return Ok(0);}
+    if is_sol(to) {return Ok(sol);}
+    if is_quote(to) {return payout_quote(tv)?.buy(sol);}
     source_pool_quote(to,tv,true)?.buy(sol)
 }
 /// Entry/closing backing uses the complete collateral sale into SOL, valued by
@@ -247,7 +249,7 @@ pub fn route_venue<'info>(r:&crate::venue::VenueRoute<'_,'info>,accounts:&[Accou
         && r.buyback.key()!=r.source.key() && r.buyback.key()!=r.gas_vault.key(),MixError::Binding);
     require!(amount>0 && perp_part.checked_add(gas_part).and_then(|n|n.checked_add(buyback_part))==Some(amount),MixError::Amount);
     let count=sell_count as usize;
-    require!(count+perp_count as usize==accounts.len() && (perp_part>0)==(perp_count>0)
+    require!(count+perp_count as usize==accounts.len() && (perp_part>0 && !is_sol(r.perp))==(perp_count>0)
         && (count==0)==is_sol(r.from),MixError::Binding);
     let q0=token_amount(&r.quote.to_account_info())?;
     let token_program=sol_program(accounts)?;
@@ -262,7 +264,12 @@ pub fn route_venue<'info>(r:&crate::venue::VenueRoute<'_,'info>,accounts:&[Accou
     let token_quote=received.checked_sub(gas_out).and_then(|n|n.checked_sub(buyback_out)).ok_or(MixError::Arithmetic)?;
     let perp_out=if perp_part>0 {
         require_keys_neq!(r.source.key(),r.perp_vault.key(),MixError::Binding);
-        leg(p,r.perp,r.perp_vault.key(),r.quote.key(),r.program,&accounts[count..],true,token_quote,min_perp.max(1))?
+        if is_sol(r.perp) {
+            require!(token_quote>=min_perp.max(1),MixError::Quote);
+            move_tokens(p,authority,r.quote,r.perp_vault,token_program,token_quote)?;token_quote
+        } else {
+            leg(p,r.perp,r.perp_vault.key(),r.quote.key(),r.program,&accounts[count..],true,token_quote,min_perp.max(1))?
+        }
     } else {0};
     // When only fees are sold, at most one atom of split rounding remains.
     require!(token_amount(&r.quote.to_account_info())?>=q0,MixError::Binding);

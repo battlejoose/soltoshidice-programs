@@ -826,6 +826,11 @@
               "name": "buyback_vault",
               "writable": true,
               "optional": true
+            },
+            {
+              "name": "native_revenue",
+              "writable": true,
+              "optional": true
             }
           ]
         },
@@ -1405,6 +1410,11 @@
               "name": "buyback_vault",
               "writable": true,
               "optional": true
+            },
+            {
+              "name": "native_revenue",
+              "writable": true,
+              "optional": true
             }
           ]
         },
@@ -1472,6 +1482,606 @@
           "type": {
             "defined": {
               "name": "SolUsdQuote"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "close_backed_mixed",
+      "discriminator": [
+        164,
+        3,
+        154,
+        62,
+        173,
+        42,
+        255,
+        137
+      ],
+      "accounts": [
+        {
+          "name": "quote_publisher",
+          "signer": true
+        },
+        {
+          "name": "pool_accounts",
+          "accounts": [
+            {
+              "name": "caller",
+              "signer": true
+            },
+            {
+              "name": "pool",
+              "writable": true
+            },
+            {
+              "name": "authority",
+              "writable": true,
+              "pda": {
+                "seeds": [
+                  {
+                    "kind": "const",
+                    "value": [
+                      97,
+                      117,
+                      116,
+                      104,
+                      111,
+                      114,
+                      105,
+                      116,
+                      121
+                    ]
+                  },
+                  {
+                    "kind": "account",
+                    "path": "pool"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "valuation",
+              "accounts": [
+                {
+                  "name": "dex_pool"
+                },
+                {
+                  "name": "dex_base"
+                },
+                {
+                  "name": "dex_quote"
+                },
+                {
+                  "name": "fee_config"
+                },
+                {
+                  "name": "dex_mint"
+                },
+                {
+                  "name": "global_config"
+                },
+                {
+                  "name": "usd_pool"
+                },
+                {
+                  "name": "usd_mint"
+                },
+                {
+                  "name": "usd_base"
+                },
+                {
+                  "name": "usd_quote"
+                },
+                {
+                  "name": "source_global"
+                },
+                {
+                  "name": "source_fees"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "settlement"
+        },
+        {
+          "name": "settlement_inventory",
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "settlement_vault",
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "quote_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  111,
+                  108,
+                  45,
+                  113,
+                  117,
+                  111,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool_accounts.pool",
+                "account": "ClosePoolAccounts"
+              }
+            ]
+          }
+        },
+        {
+          "name": "pump_program",
+          "address": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+        },
+        {
+          "name": "market",
+          "writable": true,
+          "relations": [
+            "position"
+          ]
+        },
+        {
+          "name": "economics",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  99,
+                  111,
+                  110,
+                  111,
+                  109,
+                  105,
+                  99,
+                  115,
+                  45,
+                  118,
+                  49
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "asset"
+        },
+        {
+          "name": "position",
+          "writable": true
+        },
+        {
+          "name": "ownership",
+          "accounts": [
+            {
+              "name": "exposure",
+              "writable": true,
+              "pda": {
+                "seeds": [
+                  {
+                    "kind": "const",
+                    "value": [
+                      101,
+                      120,
+                      112,
+                      111,
+                      115,
+                      117,
+                      114,
+                      101
+                    ]
+                  },
+                  {
+                    "kind": "account",
+                    "path": "exposure.owner",
+                    "account": "UserExposure"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "settlement_valuation",
+              "accounts": [
+                {
+                  "name": "dex_pool"
+                },
+                {
+                  "name": "dex_base"
+                },
+                {
+                  "name": "dex_quote"
+                },
+                {
+                  "name": "fee_config"
+                },
+                {
+                  "name": "dex_mint"
+                },
+                {
+                  "name": "global_config"
+                },
+                {
+                  "name": "usd_pool"
+                },
+                {
+                  "name": "usd_mint"
+                },
+                {
+                  "name": "usd_base"
+                },
+                {
+                  "name": "usd_quote"
+                },
+                {
+                  "name": "source_global"
+                },
+                {
+                  "name": "source_fees"
+                }
+              ]
+            },
+            {
+              "name": "ownership_pool",
+              "writable": true,
+              "pda": {
+                "seeds": [
+                  {
+                    "kind": "const",
+                    "value": [
+                      111,
+                      119,
+                      110,
+                      101,
+                      114,
+                      115,
+                      104,
+                      105,
+                      112,
+                      45,
+                      112,
+                      111,
+                      111,
+                      108
+                    ]
+                  },
+                  {
+                    "kind": "account",
+                    "path": "ownership_pool.pool",
+                    "account": "OwnershipPool"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "ownership_trader",
+              "writable": true,
+              "pda": {
+                "seeds": [
+                  {
+                    "kind": "const",
+                    "value": [
+                      111,
+                      119,
+                      110,
+                      101,
+                      114,
+                      115,
+                      104,
+                      105,
+                      112,
+                      45,
+                      116,
+                      114,
+                      97,
+                      100,
+                      101,
+                      114
+                    ]
+                  },
+                  {
+                    "kind": "account",
+                    "path": "ownership_trader.pool",
+                    "account": "OwnershipTrader"
+                  },
+                  {
+                    "kind": "account",
+                    "path": "ownership_trader.owner",
+                    "account": "OwnershipTrader"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "ownership_receipt",
+              "writable": true,
+              "pda": {
+                "seeds": [
+                  {
+                    "kind": "const",
+                    "value": [
+                      111,
+                      119,
+                      110,
+                      101,
+                      114,
+                      115,
+                      104,
+                      105,
+                      112,
+                      45,
+                      114,
+                      101,
+                      99,
+                      101,
+                      105,
+                      112,
+                      116
+                    ]
+                  },
+                  {
+                    "kind": "account",
+                    "path": "ownership_receipt.position",
+                    "account": "OwnershipReceipt"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "inventory",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  118,
+                  101,
+                  110,
+                  116,
+                  111,
+                  114,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool_accounts.pool",
+                "account": "ClosePoolAccounts"
+              },
+              {
+                "kind": "account",
+                "path": "asset"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool_accounts.pool",
+                "account": "ClosePoolAccounts"
+              },
+              {
+                "kind": "account",
+                "path": "asset"
+              }
+            ]
+          }
+        },
+        {
+          "name": "fees",
+          "accounts": [
+            {
+              "name": "gas_reserve",
+              "writable": true,
+              "pda": {
+                "seeds": [
+                  {
+                    "kind": "const",
+                    "value": [
+                      103,
+                      97,
+                      115,
+                      45,
+                      114,
+                      101,
+                      115,
+                      101,
+                      114,
+                      118,
+                      101
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "name": "perp",
+              "docs": [
+                "Bound to the pool's own settlement token in the handler."
+              ]
+            },
+            {
+              "name": "perp_mint",
+              "writable": true
+            },
+            {
+              "name": "perp_program"
+            },
+            {
+              "name": "perp_vault",
+              "writable": true
+            },
+            {
+              "name": "main_pool",
+              "optional": true
+            },
+            {
+              "name": "main_ownership_pool",
+              "writable": true,
+              "optional": true
+            },
+            {
+              "name": "main_inventory",
+              "writable": true,
+              "optional": true
+            },
+            {
+              "name": "main_vault",
+              "writable": true,
+              "optional": true
+            },
+            {
+              "name": "gas_asset"
+            },
+            {
+              "name": "gas_mint",
+              "address": "So11111111111111111111111111111111111111112"
+            },
+            {
+              "name": "gas_vault",
+              "writable": true
+            },
+            {
+              "name": "gas_program",
+              "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+            },
+            {
+              "name": "system_program",
+              "address": "11111111111111111111111111111111"
+            },
+            {
+              "name": "venue",
+              "docs": [
+                "Created venues only: the venue record and its SDICE buyback vault."
+              ],
+              "writable": true,
+              "optional": true
+            },
+            {
+              "name": "buyback_vault",
+              "writable": true,
+              "optional": true
+            },
+            {
+              "name": "native_revenue",
+              "writable": true,
+              "optional": true
+            }
+          ]
+        },
+        {
+          "name": "bridge",
+          "accounts": [
+            {
+              "name": "config",
+              "docs": [
+                "The root config or a venue config; it owns this venue's settlement sequence."
+              ],
+              "writable": true,
+              "relations": [
+                "custody"
+              ]
+            },
+            {
+              "name": "custody",
+              "writable": true
+            },
+            {
+              "name": "trader"
+            },
+            {
+              "name": "guard",
+              "docs": [
+                "and opening/closing collateral quotes, not the retired historical floor.",
+                "Its client may alias config here to avoid an unused account lock."
+              ]
+            }
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "sell_count",
+          "type": "u8"
+        },
+        {
+          "name": "min_swap_out",
+          "type": "u64"
+        },
+        {
+          "name": "market_accounts",
+          "type": "u8"
+        },
+        {
+          "name": "fee_sell_count",
+          "type": "u8"
+        },
+        {
+          "name": "perp_buy_count",
+          "type": "u8"
+        },
+        {
+          "name": "min_perp",
+          "type": "u64"
+        },
+        {
+          "name": "min_gas",
+          "type": "u64"
+        },
+        {
+          "name": "sol_quote",
+          "type": {
+            "defined": {
+              "name": "SolUsdQuote"
+            }
+          }
+        },
+        {
+          "name": "backing_routes",
+          "type": {
+            "defined": {
+              "name": "BackingRoutes"
             }
           }
         }
@@ -2575,6 +3185,38 @@
           }
         },
         {
+          "name": "native_revenue",
+          "writable": true,
+          "optional": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  97,
+                  116,
+                  105,
+                  118,
+                  101,
+                  45,
+                  114,
+                  101,
+                  118,
+                  101,
+                  110,
+                  117,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
           "name": "system_program",
           "address": "11111111111111111111111111111111"
         },
@@ -3197,6 +3839,67 @@
       "args": []
     },
     {
+      "name": "er_change_backing",
+      "discriminator": [
+        27,
+        242,
+        0,
+        96,
+        5,
+        1,
+        100,
+        125
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "er_trader"
+          ]
+        },
+        {
+          "name": "config",
+          "relations": [
+            "er_trader"
+          ]
+        },
+        {
+          "name": "pool",
+          "relations": [
+            "er_trader"
+          ]
+        },
+        {
+          "name": "er_trader",
+          "writable": true
+        },
+        {
+          "name": "execution",
+          "accounts": [
+            {
+              "name": "magic_program",
+              "address": "Magic11111111111111111111111111111111111111"
+            }
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "asset",
+          "type": "pubkey"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "unstake",
+          "type": "bool"
+        }
+      ]
+    },
+    {
       "name": "er_change_core_stake",
       "discriminator": [
         171,
@@ -3384,6 +4087,68 @@
         },
         {
           "name": "pool"
+        },
+        {
+          "name": "sol_backing_quote",
+          "optional": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  114,
+                  45,
+                  113,
+                  117,
+                  111,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  208,
+                  30,
+                  38,
+                  182,
+                  177,
+                  226,
+                  205,
+                  59,
+                  184,
+                  48,
+                  50,
+                  15,
+                  127,
+                  226,
+                  226,
+                  233,
+                  94,
+                  251,
+                  23,
+                  167,
+                  232,
+                  245,
+                  254,
+                  224,
+                  172,
+                  121,
+                  245,
+                  118,
+                  226,
+                  82,
+                  98,
+                  38
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "usd_backing_quote",
+          "optional": true
         }
       ],
       "args": [
@@ -4858,6 +5623,68 @@
         },
         {
           "name": "pool"
+        },
+        {
+          "name": "sol_backing_quote",
+          "optional": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  114,
+                  45,
+                  113,
+                  117,
+                  111,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  208,
+                  30,
+                  38,
+                  182,
+                  177,
+                  226,
+                  205,
+                  59,
+                  184,
+                  48,
+                  50,
+                  15,
+                  127,
+                  226,
+                  226,
+                  233,
+                  94,
+                  251,
+                  23,
+                  167,
+                  232,
+                  245,
+                  254,
+                  224,
+                  172,
+                  121,
+                  245,
+                  118,
+                  226,
+                  82,
+                  98,
+                  38
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "usd_backing_quote",
+          "optional": true
         }
       ],
       "args": [
@@ -5608,6 +6435,68 @@
               }
             ]
           }
+        },
+        {
+          "name": "sol_backing_quote",
+          "optional": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  114,
+                  45,
+                  113,
+                  117,
+                  111,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  208,
+                  30,
+                  38,
+                  182,
+                  177,
+                  226,
+                  205,
+                  59,
+                  184,
+                  48,
+                  50,
+                  15,
+                  127,
+                  226,
+                  226,
+                  233,
+                  94,
+                  251,
+                  23,
+                  167,
+                  232,
+                  245,
+                  254,
+                  224,
+                  172,
+                  121,
+                  245,
+                  118,
+                  226,
+                  82,
+                  98,
+                  38
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "usd_backing_quote",
+          "optional": true
         }
       ],
       "args": [
@@ -6262,90 +7151,18 @@
           ]
         },
         {
-          "name": "config",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  99,
-                  111,
-                  110,
-                  102,
-                  105,
-                  103
-                ]
-              }
-            ]
-          },
-          "relations": [
-            "er_fee_payer"
-          ]
+          "name": "config"
         },
         {
           "name": "owner"
         },
         {
           "name": "er_trader",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  101,
-                  114,
-                  45,
-                  116,
-                  114,
-                  97,
-                  100,
-                  101,
-                  114
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "owner"
-              }
-            ]
-          }
+          "writable": true
         },
         {
           "name": "guard",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  101,
-                  114,
-                  45,
-                  99,
-                  111,
-                  108,
-                  108,
-                  97,
-                  116,
-                  101,
-                  114,
-                  97,
-                  108,
-                  45,
-                  103,
-                  117,
-                  97,
-                  114,
-                  100
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "owner"
-              }
-            ]
-          }
+          "writable": true
         },
         {
           "name": "er_fee_payer",
@@ -6751,6 +7568,68 @@
         },
         {
           "name": "pool"
+        },
+        {
+          "name": "sol_backing_quote",
+          "optional": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  114,
+                  45,
+                  113,
+                  117,
+                  111,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  208,
+                  30,
+                  38,
+                  182,
+                  177,
+                  226,
+                  205,
+                  59,
+                  184,
+                  48,
+                  50,
+                  15,
+                  127,
+                  226,
+                  226,
+                  233,
+                  94,
+                  251,
+                  23,
+                  167,
+                  232,
+                  245,
+                  254,
+                  224,
+                  172,
+                  121,
+                  245,
+                  118,
+                  226,
+                  82,
+                  98,
+                  38
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "usd_backing_quote",
+          "optional": true
         }
       ],
       "args": [
@@ -7609,114 +8488,22 @@
           "signer": true
         },
         {
-          "name": "config",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  99,
-                  111,
-                  110,
-                  102,
-                  105,
-                  103
-                ]
-              }
-            ]
-          }
+          "name": "config"
         },
         {
           "name": "owner"
         },
         {
           "name": "er_trader",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  101,
-                  114,
-                  45,
-                  116,
-                  114,
-                  97,
-                  100,
-                  101,
-                  114
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "owner"
-              }
-            ]
-          }
+          "writable": true
         },
         {
           "name": "custody",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  101,
-                  114,
-                  45,
-                  99,
-                  117,
-                  115,
-                  116,
-                  111,
-                  100,
-                  121
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "owner"
-              }
-            ]
-          }
+          "writable": true
         },
         {
           "name": "guard",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  101,
-                  114,
-                  45,
-                  99,
-                  111,
-                  108,
-                  108,
-                  97,
-                  116,
-                  101,
-                  114,
-                  97,
-                  108,
-                  45,
-                  103,
-                  117,
-                  97,
-                  114,
-                  100
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "owner"
-              }
-            ]
-          }
+          "writable": true
         },
         {
           "name": "system_program",
@@ -9354,22 +10141,7 @@
           "signer": true
         },
         {
-          "name": "config",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  99,
-                  111,
-                  110,
-                  102,
-                  105,
-                  103
-                ]
-              }
-            ]
-          }
+          "name": "config"
         },
         {
           "name": "owner"
@@ -9507,29 +10279,7 @@
         },
         {
           "name": "er_trader",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  101,
-                  114,
-                  45,
-                  116,
-                  114,
-                  97,
-                  100,
-                  101,
-                  114
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "owner"
-              }
-            ]
-          }
+          "writable": true
         },
         {
           "name": "owner_program",
@@ -10323,6 +11073,16 @@
         {
           "name": "pump_program",
           "address": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+        },
+        {
+          "name": "native_revenue",
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "root_ownership_pool",
+          "writable": true,
+          "optional": true
         },
         {
           "name": "execution",
@@ -11287,6 +12047,19 @@
       ]
     },
     {
+      "name": "NativeRevenue",
+      "discriminator": [
+        37,
+        47,
+        198,
+        123,
+        90,
+        60,
+        74,
+        123
+      ]
+    },
+    {
       "name": "OwnershipPool",
       "discriminator": [
         129,
@@ -11392,6 +12165,19 @@
     }
   ],
   "events": [
+    {
+      "name": "BackingCoverageConverted",
+      "discriminator": [
+        0,
+        123,
+        14,
+        194,
+        0,
+        76,
+        241,
+        140
+      ]
+    },
     {
       "name": "CollateralHistoryRecovered",
       "discriminator": [
@@ -11507,6 +12293,19 @@
         150,
         219,
         90
+      ]
+    },
+    {
+      "name": "NativeSdiceDistribution",
+      "discriminator": [
+        246,
+        56,
+        217,
+        152,
+        46,
+        166,
+        150,
+        76
       ]
     },
     {
@@ -11845,6 +12644,81 @@
           {
             "name": "bump",
             "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BackingCoverageConverted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "position",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "asset",
+            "type": "pubkey"
+          },
+          {
+            "name": "tokens",
+            "type": "u64"
+          },
+          {
+            "name": "primary_received",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BackingRoute",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "accounts",
+            "docs": [
+              "Three bound source accounts followed by the swap route, or zero."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "sell_count",
+            "type": "u8"
+          },
+          {
+            "name": "min_out",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BackingRoutes",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sol",
+            "type": {
+              "defined": {
+                "name": "BackingRoute"
+              }
+            }
+          },
+          {
+            "name": "usd",
+            "type": {
+              "defined": {
+                "name": "BackingRoute"
+              }
+            }
           }
         ]
       }
@@ -12432,6 +13306,19 @@
           {
             "name": "generation",
             "type": "u64"
+          },
+          {
+            "name": "auxiliary_coverage",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "CoreCoverageState"
+                  }
+                },
+                2
+              ]
+            }
           }
         ]
       }
@@ -12810,6 +13697,23 @@
           {
             "name": "custody_generation",
             "type": "u64"
+          },
+          {
+            "name": "auxiliary_stakes",
+            "docs": [
+              "Auxiliary backing, in canonical SOL / USDC order. When primary is the",
+              "same asset its auxiliary slot stays zero (the primary reserve wins)."
+            ],
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "CoreStakeState"
+                  }
+                },
+                2
+              ]
+            }
           }
         ]
       }
@@ -13198,6 +14102,66 @@
           {
             "name": "bump",
             "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NativeRevenue",
+      "docs": [
+        "Separate from the legacy Venue layout. Only new native markets need this",
+        "account; existing token venues retain every byte and their payout-pool route."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "rewards_quote",
+            "type": "u64"
+          },
+          {
+            "name": "burn_quote",
+            "type": "u64"
+          },
+          {
+            "name": "sdice_rewarded",
+            "type": "u64"
+          },
+          {
+            "name": "sdice_burned",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NativeSdiceDistribution",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "venue",
+            "type": "pubkey"
+          },
+          {
+            "name": "quote_spent",
+            "type": "u64"
+          },
+          {
+            "name": "sdice_rewarded",
+            "type": "u64"
+          },
+          {
+            "name": "sdice_burned",
+            "type": "u64"
           }
         ]
       }
@@ -13945,7 +14909,7 @@
           {
             "name": "sdice_burned",
             "docs": [
-              "Historical SDICE burned before pool-size tokenomics; never incremented now."
+              "Historical burns plus native-market SDICE burns. Token venues do not burn SDICE."
             ],
             "type": "u64"
           },

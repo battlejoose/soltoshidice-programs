@@ -1,6 +1,6 @@
 //! Bounded legacy 8/50 -> 10 slot migration. No token movements or credit
-//! resets. The paused wallet must finish every position/withdrawal before its
-//! canonical ER trader and guard are committed and returned to Solana.
+//! resets. The current 10-slot extension preserves open trades; historical
+//! compactions still require idle wallets. Pending settlements always drain.
 use crate::*;
 use ephemeral_rollups_sdk::anchor::commit;
 use ephemeral_rollups_sdk::ephem::{FoldableIntentBuilder,MagicIntentBundleBuilder};
@@ -14,9 +14,13 @@ pub const PREVIOUS_ASSETS:usize=51;
 /// Preserve every named token record and every replay watermark. A 50-slot
 /// source may be compacted only when its named records fit the smaller ledger;
 /// excess records are rejected rather than silently losing balances or credits.
-fn expand_ledger<T:AccountDeserialize+Space>(bytes:&[u8],prefix:usize,slot_bytes:usize,tail:usize)->Result<Vec<u8>> {
+fn expand_ledger<T:AccountDeserialize+Space>(bytes:&[u8],prefix:usize,slot_bytes:usize,tail:usize,extension:usize)->Result<Vec<u8>> {
     let size=8+T::INIT_SPACE;
     if bytes.len()==size {T::try_deserialize(&mut &bytes[..])?;return Ok(bytes.to_vec());}
+    if bytes.len()==size-extension {
+        let mut expanded=bytes.to_vec();expanded.resize(size,0);
+        T::try_deserialize(&mut expanded.as_slice())?;return Ok(expanded);
+    }
     require!(cfg!(feature="mainnet"),MixError::Binding);
     let legacy=bytes.len()==prefix+LEGACY_ASSETS*LEGACY_BALANCE_BYTES+LEGACY_SLOTS*slot_bytes+tail;
     let previous=bytes.len()==prefix+PREVIOUS_ASSETS*64+PREVIOUS_SLOTS*slot_bytes+tail+8;
@@ -45,7 +49,8 @@ fn expand_ledger<T:AccountDeserialize+Space>(bytes:&[u8],prefix:usize,slot_bytes
     expanded.extend_from_slice(&bytes[at..at+slots.min(ER_SLOTS)*slot_bytes]);
     expanded.resize(prefix+ER_ASSETS*64+ER_SLOTS*slot_bytes,0);
     expanded.extend_from_slice(&bytes[at+slots*slot_bytes..]);if legacy {expanded.extend_from_slice(&[0;8]);}
-    require!(expanded.len()==size,MixError::Binding);
+    require!(expanded.len()==size-extension,MixError::Binding);
+    expanded.resize(size,0);
     T::try_deserialize(&mut expanded.as_slice())?;Ok(expanded)
 }
 
@@ -64,20 +69,38 @@ fn expand<T:AccountDeserialize+Space>(bytes:&[u8],prefix:usize,element:usize)->R
     Ok(expanded)
 }
 pub fn trader_bytes(bytes:&[u8])->Result<Vec<u8>> {
-    expand_ledger::<ErTrader>(bytes,8+3*32+2*8,ErSlot::INIT_SPACE,1+crate::stake_backing::CoreStakeState::INIT_SPACE)
+    expand_ledger::<ErTrader>(bytes,8+3*32+2*8,ErSlot::INIT_SPACE,1+crate::stake_backing::CoreStakeState::INIT_SPACE,64)
 }
 pub fn custody_bytes(bytes:&[u8])->Result<Vec<u8>> {
-    expand_ledger::<ErCustody>(bytes,8+3*32,ErReceipt::INIT_SPACE,1+crate::stake_backing::CoreCoverageState::INIT_SPACE)
+    expand_ledger::<ErCustody>(bytes,8+3*32,ErReceipt::INIT_SPACE,1+crate::stake_backing::CoreCoverageState::INIT_SPACE,48)
 }
 pub fn guard_bytes(bytes:&[u8])->Result<Vec<u8>> {
     expand::<CollateralGuard>(bytes,8+2*32,CollateralFloor::INIT_SPACE)
 }
 fn checked_trader(bytes:&[u8],owner:Pubkey,config:Pubkey)->Result<ErTrader> {
     let expanded=trader_bytes(bytes)?;let t=ErTrader::try_deserialize(&mut expanded.as_slice())?;
-    require!(t.owner==owner && t.config==config && t.pool==Pubkey::find_program_address(&[b"pool",&0u16.to_le_bytes()],&crate::ID).0,MixError::Binding);
-    // Backing may remain locked: it is copied, never withdrawn or consumed.
-    require!(t.notional==0 && t.slots.iter().all(|s|s.state==ER_FREE),MixError::Closed);
+    require!(t.owner==owner && t.config==config && t.pool==crate::venue::pool_address(config),MixError::Binding);
+    // Only the append-only, current 10-slot extension may carry open trades.
+    // Older layouts can compact records and must retain their idle-only rule.
+    if [2475,8+ErTrader::INIT_SPACE].contains(&bytes.len()) { stable_trader(&t)?; }
+    else {require!(t.notional==0 && t.slots.iter().all(|s|s.state==ER_FREE),MixError::Closed);}
     Ok(t)
+}
+/// Migration never closes, recreates or re-prices a position. No pending close
+/// or withdrawal can cross the DLP return/resize boundary, and the aggregate
+/// exposure must exactly match the preserved open records. Bust-observation
+/// flags and all other position fields are retained, including during return.
+pub fn stable_trader(t:&ErTrader)->Result<()> {
+    let mut notional=0u64;
+    for slot in t.slots.iter() {
+        if slot.state==ER_FREE {continue;}
+        require!(slot.state==ER_OPEN && slot.kind==ER_TRADE && slot.nonce>0
+            && slot.entry_value>0 && slot.leverage>0 && slot.close_seq==0
+            && slot.closed_at==0 && slot.exit==0 && !slot.liquidated,MixError::Closed);
+        notional=notional.checked_add(slot.entry_value.checked_mul(slot.leverage as u64)
+            .ok_or(MixError::Arithmetic)?).ok_or(MixError::Arithmetic)?;
+    }
+    require!(t.notional==notional,MixError::Closed);Ok(())
 }
 fn checked_guard(bytes:&[u8],owner:Pubkey,config:Pubkey)->Result<()> {
     let expanded=guard_bytes(bytes)?;let g=CollateralGuard::try_deserialize(&mut expanded.as_slice())?;
@@ -107,10 +130,11 @@ fn resize<'info>(target:&UncheckedAccount<'info>,bytes:&[u8],payer:&Signer<'info
 pub fn migrate(ctx:Context<MigrateWalletCapacity>)->Result<()> {
     let a=&ctx.accounts;
     require!(cfg!(feature="mainnet") && a.config.paused,MixError::Paused);
-    let layout=|length,legacy,previous,current|if length==legacy {0}else if length==previous {1}else if length==current {2}else {3};
-    let version=layout(a.er_trader.data_len(),2081,9875,8+ErTrader::INIT_SPACE);
-    require!(version<3 && version==layout(a.custody.data_len(),1361,5501,8+ErCustody::INIT_SPACE)
-        && version==layout(a.guard.data_len(),529,2923,8+CollateralGuard::INIT_SPACE),MixError::Binding);
+    let layout=|length,legacy,previous,old,current|if length==legacy {0}else if length==previous {1}else if length==old {2}else if length==current {3}else {4};
+    let version=layout(a.er_trader.data_len(),2081,9875,2475,8+ErTrader::INIT_SPACE);
+    require!(version<4 && version==layout(a.custody.data_len(),1361,5501,1581,8+ErCustody::INIT_SPACE),MixError::Binding);
+    let guard_size=match version {0=>529,1=>2923,_=>8+CollateralGuard::INIT_SPACE};
+    require!(a.guard.data_len()==guard_size,MixError::Binding);
     // Account constraints require all three records to be program-owned on
     // base. A stale delegated checkpoint cannot pass while ER can still write.
     let t=checked_trader(&a.er_trader.try_borrow_data()?,a.owner.key(),a.config.key())?;
@@ -131,14 +155,14 @@ pub fn migrate(ctx:Context<MigrateWalletCapacity>)->Result<()> {
 #[derive(Accounts)]
 pub struct ReleaseWalletCapacity<'info> {
     pub admin:Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump,has_one=admin)] pub config:Account<'info,Config>,
+    #[account(has_one=admin)] pub config:Account<'info,Config>,
     /// CHECK: Namespace and stored identity verified before requesting release.
     pub owner:UncheckedAccount<'info>,
     /// CHECK: Decode exact old/new layouts without modifying the delegated data.
-    #[account(mut,seeds=[b"er-trader",owner.key().as_ref()],bump,owner=crate::ID)] pub er_trader:UncheckedAccount<'info>,
+    #[account(mut,seeds=[b"er-trader",vns!(config.key()),owner.key().as_ref()],bump,owner=crate::ID)] pub er_trader:UncheckedAccount<'info>,
     /// CHECK: Exact old/new layout, owner and configuration verified in handler.
-    #[account(mut,seeds=[b"er-collateral-guard",owner.key().as_ref()],bump,owner=crate::ID)] pub guard:UncheckedAccount<'info>,
-    #[account(mut,seeds=[b"er-fee-payer"],bump=er_fee_payer.bump,has_one=config)] pub er_fee_payer:Account<'info,ErFeePayer>,
+    #[account(mut,seeds=[b"er-collateral-guard",vns!(config.key()),owner.key().as_ref()],bump,owner=crate::ID)] pub guard:UncheckedAccount<'info>,
+    #[account(mut,seeds=[b"er-fee-payer"],bump=er_fee_payer.bump,constraint=er_fee_payer.config==crate::ROOT_CONFIG @ MixError::Binding)] pub er_fee_payer:Account<'info,ErFeePayer>,
     /// CHECK: Fixed canonical validator fee vault, validated by the SDK.
     #[account(mut,address=ephemeral_rollups_sdk::pda::magic_fee_vault_pda_from_validator(&ER_VALIDATOR))] pub magic_fee_vault:UncheckedAccount<'info>,
     pub execution:ErExecution<'info>,
@@ -147,15 +171,15 @@ pub struct ReleaseWalletCapacity<'info> {
 pub struct MigrateWalletCapacity<'info> {
     pub admin:Signer<'info>,
     #[account(mut)] pub payer:Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump,has_one=admin)] pub config:Account<'info,Config>,
+    #[account(has_one=admin)] pub config:Account<'info,Config>,
     /// CHECK: Canonical namespace and stored owner checked for all three records.
     pub owner:UncheckedAccount<'info>,
     /// CHECK: Requires completed DLP return; legacy bytes are validated in handler.
-    #[account(mut,seeds=[b"er-trader",owner.key().as_ref()],bump,owner=crate::ID)] pub er_trader:UncheckedAccount<'info>,
+    #[account(mut,seeds=[b"er-trader",vns!(config.key()),owner.key().as_ref()],bump,owner=crate::ID)] pub er_trader:UncheckedAccount<'info>,
     /// CHECK: Canonical base custody, exact legacy/new layout and identity checked.
-    #[account(mut,seeds=[b"er-custody",owner.key().as_ref()],bump,owner=crate::ID)] pub custody:UncheckedAccount<'info>,
+    #[account(mut,seeds=[b"er-custody",vns!(config.key()),owner.key().as_ref()],bump,owner=crate::ID)] pub custody:UncheckedAccount<'info>,
     /// CHECK: Requires completed DLP return, exact layout and identity checked.
-    #[account(mut,seeds=[b"er-collateral-guard",owner.key().as_ref()],bump,owner=crate::ID)] pub guard:UncheckedAccount<'info>,
+    #[account(mut,seeds=[b"er-collateral-guard",vns!(config.key()),owner.key().as_ref()],bump,owner=crate::ID)] pub guard:UncheckedAccount<'info>,
     pub system_program:Program<'info,System>,
     pub execution:BaseExecution<'info>,
 }
@@ -181,7 +205,8 @@ mod tests {
         for i in 0..LEGACY_SLOTS {t.slots[i]=ErSlot{state:ER_OPEN,kind:ER_TRADE,nonce:i as u64+1,asset:Pubkey::new_unique(),margin:9753,..ErSlot::default()};}
         for a in t.assets.iter_mut().take(LEGACY_ASSETS) {*a=ErBalance{asset:Pubkey::new_unique(),credited_deposits:54,credited_returns:13,available:17,..ErBalance::default()};}
         let full=bytes(&t);let old=legacy_ledger(&full,8+3*32+2*8,ErSlot::INIT_SPACE,33);
-        assert_eq!(old.len(),2081);assert_eq!(full.len(),2475);assert_eq!(trader_bytes(&old).unwrap(),full);
+        assert_eq!(old.len(),2081);assert_eq!(full.len(),2539);assert_eq!(trader_bytes(&old).unwrap(),full);
+        assert_eq!(trader_bytes(&full[..2475]).unwrap(),full);
         assert_eq!(trader_bytes(&full).unwrap(),full);assert!(trader_bytes(&old[..old.len()-1]).is_err());
         let mut wrong=old.clone();wrong[0]^=1;assert!(trader_bytes(&wrong).is_err());
         let mut c=ErCustody{owner:t.owner,config:t.config,pool:t.pool,bump:252,
@@ -189,7 +214,8 @@ mod tests {
         for (i,r) in c.receipts.iter_mut().take(LEGACY_SLOTS).enumerate(){*r=ErReceipt{nonce:i as u64+2,kind:ER_TRADE,settled:true,position:Pubkey::new_unique()};}
         for a in c.assets.iter_mut().take(LEGACY_ASSETS) {*a=CustodyAsset{asset:Pubkey::new_unique(),deposited_credits:84,returned_credits:25,available:51,..CustodyAsset::default()};}
         let full=bytes(&c);let old=legacy_ledger(&full,8+3*32,ErReceipt::INIT_SPACE,25);
-        assert_eq!(old.len(),1361);assert_eq!(full.len(),1581);assert_eq!(custody_bytes(&old).unwrap(),full);
+        assert_eq!(old.len(),1361);assert_eq!(full.len(),1629);assert_eq!(custody_bytes(&old).unwrap(),full);
+        assert_eq!(custody_bytes(&full[..1581]).unwrap(),full);
         let mut g=CollateralGuard{owner:t.owner,config:t.config,floors:CollateralGuard::empty_floors(),bump:251};
         for (i,f) in g.floors.iter_mut().take(LEGACY_SLOTS).enumerate(){*f=CollateralFloor{nonce:i as u64+2,value:57,closed_at:87,entry_price:63,..CollateralFloor::default()};}
         let full=bytes(&g);let old=legacy(full.clone(),8+2*32,CollateralFloor::INIT_SPACE);
@@ -201,7 +227,8 @@ mod tests {
         let at=prefix+ER_ASSETS*64;
         wide.extend_from_slice(&data[at..at+ER_SLOTS*element]);
         wide.resize(prefix+PREVIOUS_ASSETS*64+PREVIOUS_SLOTS*element,0);
-        wide.extend_from_slice(&data[at+ER_SLOTS*element..]);wide
+        let extension=if element==ErSlot::INIT_SPACE {64}else{48};
+        wide.extend_from_slice(&data[at+ER_SLOTS*element..data.len()-extension]);wide
     }
     #[test]
     fn fifty_slot_shrink_preserves_high_index_balances_and_generation() {
@@ -234,11 +261,27 @@ mod tests {
     #[test]
     fn release_requires_finished_positions_but_preserves_locked_backing() {
         let owner=Pubkey::new_unique();let config=Pubkey::new_unique();
-        let mut t=ErTrader{owner,config,pool:Pubkey::find_program_address(&[b"pool",&0u16.to_le_bytes()],&crate::ID).0,..ErTrader::default()};
+        let mut t=ErTrader{owner,config,pool:crate::venue::pool_address(config),..ErTrader::default()};
         t.core_stake.tokens=9;checked_trader(&bytes(&t),owner,config).unwrap();
         t.slots[0].state=ER_OPEN;assert!(checked_trader(&bytes(&t),owner,config).is_err());
         t.slots[0].state=ER_PENDING;assert!(checked_trader(&bytes(&t),owner,config).is_err());
         t.slots[0].state=ER_FREE;t.notional=1;assert!(checked_trader(&bytes(&t),owner,config).is_err());
         t.notional=0;assert!(checked_trader(&bytes(&t),Pubkey::new_unique(),config).is_err());
+    }
+    #[test]
+    fn append_only_migration_retains_open_trade_and_observed_bust_but_rejects_pending_or_bad_exposure() {
+        let owner=Pubkey::new_unique();let config=Pubkey::new_unique();
+        let mut t=ErTrader{owner,config,pool:crate::venue::pool_address(config),notional:350,..ErTrader::default()};
+        t.slots[9]=ErSlot{state:ER_OPEN,kind:ER_TRADE,nonce:5,entry_value:70,leverage:5,
+            entry:100,bust:80,margin:99,opened_at:123,cursor:56,bust_observed:true,..ErSlot::default()};
+        let current=bytes(&t);let single=&current[..2475];
+        assert_eq!(bytes(&checked_trader(single,owner,config).unwrap()),current);
+        assert_eq!(bytes(&checked_trader(&current,owner,config).unwrap()),current);
+        let wide=fifty_ledger(&current,120,ErSlot::INIT_SPACE);
+        assert!(checked_trader(&wide,owner,config).is_err());
+        t.notional+=1;assert!(stable_trader(&t).is_err());t.notional-=1;
+        for state in [ER_PENDING,3] {t.slots[9].state=state;assert!(stable_trader(&t).is_err());}
+        t.slots[9].state=ER_OPEN;t.slots[9].close_seq=1;assert!(stable_trader(&t).is_err());
+        t.slots[9].close_seq=0;t.slots[9].kind=ER_WITHDRAW;assert!(stable_trader(&t).is_err());
     }
 }

@@ -64,7 +64,7 @@ fn sol_collateral_is_sampled_from_magicblock_and_stored_at_open_by_actual_sbf() 
     put(&mut svm,core_quote,&ErQuote {config,asset:core,base_reserve:1_000_000_000,quote_reserve:1_000_000_000,fee_bps:[0;3],publish_time:NOW,source_slot:1,bump:core_bump,..ErQuote::default()});
     let mut backing:ErTrader=ErTrader::try_deserialize(&mut &svm.get_account(&trader_key).unwrap().data[..]).unwrap();
     backing.core_stake.tokens=1_000_000_000;put(&mut svm,trader_key,&backing);
-    let open=Instruction {program_id:program::ID,accounts:program::accounts::OpenErPosition {
+    let open=Instruction {program_id:program::ID,accounts:program::accounts::OpenErPosition {sol_backing_quote:None,usd_backing_quote:None,
         owner:owner.pubkey(),config,er_trader:trader_key,er_risk:risk_key,asset,er_quote:quote_key,history:history_key,guard:guard_key,core_quote,
         execution:program::accounts::ErExecution {magic_program:magic},
         #[cfg(feature="mainnet")] gas_authority:publisher.pubkey(),

@@ -5,20 +5,23 @@ use ephemeral_rollups_sdk::anchor::{commit,delegate};
 use ephemeral_rollups_sdk::cpi::DelegateConfig;
 use ephemeral_rollups_sdk::ephem::{FoldableIntentBuilder,MagicIntentBundleBuilder};
 
-fn padded<T:AccountDeserialize+Space>(data:&[u8],extra:usize)->Result<T> {
-    require!(data.len()==8+T::INIT_SPACE-extra || data.len()==8+T::INIT_SPACE,MixError::Binding);
+fn padded<T:AccountDeserialize+Space>(data:&[u8],extra:usize,extension:usize)->Result<T> {
+    // Historical devnet records predate core backing; the immediately previous
+    // layout predates only the auxiliary reserves. Both append zero state.
+    require!([8+T::INIT_SPACE-extra-extension,8+T::INIT_SPACE-extension,8+T::INIT_SPACE].contains(&data.len()),MixError::Binding);
     let mut bytes=data.to_vec();bytes.resize(8+T::INIT_SPACE,0);
     T::try_deserialize(&mut bytes.as_slice())
 }
 fn idle(t:&ErTrader,owner:Pubkey,config:Pubkey)->Result<()> {
     require!(t.owner==owner && t.config==config && t.pool==Pubkey::find_program_address(&[b"pool",&0u16.to_le_bytes()],&crate::ID).0,MixError::Binding);
-    require!(t.notional==0 && t.slots.iter().all(|s|s.state==ER_FREE) && t.core_stake.tokens==0,MixError::Closed);
+    require!(t.notional==0 && t.slots.iter().all(|s|s.state==ER_FREE) && t.core_stake.tokens==0
+        && t.auxiliary_stakes.iter().all(|s|s.tokens==0),MixError::Closed);
     Ok(())
 }
 
 pub fn release(ctx:Context<ReleaseLegacyTrader>)->Result<()> {
     require!(cfg!(feature="devnet") && ctx.accounts.config.paused,MixError::Paused);
-    let t:ErTrader=padded(&ctx.accounts.er_trader.try_borrow_data()?,32)?;
+    let t:ErTrader=padded(&ctx.accounts.er_trader.try_borrow_data()?,32,64)?;
     idle(&t,ctx.accounts.owner.key(),ctx.accounts.config.key())?;
     MagicIntentBundleBuilder::new(ctx.accounts.er_fee_payer.to_account_info(),ctx.accounts.magic_context.to_account_info(),ctx.accounts.magic_program.to_account_info())
         .magic_fee_vault(ctx.accounts.magic_fee_vault.to_account_info())
@@ -30,12 +33,12 @@ pub fn migrate(ctx:Context<MigrateCoreAccount>,kind:u8)->Result<()> {
     require!(cfg!(feature="devnet") && ctx.accounts.config.paused,MixError::Paused);
     let a=&ctx.accounts.target;
     let size={let data=a.try_borrow_data()?; match kind {
-        0=>{let t:ErTrader=padded(&data,32)?;idle(&t,t.owner,ctx.accounts.config.key())?;
+        0=>{let t:ErTrader=padded(&data,32,64)?;idle(&t,t.owner,ctx.accounts.config.key())?;
             require_keys_eq!(a.key(),Pubkey::find_program_address(&[b"er-trader",t.owner.as_ref()],&crate::ID).0,MixError::Binding);8+ErTrader::INIT_SPACE},
-        1=>{let c:ErCustody=padded(&data,24)?;
+        1=>{let c:ErCustody=padded(&data,24,48)?;
             require!(c.config==ctx.accounts.config.key(),MixError::Binding);
             require_keys_eq!(a.key(),Pubkey::find_program_address(&[b"er-custody",c.owner.as_ref()],&crate::ID).0,MixError::Binding);8+ErCustody::INIT_SPACE},
-        2=>{let p:Position=padded(&data,32)?;require!(p.state!=0,MixError::Closed);
+        2=>{let p:Position=padded(&data,32,0)?;require!(p.state!=0,MixError::Closed);
             require_keys_eq!(a.key(),Pubkey::find_program_address(&[b"position",p.owner.as_ref(),&p.nonce.to_le_bytes()],&crate::ID).0,MixError::Binding);8+Position::INIT_SPACE},
         _=>return err!(MixError::Binding),
     }};
@@ -50,7 +53,7 @@ pub fn migrate(ctx:Context<MigrateCoreAccount>,kind:u8)->Result<()> {
 /// No ledger bytes are changed or supplied by the caller.
 pub fn request_release(ctx:Context<RequestCoreUndelegation>)->Result<()> {
     require!(cfg!(feature="devnet") && ctx.accounts.config.paused,MixError::Paused);
-    let t:ErTrader=padded(&ctx.accounts.er_trader.try_borrow_data()?,32)?;
+    let t:ErTrader=padded(&ctx.accounts.er_trader.try_borrow_data()?,32,64)?;
     idle(&t,ctx.accounts.owner.key(),ctx.accounts.config.key())?;
     let a=&ctx.accounts;
     let ix=ephemeral_rollups_sdk::instruction_builder::request_undelegation(a.payer.key(),a.er_trader.key(),crate::ID);
@@ -70,7 +73,7 @@ pub fn recover(ctx:Context<RecoverCoreTrader>,expected_hash:[u8;32])->Result<()>
     require!(ctx.accounts.commit_state.data_is_empty() && ctx.accounts.commit_record.data_is_empty(),MixError::Binding);
     let bytes=a.er_trader.try_borrow_data()?.to_vec();
     require!(ephemeral_rollups_sdk::dlp_api::solana_program::hash::hash(&bytes).to_bytes()==expected_hash,MixError::Binding);
-    let t:ErTrader=padded(&bytes,32)?;idle(&t,a.owner.key(),a.config.key())?;
+    let t:ErTrader=padded(&bytes,32,64)?;idle(&t,a.owner.key(),a.config.key())?;
     let ix=ephemeral_rollups_sdk::instruction_builder::undelegate_with_rollback_after_timeout(a.er_trader.key(),crate::ID,a.payer.key(),a.payer.key());
     let owner=a.owner.key();let bump=Pubkey::find_program_address(&[b"er-trader",owner.as_ref()],&crate::ID).1;
     anchor_lang::solana_program::program::invoke_signed(&ix,&[
@@ -92,15 +95,17 @@ pub fn redelegate(ctx:Context<RedelegateCoreTrader>)->Result<()> {
     #[cfg(feature="mainnet")]
     {
         // A completed capacity migration may retain locked backing. Preserve
-        // every byte and return the idle canonical ledger to the pinned ER;
+        // every byte and return the canonical ledger to the pinned ER;
         // the administrator cannot trade or withdraw using this instruction.
         require!(t.owner==ctx.accounts.owner.key() && t.config==ctx.accounts.config.key()
-            && t.pool==Pubkey::find_program_address(&[b"pool",&0u16.to_le_bytes()],&crate::ID).0,MixError::Binding);
-        require!(t.notional==0 && t.slots.iter().all(|s|s.state==ER_FREE),MixError::Closed);
+            && t.pool==crate::venue::pool_address(ctx.accounts.config.key()),MixError::Binding);
+        crate::wallet_capacity::stable_trader(&t)?;
     }
     #[cfg(not(feature="mainnet"))]
     idle(&t,ctx.accounts.owner.key(),ctx.accounts.config.key())?;
-    ctx.accounts.delegate_er_trader(&ctx.accounts.payer,&[b"er-trader",ctx.accounts.owner.key().as_ref()],DelegateConfig{validator:Some(ER_VALIDATOR),commit_frequency_ms:u32::MAX})?;
+    let n=crate::venue::ns(ctx.accounts.config.key());let owner=ctx.accounts.owner.key();
+    let seeds=crate::venue::ns_seeds(b"er-trader",&n,&[owner.as_ref()]);
+    ctx.accounts.delegate_er_trader(&ctx.accounts.payer,&seeds,DelegateConfig{validator:Some(ER_VALIDATOR),commit_frequency_ms:u32::MAX})?;
     Ok(())
 }
 
@@ -166,9 +171,9 @@ pub struct RecoverCoreTrader<'info> {
 pub struct RedelegateCoreTrader<'info> {
     pub admin:Signer<'info>,
     #[account(mut)] pub payer:Signer<'info>,
-    #[account(seeds=[b"config"],bump=config.bump,has_one=admin)] pub config:Account<'info,Config>,
+    #[account(has_one=admin)] pub config:Account<'info,Config>,
     /// CHECK: Canonical owner checked against the preserved idle ledger.
     pub owner:UncheckedAccount<'info>,
     /// CHECK: Exact current layout and idle canonical ledger; paused admin only.
-    #[account(mut,del,seeds=[b"er-trader",owner.key().as_ref()],bump)] pub er_trader:UncheckedAccount<'info>,
+    #[account(mut,del,seeds=[b"er-trader",vns!(config.key()),owner.key().as_ref()],bump)] pub er_trader:UncheckedAccount<'info>,
 }

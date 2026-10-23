@@ -92,7 +92,7 @@ pub struct Venue {
     pub buyback_received: u64,
     /// Swap-quote atoms spent on SDICE by `route_buyback`.
     pub buyback_spent: u64,
-    /// Historical SDICE burned before pool-size tokenomics; never incremented now.
+    /// Historical burns plus native-market SDICE burns. Token venues do not burn SDICE.
     pub sdice_burned: u64,
     pub bump: u8,
 }
@@ -133,10 +133,33 @@ pub struct SdicePoolContribution {
     pub root_treasury: u64,
 }
 
+/// Separate from the legacy Venue layout. Only new native markets need this
+/// account; existing token venues retain every byte and their payout-pool route.
+#[account]
+#[derive(InitSpace, Default)]
+pub struct NativeRevenue {
+    pub pool: Pubkey,
+    pub rewards_quote: u64,
+    pub burn_quote: u64,
+    pub sdice_rewarded: u64,
+    pub sdice_burned: u64,
+    pub bump: u8,
+}
+
+#[event]
+pub struct NativeSdiceDistribution {
+    pub venue: Pubkey,
+    pub quote_spent: u64,
+    pub sdice_rewarded: u64,
+    pub sdice_burned: u64,
+}
+
 pub fn create_venue(ctx: Context<CreateVenue>) -> Result<()> {
     #[cfg(feature="mainnet")]
     {
-        crate::mainnet_config::validate_asset(&ctx.accounts.asset)?;
+        if crate::native_market::kind(&ctx.accounts.asset)?.is_none() {
+            crate::mainnet_config::validate_asset(&ctx.accounts.asset)?;
+        }
         // A venue needs an executable buy route, not merely a collateral sale.
         // Token-quoted primary buys are not supported by the reviewed adapter.
         require!(ctx.accounts.asset.quote_mint==crate::mainnet_pump::SOL,MixError::Binding);
@@ -167,6 +190,15 @@ pub fn create_venue(ctx: Context<CreateVenue>) -> Result<()> {
     v.burn_bps = VENUE_BURN_BPS;
     v.gas_bps = VENUE_GAS_BPS;
     v.buyback_bps = VENUE_BUYBACK_BPS;
+    #[cfg(feature="mainnet")]
+    if crate::native_market::kind(&ctx.accounts.asset)?.is_some() {
+        v.burn_bps=0;v.buyback_bps=200;
+        let revenue=ctx.accounts.native_revenue.as_mut().ok_or(MixError::Binding)?;
+        revenue.pool=p.key();
+        revenue.bump=ctx.bumps.native_revenue.ok_or(MixError::Binding)?;
+    } else {
+        require!(ctx.accounts.native_revenue.is_none(),MixError::Binding);
+    }
     v.bump = ctx.bumps.venue;
     emit!(VenueCreated { config: c.key(), venue: v.key(), pool: p.key(), mint: v.mint, creator: v.creator });
     Ok(())
@@ -181,7 +213,29 @@ pub fn route_buyback<'info>(ctx: Context<'info, RouteBuyback<'info>>, amount: u6
     // not block incoming payout liquidity. No pre-existing root funds are spent.
     require!(!math::queue_pending(a.pool.queue_usd,a.pool.queue_head,a.pool.queue_tail)?,MixError::QueueOrder);
     let available = pump::token_amount(&a.buyback_vault.to_account_info())?;
-    let amount = if amount == 0 { available } else { amount };
+    // Native allocations are fixed by each loss, never by a later pool valuation.
+    // Unsolicited quote deposits must not dilute the rewards/burn allocation.
+    #[cfg(feature="mainnet")]
+    let native=crate::native_market::is_native_mint(a.venue.mint);
+    #[cfg(not(feature="mainnet"))]
+    let native=false;
+    #[cfg(feature="mainnet")]
+    let tracked=if native {
+        let revenue=a.native_revenue.as_ref().ok_or(MixError::Binding)?;
+        require!(revenue.pool==a.pool.key() && revenue.key()==Pubkey::find_program_address(
+            &[b"native-revenue",a.pool.key().as_ref()],&crate::ID).0,MixError::Binding);
+        let ownership=a.root_ownership_pool.as_ref().ok_or(MixError::Binding)?;
+        require!(ownership.pool==a.root_pool.key() && ownership.key()==Pubkey::find_program_address(
+            &[b"ownership-pool",a.root_pool.key().as_ref()],&crate::ID).0,MixError::Binding);
+        revenue.rewards_quote.checked_add(revenue.burn_quote).ok_or(MixError::Arithmetic)?
+    } else {
+        require!(a.native_revenue.is_none() && a.root_ownership_pool.is_none(),MixError::Binding);
+        available
+    };
+    #[cfg(not(feature="mainnet"))]
+    let tracked=available;
+    let amount = if amount == 0 { tracked } else { amount };
+    require!(amount<=tracked,MixError::Amount);
     require!(amount > 0 && amount <= available && min_out > 0, MixError::Amount);
     // Root valuation binds the SDICE pool that the buy leg must use.
     pump::validate_pool(&a.sdice, &a.sdice_valuation)?;
@@ -200,13 +254,36 @@ pub fn route_buyback<'info>(ctx: Context<'info, RouteBuyback<'info>>, amount: u6
     require!(pump::token_amount(&a.root_quote.to_account_info())? >= quote0, MixError::Binding);
     let out = pump::token_amount(&a.root_vault.to_account_info())?.checked_sub(sdice0).ok_or(MixError::Arithmetic)?;
     require!(out >= min_out, MixError::Quote);
-    let root_treasury=a.root_inventory.treasury.checked_add(out).ok_or(MixError::Arithmetic)?;
+    let mut rewarded=0;
+    let mut burned=0;
+    #[cfg(feature="mainnet")]
+    if native {
+        let revenue=ctx.accounts.native_revenue.as_mut().ok_or(MixError::Binding)?;
+        let burn_quote=(amount as u128*revenue.burn_quote as u128/tracked as u128) as u64;
+        burned=(out as u128*burn_quote as u128/amount as u128) as u64;
+        rewarded=out-burned;
+        revenue.rewards_quote=revenue.rewards_quote.checked_sub(amount-burn_quote).ok_or(MixError::Arithmetic)?;
+        revenue.burn_quote=revenue.burn_quote.checked_sub(burn_quote).ok_or(MixError::Arithmetic)?;
+        revenue.sdice_rewarded=revenue.sdice_rewarded.checked_add(rewarded).ok_or(MixError::Arithmetic)?;
+        revenue.sdice_burned=revenue.sdice_burned.checked_add(burned).ok_or(MixError::Arithmetic)?;
+        ownership::fund_rewards(ctx.accounts.root_ownership_pool.as_mut().ok_or(MixError::Binding)?,rewarded)?;
+        if burned>0 {
+            let root_key=ctx.accounts.root_pool.key();
+            let seeds:&[&[u8]]=&[b"authority",root_key.as_ref(),&[ctx.accounts.root_pool.authority_bump]];
+            token_interface::burn(CpiContext::new_with_signer(ctx.accounts.sdice_program.key(),token_interface::Burn{
+                mint:ctx.accounts.sdice_mint.to_account_info(),from:ctx.accounts.root_vault.to_account_info(),
+                authority:ctx.accounts.root_authority.to_account_info(),
+            },&[seeds]),burned)?;
+        }
+    }
+    let root_treasury=ctx.accounts.root_inventory.treasury.checked_add(if native {0}else{out}).ok_or(MixError::Arithmetic)?;
     ctx.accounts.root_inventory.treasury=root_treasury;
     let v = &mut ctx.accounts.venue;
     v.buyback_spent = v.buyback_spent.checked_add(amount).ok_or(MixError::Arithmetic)?;
-    // Preserve the historical event decoder; this transaction burns zero SDICE.
-    emit!(SdiceBuyback { venue: v.key(), quote_spent: amount, sdice_burned: 0, root_treasury });
-    emit!(SdicePoolContribution { venue: v.key(), quote_spent: amount, sdice_contributed: out, root_treasury });
+    v.sdice_burned=v.sdice_burned.checked_add(burned).ok_or(MixError::Arithmetic)?;
+    emit!(SdiceBuyback { venue: v.key(), quote_spent: amount, sdice_burned: burned, root_treasury });
+    if native {emit!(NativeSdiceDistribution {venue:v.key(),quote_spent:amount,sdice_rewarded:rewarded,sdice_burned:burned});}
+    else {emit!(SdicePoolContribution { venue: v.key(), quote_spent: amount, sdice_contributed: out, root_treasury });}
     Ok(())
 }
 
@@ -225,8 +302,8 @@ pub struct CreateVenue<'info> {
     // Only a registered, collateral-enabled token with a real swap route can
     // back a venue. The root's own primary token cannot be backed twice.
     #[account(seeds=[b"asset",asset.mint.as_ref()],bump=asset.bump,
-        constraint=asset.collateral_enabled && asset.key()!=root_pool.settlement && asset.dex_pool!=Pubkey::default()
-            && asset.mint!=anchor_spl::token::spl_token::native_mint::ID && asset.mint!=root.quote_mint @ MixError::Binding)]
+        constraint=asset.collateral_enabled && asset.key()!=root_pool.settlement
+            && (asset.dex_pool!=Pubkey::default() || asset.mint==anchor_spl::token::spl_token::native_mint::ID) @ MixError::Binding)]
     pub asset: Box<Account<'info, Asset>>,
     #[account(address=asset.mint)]
     pub mint: Box<InterfaceAccount<'info, Mint>>,
@@ -258,6 +335,9 @@ pub struct CreateVenue<'info> {
     #[account(init,payer=admin,seeds=[b"quote",pool.key().as_ref()],bump,
         token::mint=payout_mint,token::authority=authority,token::token_program=quote_program)]
     pub payout_vault: Box<InterfaceAccount<'info, TokenAccount>>,
+    #[cfg(feature="mainnet")]
+    #[account(init,payer=admin,space=8+NativeRevenue::INIT_SPACE,seeds=[b"native-revenue",pool.key().as_ref()],bump)]
+    pub native_revenue: Option<Box<Account<'info, NativeRevenue>>>,
     pub system_program: Program<'info, System>,
     #[cfg(feature="mainnet")]
     pub execution: BaseExecution<'info>,
@@ -303,6 +383,13 @@ pub struct RouteBuyback<'info> {
     /// CHECK: Fixed executable PumpSwap program, also enforced inside the CPI.
     #[account(address=pump::ID,executable)]
     pub pump_program: UncheckedAccount<'info>,
+    #[cfg(feature="mainnet")]
+    // Canonical PDA and pool bindings are checked in the handler before any CPI.
+    #[account(mut)]
+    pub native_revenue: Option<Box<Account<'info, NativeRevenue>>>,
+    #[cfg(feature="mainnet")]
+    #[account(mut)]
+    pub root_ownership_pool: Option<Box<Account<'info, OwnershipPool>>>,
     #[cfg(feature="mainnet")]
     pub execution: BaseExecution<'info>,
 }

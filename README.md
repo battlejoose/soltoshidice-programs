@@ -58,6 +58,25 @@ All five programs have canonical on-chain IDLs and security records. See
 Native IDLs describe decoding; they are not generic transaction-building SDKs.
 Report vulnerabilities privately through our [security policy](SECURITY.md).
 
+## Perps mixed backing and native markets — October 23, 2026 UTC
+
+Bet backing can now combine a market’s primary token, SOL and USDC. Each bet
+still spends one selected token. Separate native SOL and USDC market creation
+is supported, with non-transferable pSOL/pUSDC and profits paid in the market’s
+primary token. Native markets allocate their special loss share to main pSDICE
+stakers: 2% below the high-pool tier, or 10% to those stakers plus 9% SDICE burn
+above $2M. The FIFO allocation remains 99% pool / 1% gas.
+
+The deployed ELF is `ca6e22ecaee311b067fc8ebe088b332c3a4c1fbcce535901c3aa2a4de849dd24`.
+It adds append-only wallet records; the migration preserves existing stable open
+positions, balances and stored liquidation prices. Older slot-compaction layouts
+still require idle wallets. Perps remains upgradeable; no other program or
+authority is changed. The source is exported from application commit
+`f13964d2566acafabdfe58758a0dc3c87ebcf227`; the public source rebuilt byte for byte to the installed executable. See the
+[deployment and rebuild receipt](evidence/perps-mixed-backing-release-2026-10-23.json),
+current source in `perps/`, and interface in `metadata/perps.idl.json`. The
+independent public registry refresh is tracked separately.
+
 ## Perps spot-token profit payouts — October 21, 2026 UTC
 
 Winning profits now pay directly in each market's backing token at the USD spot
