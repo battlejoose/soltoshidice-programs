@@ -1438,6 +1438,54 @@
       "feeLamports": 5000
     },
     "requestId": "520cf185-5af8-487c-ab5b-5c7cc45317f7",
-    "status": "pending"
+    "status": "verified",
+    "verifiedAt": "2026-10-23T22:12:40.579085",
+    "statusUrl": "https://verify.osec.io/status/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+    "jobUrl": "https://verify.osec.io/job/520cf185-5af8-487c-ab5b-5c7cc45317f7",
+    "independentResult": {
+      "is_verified": true,
+      "message": "On chain program verified",
+      "on_chain_hash": "8f66d1ffd9b4c1f493ae04ec24bb806f798e819cb4bafa28d430c239cd9884c4",
+      "executable_hash": "8f66d1ffd9b4c1f493ae04ec24bb806f798e819cb4bafa28d430c239cd9884c4",
+      "repo_url": "https://github.com/battlejoose/soltoshidice-programs/tree/3e92f7bbea38f9e93679bf99459fc614c3105e22",
+      "commit": "3e92f7bbea38f9e93679bf99459fc614c3105e22",
+      "last_verified_at": "2026-10-23T22:12:40.579085",
+      "is_frozen": false,
+      "is_closed": false
+    }
+  },
+  "postReopenHealth": {
+    "at": "2026-10-23T22:12:08.585Z",
+    "healthy": true,
+    "markets": [
+      {
+        "symbol": "SDICE",
+        "priceAgeMs": 1884,
+        "inventoryReady": true,
+        "canOpen": true,
+        "journalHealthy": true
+      },
+      {
+        "symbol": "ANSEM",
+        "priceAgeMs": 1922,
+        "inventoryReady": true,
+        "canOpen": true,
+        "journalHealthy": true
+      },
+      {
+        "symbol": "MACHI",
+        "priceAgeMs": 902,
+        "inventoryReady": true,
+        "canOpen": true,
+        "journalHealthy": true
+      },
+      {
+        "symbol": "STABLE",
+        "priceAgeMs": 915,
+        "inventoryReady": true,
+        "canOpen": true,
+        "journalHealthy": true
+      }
+    ]
   }
 }

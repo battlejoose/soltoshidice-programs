@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-23T22:06:31.436Z",
+  "at": "2026-10-23T22:15:09.777Z",
   "cluster": "mainnet-beta",
   "solanaVerifyVersion": "0.5.2",
   "image": "solanafoundation/solana-verifiable-build@sha256:f71be5ca7620b7e40933b7f1294fa44e01d08c1fc5ba1f375a2478f5a01580d3",
@@ -112,14 +112,16 @@
         "mainnet"
       ],
       "localDockerMatch": true,
-      "publicRegistryStatus": "pending",
+      "publicRegistryStatus": "verified",
       "previousVerifiedCommit": "8821a2a604750eafdc27742893f73a5598edad04",
       "previousVerifiedAt": "2026-10-21T06:58:49.415391",
       "localNativeMatch": true,
-      "remoteDockerMatch": false,
+      "remoteDockerMatch": true,
       "latestReleaseEvidence": "evidence/perps-mixed-backing-release-2026-10-23.json",
       "verificationSourceCommit": "3e92f7bbea38f9e93679bf99459fc614c3105e22",
-      "verificationRequestId": "520cf185-5af8-487c-ab5b-5c7cc45317f7"
+      "verificationRequestId": "520cf185-5af8-487c-ab5b-5c7cc45317f7",
+      "verifiedCommit": "3e92f7bbea38f9e93679bf99459fc614c3105e22",
+      "verifiedAt": "2026-10-23T22:12:40.579085"
     },
     {
       "name": "brackets",

@@ -75,7 +75,8 @@ authority is changed. The source is exported from application commit
 `f13964d2566acafabdfe58758a0dc3c87ebcf227`; the public source rebuilt byte for byte to the installed executable. See the
 [deployment and rebuild receipt](evidence/perps-mixed-backing-release-2026-10-23.json),
 current source in `perps/`, and interface in `metadata/perps.idl.json`. The
-independent public registry refresh is tracked separately.
+independent public registry also verified the same source and mainnet hash on
+October 23, 2026: [verification status](https://verify.osec.io/status/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7).
 
 ## Perps spot-token profit payouts — October 21, 2026 UTC
 
