@@ -1,0 +1,78 @@
+{
+  "note": "Actual browser screenshots. Local fixtures simulate balances and game state; they are not settlement evidence. Perps prices are historical. No images are generated or retouched.",
+  "viewport": {
+    "width": 1440,
+    "height": 960
+  },
+  "captured": [
+    {
+      "file": "dice.jpg",
+      "capturedAt": "2026-10-24T12:28:30.585Z",
+      "source": "Offline courtyard fixture; Cee-lo controls, no wager placed.",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "file": "poker.jpg",
+      "capturedAt": "2026-10-24T12:28:33.658Z",
+      "source": "Offline courtyard fixture; simulated flop, cards and stacks.",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "file": "blackjack.jpg",
+      "capturedAt": "2026-10-24T12:28:41.095Z",
+      "source": "Offline blackjack fixture; simulated dealer, hands and stacks.",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "file": "slots.jpg",
+      "capturedAt": "2026-10-24T12:28:54.229Z",
+      "source": "Offline slots fixture; production SlotsCourtyard and cabinet, disconnected wallet.",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "file": "fights.jpg",
+      "capturedAt": "2026-10-24T12:24:23.404Z",
+      "source": "Offline fight choreography replay; recorded fixture, no live challenge.",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "file": "rps.jpg",
+      "capturedAt": "2026-10-24T12:29:07.518Z",
+      "source": "Offline RPS choosing fixture; simulated match and funding quote, no move submitted.",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "file": "perps.jpg",
+      "capturedAt": "2026-10-24T12:32:26.978Z",
+      "source": "https://soltoshidice.wtf/perps/trade; fresh unfunded browser session, read-only capture.",
+      "viewport": {
+        "width": 1200,
+        "height": 1000
+      },
+      "clip": {
+        "x": 250,
+        "y": 0,
+        "width": 700,
+        "height": 660
+      }
+    }
+  ]
+}
