@@ -307,3 +307,5 @@ The kit reports its scope: five games have covered proof/outcome/payment example
 The seven flow illustrations are self-contained SVGs in `docs/assets/overview/`. Regenerate them with `node scripts/build-readme-art.mjs` from the repository root. Architecture diagrams are editable Mermaid blocks in this README. [Screenshot provenance](docs/assets/screenshots/README.md) records the capture sources and dates. Keep captions explicit and update release claims against the corresponding receipts.
 
 </details>
+
+Support: [public issues and private privacy requests](SUPPORT.md).

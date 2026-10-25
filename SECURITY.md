@@ -9,3 +9,5 @@ Never include private keys, seed phrases, access tokens, or other credentials. D
 The current mainnet program identities, source revisions, and deployed-binary hashes are listed in `programs.json`. Source verification establishes a match between source and deployed code; it is not a security audit or a guarantee that the programs are free of vulnerabilities.
 
 No bounty or response-time guarantee is offered by this policy.
+
+For general support or private off-chain data requests, see [Support and privacy requests](SUPPORT.md).
