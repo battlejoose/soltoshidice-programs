@@ -1,0 +1,439 @@
+{
+  "verifiedAt": "2026-10-25T13:32:48.257Z",
+  "network": "mainnet-beta",
+  "metadataProgram": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
+  "programsUnchanged": true,
+  "records": [
+    {
+      "name": "poker",
+      "seed": "idl",
+      "program": "3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+      "metadata": "2reafRxjeSYETMErrWBAAJoSNv1rWh2aZEYYKCx78fD2",
+      "contentSha256": "dd609753929dc4b306e6876373dbbc95e958188ff3d612b70d2019215a10bc3e",
+      "storageLamports": 95971360,
+      "accountBytes": 18764,
+      "unchangedProgram": {
+        "programData": "3auvzmXxfJ5Me9rQ4SnAE6BK4fqmDPTV8BsWViYgmXqF",
+        "sha256": "20342c9bb99762966f049ea74c98e88c3404f64444682fdd7dfc365601f9e512",
+        "lastDeploySlot": 461271728,
+        "upgradeAuthority": "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y"
+      }
+    },
+    {
+      "name": "poker",
+      "seed": "security",
+      "program": "3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+      "metadata": "DmjbwnZsYS3Nqgo7S58shpFTHhABUUunCresj2PZT7oz",
+      "contentSha256": "aae4b5e34e3595e9f045e2c6ca6121b8c95b1cc4fcef2d017bd4749b9ed2375c",
+      "storageLamports": 3276600,
+      "accountBytes": 517,
+      "unchangedProgram": {
+        "programData": "3auvzmXxfJ5Me9rQ4SnAE6BK4fqmDPTV8BsWViYgmXqF",
+        "sha256": "20342c9bb99762966f049ea74c98e88c3404f64444682fdd7dfc365601f9e512",
+        "lastDeploySlot": 461271728,
+        "upgradeAuthority": "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y"
+      }
+    }
+  ],
+  "transactions": [
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 0,
+      "signature": "5VK4ZrpRCDbeofKw1uU1vSgtJXWzc2xjjuKyAZQiknKGUAQegHoSoP7qKKY8toBbL3x8eX948tScimpreGqBUihR",
+      "slot": 461275344,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 95448120,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 0,
+      "signature": "2n8z1HW8gR7T2yZxunGEdEtvqXJjwHvNKyXBf81mRHKeJ69p36ZjC4qXndKvAAVbWbAzXg8Xs3WyY8CiW6HTqBHW",
+      "slot": 461275408,
+      "status": "finalized",
+      "rentLamports": 95971360,
+      "refundedLamports": 0,
+      "feeLamports": 5806,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "11111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 1,
+      "signature": "P4F3ZJ5B1HUef6JibwTr7xFZGyaLgZDMAEVu4yt4ysYpDjL4Rfixfnzqv5Q9gNbQpuzZEbrZED1srPysnYaKJEp",
+      "slot": 461275414,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 2,
+      "signature": "5oWuxraXqFJpGuAhTd23wWobrCggKb9QBxGyTrqv2MwZAW5j8P5fCrrbfck5ppjguJzqxfqrFb3w83mq4prMxgX7",
+      "slot": 461275419,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 3,
+      "signature": "5EjFj3uFCN59hetm6Dhfm24P52yEd398heKR6AyTHVE9ksePp4T6Q4vGkguDSDNx1DA9ctZYbqXnF82GVfv75vXh",
+      "slot": 461275424,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 4,
+      "signature": "37NDVbVjShDtERi6aBh51zpD6YJvqufJtWuXQQndMQAqXMN7W3hqc3dsFtb4VunUm6NpQUuXmJQNGGV9UijtYYGw",
+      "slot": 461275430,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 5,
+      "signature": "2mGF281n5EBMp3tUxPyEh6hfQpGXxAkM5ewBYPtuVcSf67FF15ARdrtMuge8LE2tTpusAj89eaeY3YZLhMWweWS3",
+      "slot": 461275435,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 6,
+      "signature": "4tgsYmHyfQTqti4HjXP727GozoLheZku7Z6wZuEXQJio55hG8w5C4tcff3LzZQRWGkXynnq6v8JgwBxHzfGDhCmX",
+      "slot": 461275441,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 7,
+      "signature": "2vvgcgjbEQAToKVh2VuACUXMva3gtrpxvY28BPhDe3uzBZbVTpjeGjwWU7zFN5AdAZ469HunmEw7VHWpUpvbixnm",
+      "slot": 461275446,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 8,
+      "signature": "2oWdDHfQuTPJrWVmDbpHHFfCtJY6eWtiPpCbe697Xi2MPFoKdZL1Bwy89E5VuYTFGmc33h4dUxins7Q5RKVdZbz",
+      "slot": 461275452,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 9,
+      "signature": "3Udd8wfgmMR33bBNqpH2V1yoREsUfTavQhUwJdKShhoHSZYBM7dk9n7RdEz8fzbDjVLEPpixVevf1YF5L2mF7brF",
+      "slot": 461275460,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 10,
+      "signature": "5JUuqKV8nveHq4KNQt79DjgrQMfRt9gmRxBqnP1xjBPeAJ7P8kguAL67U6FFB4e7GFJME4VALkFJtRVSZtkw9fVM",
+      "slot": 461275468,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 11,
+      "signature": "2gTfSXXmGwHKMoSVmfgRx88RiWkPjkxwd9p1cvWFqQr3bDKD1T4cz5Xyo2MH163Th6Wy5HY195p9dyJ6s4UAfz9S",
+      "slot": 461275473,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 12,
+      "signature": "GrYwDAwwgPPwHR3DbdfvKqYbJKyEei6YGXf4Zds7fhZmr2Tg2NWXKoPShminpeGexgUUfxgBPD5BKAbosahR6m1",
+      "slot": 461275478,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 13,
+      "signature": "2mWPALYuxV6ENcWPKfroStF5dQbpEzSuUDpL8XNKuQQKg5w7dxJMdpEw6ejad6J21h6LViTsgFbq1b75UVbqgxRC",
+      "slot": 461275483,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 14,
+      "signature": "4ZrMtufuS8aG5uGhFspqxcAAUX8sScPnc2ECwYdkt9Gp6ivqhndAv7PB73sztbtonLomYmZGT6sR2pDMK5vJf6Yk",
+      "slot": 461275488,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 15,
+      "signature": "5ArwqcyH7LnKGp9MVYH1itenF9wevmuN8M2vkhFDg4sQ7WV985ASL4H8NzSWisEYhPPUxJ9ozuiFzUnf7BWUxQ54",
+      "slot": 461275494,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 16,
+      "signature": "5baEJ9txnJ4C1EqqJnKCKHxE8wxh6zic6LLLkvAfXrRicMY9nsAoEqh6sWWC6DFvsy7y9uNmAHPMyoj24GJ8eCQs",
+      "slot": 461275499,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 17,
+      "signature": "xzyhMf2RnR8EuQEwweN78dNsUnahPEFFr9FBwP834h6rmcrRGWWSFRK6bXvyYaF8nvhrDfnNx2pYKm6kA5sw2cc",
+      "slot": 461275504,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 18,
+      "signature": "3Ythbjud9VJsuykjjjKwZmuXoHy23H3JF8B3oo4Eov2ve7CuH6pmTYJMy6QH3U1iDfUeeLYBe1HghgMe5dkzBbFH",
+      "slot": 461275509,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 19,
+      "signature": "Jxse23K9L6VXwgMqwdsNqtQZQXkNK3HyAuDGrFY8GyPA6YPdn9p9uUmwitpYzjKg7bTMVtTk7a54Ni66Yh8hsPT",
+      "slot": 461275515,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "idl",
+      "index": 20,
+      "signature": "3otU3rQaLQyHUPYExSEKw1Rp8Km8RqsbnoQsqraZThpbqZqcZixmEr8A4JrnLS9ABFrtKkDP5Fro1NzXyys5VR4U",
+      "slot": 461275520,
+      "status": "finalized",
+      "rentLamports": 0,
+      "refundedLamports": 0,
+      "feeLamports": 5203,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    },
+    {
+      "name": "poker",
+      "seed": "security",
+      "index": 0,
+      "signature": "54TH9zoMdyRVosnMZn7JNUZwCTE2Wbbbdp5CMzR3fjod8uAJkJz9n4jfdxMASByHJn5iH8wD6YhJkHWhhk8ddFvB",
+      "slot": 461275541,
+      "status": "finalized",
+      "rentLamports": 365760,
+      "refundedLamports": 0,
+      "feeLamports": 5206,
+      "invokedPrograms": [
+        "ComputeBudget111111111111111111111111111111",
+        "11111111111111111111111111111111",
+        "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S"
+      ]
+    }
+  ],
+  "authorities": [
+    {
+      "address": "5SD2yUKBHkUhpC7rHzEqLgYKHrkNoyYymNkDXmFaoJ1Y",
+      "remainingLamports": 7701141020
+    }
+  ],
+  "storageLamports": 99247960,
+  "transactionFeeLamports": 120275,
+  "netStorageChangeLamports": 889000,
+  "incrementalUpdate": true,
+  "totalLamports": 1009275,
+  "sourceCommit": "bf8cfef803befd69bce6b1cc814e35ad46ecc3d7",
+  "sourceVerification": {
+    "is_verified": true,
+    "message": "On chain program verified",
+    "on_chain_hash": "f5be94b0b37aabce6e7d20a9d1bde1cb1b1ee3a5869caa92815a44b48687da59",
+    "executable_hash": "f5be94b0b37aabce6e7d20a9d1bde1cb1b1ee3a5869caa92815a44b48687da59",
+    "repo_url": "https://github.com/battlejoose/soltoshidice-programs/tree/bf8cfef803befd69bce6b1cc814e35ad46ecc3d7",
+    "commit": "bf8cfef803befd69bce6b1cc814e35ad46ecc3d7",
+    "last_verified_at": "2026-10-25T13:25:18.071471",
+    "is_frozen": false,
+    "is_closed": false
+  },
+  "publicReadback": {
+    "checkedAt": "2026-10-25T13:32:48.232Z",
+    "checks": [
+      {
+        "name": "poker",
+        "seed": "idl",
+        "url": "https://idl-one.vercel.app/api/idl?programId=3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+        "status": 200,
+        "type": "pmp",
+        "contentMatches": true
+      },
+      {
+        "name": "poker",
+        "seed": "security",
+        "url": "https://idl-one.vercel.app/api/security-txt?programId=3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
+        "status": 200,
+        "type": "pmp",
+        "contentMatches": true
+      }
+    ]
+  },
+  "solscanObservation": {
+    "checkedAt": "2026-10-25T13:33:40.800Z",
+    "verifiedBadge": true,
+    "securityRecordCurrent": true,
+    "idlViewSlot": 458478839,
+    "idlViewRefreshPending": true,
+    "canonicalIdlCurrent": true
+  }
+}

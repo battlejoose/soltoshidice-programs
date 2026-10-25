@@ -8,7 +8,10 @@ kicks. Chips remain seated until elimination or terminal settlement. Four tables
 tests passed, including upgrading a live hand with an old deferred exit request.
 The pinned Docker rebuild matches the finalized executable byte for byte.
 See [the release receipt](evidence/poker-seat-lock-release-2026-10-25.json).
-Independent registry refresh is pending; `programs.json` tracks its current state.
+Independent verification completed on October 25 at 13:25 UTC for source
+`bf8cfef803befd69bce6b1cc814e35ad46ecc3d7`. Solscan displays VERIFIED and the current
+security record. The canonical IDL is updated; Solscan's versioned IDL view still
+listed its October 18 cache at the final check. See [metadata receipts](evidence/poker-metadata-receipts-2026-10-25.json).
 
 October 22 poker update: [finalized AFK board-unlock recovery release](evidence/poker-afk-release-2026-10-22.json).
 The local and independent remote Docker builds match the deployed executable.

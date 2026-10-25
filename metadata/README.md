@@ -116,3 +116,13 @@ even though the JSON remains valid Codama.
 Future executable upgrades must be checked against these IDLs. Publish an
 updated IDL when the interface changes; retain the precise source revision and
 transaction evidence for each publication.
+
+## Poker refresh — October 25, 2026
+
+The canonical poker IDL was regenerated with Anchor 1.0.2 from verified source
+`bf8cfef803befd69bce6b1cc814e35ad46ecc3d7`. All 42 instruction ABIs, 13 accounts and 27
+types remain unchanged. Documentation now describes the tournament exit lock.
+The security record points to this release. Both public API readbacks match the
+files here, and Solscan displays VERIFIED plus the new security record. Its
+versioned IDL view still listed the October 18 cache at the final check; canonical
+publication is complete. See [finalized metadata receipts](../evidence/poker-metadata-receipts-2026-10-25.json).

@@ -44,11 +44,14 @@
       "workspace": "games/poker",
       "library": "riverproof",
       "localDockerMatch": true,
-      "publicRegistryStatus": "pending",
+      "publicRegistryStatus": "verified",
       "previousVerifiedCommit": "ad183cf73079b61ca5170f68e78227ee6d0da08e",
       "previousVerifiedAt": "2026-10-22T20:01:35.995664",
       "releaseReceipt": "evidence/poker-seat-lock-release-2026-10-25.json",
-      "remoteDockerMatch": true
+      "remoteDockerMatch": true,
+      "verifiedCommit": "bf8cfef803befd69bce6b1cc814e35ad46ecc3d7",
+      "verifiedAt": "2026-10-25T13:25:18.071471",
+      "metadataReceipt": "evidence/poker-metadata-receipts-2026-10-25.json"
     },
     {
       "name": "fights",

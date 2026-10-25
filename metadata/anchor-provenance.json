@@ -1,13 +1,17 @@
 [
   {
     "name": "poker",
-    "sourceCommit": "34b3002b0762fd2b7298dcf87def69e0b9fc41d6",
-    "sourcePath": "game/vendor/holdem/app/chain/riverproof-idl.json",
-    "sourceSha256": "eec348f8b91fe372af21a7fe7ab3ec0fe40494a8bcc1dce4f45c57852bba5177",
-    "idlSha256": "eec348f8b91fe372af21a7fe7ab3ec0fe40494a8bcc1dce4f45c57852bba5177",
+    "sourceCommit": "bf8cfef803befd69bce6b1cc814e35ad46ecc3d7",
+    "sourcePath": "games/poker/programs/riverproof/src/lib.rs",
+    "sourceSha256": "bb052f1beb27e22e756a2271843d40e874c93747e1939fe3fa28350b6fa210a7",
+    "idlSha256": "dd609753929dc4b306e6876373dbbc95e958188ff3d612b70d2019215a10bc3e",
     "instructions": 42,
     "accounts": 13,
-    "verifiedCommit": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c"
+    "verifiedCommit": "bf8cfef803befd69bce6b1cc814e35ad46ecc3d7",
+    "generator": "anchor-cli 1.0.2",
+    "generationCommand": "anchor idl build -p riverproof -o generated-idl.json",
+    "abiComparison": "All 42 instructions, 13 accounts and 27 types unchanged after ignoring documentation and top-level ordering.",
+    "generatedAt": "2026-10-25T13:30:41.631Z"
   },
   {
     "name": "perps",

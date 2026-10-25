@@ -8,7 +8,7 @@
   "preferred_languages": [
     "en"
   ],
-  "source_code": "https://github.com/battlejoose/soltoshidice-programs/tree/d2c0b0b7fd14b727d925b137f64ee910261c9f3c/games/poker",
-  "source_revision": "d2c0b0b7fd14b727d925b137f64ee910261c9f3c",
-  "description": "Report suspected vulnerabilities privately through GitHub. See the policy for responsible disclosure guidance."
+  "source_code": "https://github.com/battlejoose/soltoshidice-programs/tree/bf8cfef803befd69bce6b1cc814e35ad46ecc3d7/games/poker",
+  "source_revision": "bf8cfef803befd69bce6b1cc814e35ad46ecc3d7",
+  "description": "Report suspected vulnerabilities privately through GitHub. See the policy for responsible disclosure guidance. This verified release prevents players and keepers from exiting a tournament with chips; terminal refunds remain separate."
 }

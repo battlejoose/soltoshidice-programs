@@ -40,5 +40,9 @@
     "workspace": "games/poker"
   },
   "statusUrl": "https://verify.osec.io/status/3EB6JJ2k1yPdg9qokViBdSWq4jaEVG4wiKbS8Pw3FmWQ",
-  "publicRegistryStatus": "pending"
+  "publicRegistryStatus": "verified",
+  "verifiedCommit": "bf8cfef803befd69bce6b1cc814e35ad46ecc3d7",
+  "verifiedAt": "2026-10-25T13:25:18.071471",
+  "remoteDockerMatch": true,
+  "metadataReceipt": "poker-metadata-receipts-2026-10-25.json"
 }

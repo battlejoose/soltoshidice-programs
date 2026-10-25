@@ -2364,7 +2364,7 @@
         {
           "name": "actor",
           "docs": [
-            "The owner may leave; anyone may execute the ordinary idle-removal rule."
+            "Legacy exit signer; the handler rejects tournament exits for every actor."
           ],
           "writable": true,
           "signer": true
@@ -6093,6 +6093,148 @@
       ]
     },
     {
+      "name": "set_auto_check_fold",
+      "docs": [
+        "Owner/session-authorized away mode. Never calls a bet or raises."
+      ],
+      "discriminator": [
+        132,
+        183,
+        130,
+        182,
+        213,
+        49,
+        249,
+        77
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "docs": [
+            "Either the seat's wallet or an authorized session key."
+          ],
+          "signer": true
+        },
+        {
+          "name": "session",
+          "docs": [
+            "Present only when acting through a session key."
+          ],
+          "optional": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  115,
+                  115,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "session.authority",
+                "account": "SessionKey"
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "config"
+        },
+        {
+          "name": "table_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  97,
+                  98,
+                  108,
+                  101,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "hand_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  97,
+                  110,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "hand_cards",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  97,
+                  110,
+                  100,
+                  95,
+                  99,
+                  97,
+                  114,
+                  100,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "enabled",
+          "type": "bool"
+        }
+      ]
+    },
+    {
       "name": "set_endpoint_cap",
       "docs": [
         "Raises how many tables one RPC endpoint may carry.",
@@ -6540,148 +6682,6 @@
         }
       ],
       "args": []
-    },
-    {
-      "name": "set_auto_check_fold",
-      "docs": [
-        "Owner/session authorized persistent auto check/fold. Blinds continue."
-      ],
-      "discriminator": [
-        132,
-        183,
-        130,
-        182,
-        213,
-        49,
-        249,
-        77
-      ],
-      "accounts": [
-        {
-          "name": "signer",
-          "docs": [
-            "Either the seat's wallet or an authorized session key."
-          ],
-          "signer": true
-        },
-        {
-          "name": "session",
-          "docs": [
-            "Present only when acting through a session key."
-          ],
-          "optional": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  115,
-                  101,
-                  115,
-                  115,
-                  105,
-                  111,
-                  110
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "session.authority",
-                "account": "SessionKey"
-              },
-              {
-                "kind": "account",
-                "path": "config"
-              }
-            ]
-          }
-        },
-        {
-          "name": "config"
-        },
-        {
-          "name": "table_state",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  116,
-                  97,
-                  98,
-                  108,
-                  101,
-                  95,
-                  115,
-                  116,
-                  97,
-                  116,
-                  101
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "config"
-              }
-            ]
-          }
-        },
-        {
-          "name": "hand_state",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  104,
-                  97,
-                  110,
-                  100
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "config"
-              }
-            ]
-          }
-        },
-        {
-          "name": "hand_cards",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  104,
-                  97,
-                  110,
-                  100,
-                  95,
-                  99,
-                  97,
-                  114,
-                  100,
-                  115
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "config"
-              }
-            ]
-          }
-        }
-      ],
-      "args": [
-        {
-          "name": "enabled",
-          "type": "bool"
-        }
-      ]
     }
   ],
   "accounts": [
@@ -8319,6 +8319,11 @@
           },
           {
             "name": "connected",
+            "docs": [
+              "Legacy byte, preserved in place: true = manual actions, false = explicit",
+              "auto check/fold. Previously always true for occupied onchain seats.",
+              "It is not a network-presence signal. ready controls encrypted dealing."
+            ],
             "type": "bool"
           },
           {
@@ -8488,8 +8493,8 @@
           {
             "name": "action_time_ms",
             "docs": [
-              "Stored creation timer. New tables require 60,000; the native bridge also",
-              "enforces 60,000 for legacy accounts without changing their layout."
+              "Stored creation timer; the native bridge enforces the current allowance",
+              "for new turns in legacy accounts without changing their layout."
             ],
             "type": "i64"
           },
