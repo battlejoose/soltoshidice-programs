@@ -5,7 +5,7 @@ use anchor_spl::{associated_token::AssociatedToken,
 use crate::{errors::RiverproofError, state::*, sdice::{base_units, valid_mint, DECIMALS},
     tournament::{accounts::*, model::{EntryStatus, Phase}},
     pot_settlement::{require_paid, PokerPotSettlement, POT_SEED}};
-use super::table::{assert_chips_conserved, hand_is_live, seat_is_in_live_hand, SEAT_TAKEOVER_GRACE_MS};
+use super::table::{assert_chips_conserved, hand_is_live};
 
 fn clear_unplayable_idle_timer(table: &mut TableState, hand: &HandState) {
     if hand.stage == HandStage::Idle && table.seats.iter()
@@ -18,7 +18,7 @@ fn clear_unplayable_idle_timer(table: &mut TableState, hand: &HandState) {
 #[derive(Accounts)]
 #[instruction(seat_index: u8)]
 pub struct ExitPokerTournament<'info> {
-    /// The owner may leave; anyone may execute the ordinary idle-removal rule.
+    /// Legacy exit signer; the handler rejects tournament exits for every actor.
     #[account(mut)]
     pub actor: Signer<'info>,
     #[account(mut, seeds = [ARENA_SEED, arena.operator.as_ref()], bump = arena.bump)]
@@ -50,61 +50,13 @@ pub struct ExitPokerTournament<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn exit_poker_tournament(ctx: Context<ExitPokerTournament>, seat_index: u8) -> Result<()> {
-    let now = Clock::get()?.unix_timestamp;
-    require!(ctx.accounts.arena.running && ctx.accounts.tournament.state.phase == Phase::Running
-        && ctx.accounts.tournament.state.finish_reason(now).is_none(), RiverproofError::TournamentTableReserved);
-    let table_index = ctx.accounts.arena.tables.iter().position(|t| *t == ctx.accounts.config.key()).unwrap();
-    let seat = ctx.accounts.table_state.seats[seat_index as usize];
-    require!(ctx.accounts.tournament.state.entries.iter().any(|e| e.status == EntryStatus::Seated
-        && e.wallet == seat.owner && e.table == table_index as u8 && e.seat == seat_index), RiverproofError::InvalidTournament);
-    let now_ms = now.saturating_mul(1000);
-    assert_chips_conserved(&ctx.accounts.table_state, &ctx.accounts.hand_state)?;
-
-    // Match cash poker: signing LEAVE in a hand requests a later cash-out. It
-    // cannot remove committed chips, change the score, or end that hand early.
-    if ctx.accounts.actor.key() == seat.owner && seat_is_in_live_hand(&ctx.accounts.hand_state, seat_index) {
-        let table = &mut ctx.accounts.table_state;
-        table.seats[seat_index as usize].leave_after_hand = true;
-        table.seats[seat_index as usize].set_ready(false, now_ms);
-        table.version = table.version.checked_add(1).ok_or(RiverproofError::InvalidTournament)?;
-        return Ok(());
-    }
-    ctx.accounts.arena.require_current_results()?;
-    if ctx.accounts.actor.key() != seat.owner {
-        require!(!seat.ready, RiverproofError::SeatOccupied);
-        require!(!hand_is_live(&ctx.accounts.hand_state), RiverproofError::HandInProgress);
-        if !seat.leave_after_hand {
-            require!(seat.sitting_out_since != 0
-                && now_ms >= seat.sitting_out_since.saturating_add(SEAT_TAKEOVER_GRACE_MS), RiverproofError::TimerNotExpired);
-        }
-    }
-    require_paid(&ctx.accounts.config, &ctx.accounts.hand_state, &[ctx.accounts.settlement.to_account_info()])?;
-    if ctx.accounts.hand_state.stage == HandStage::Complete {
-        require!(ctx.accounts.arena.reconciled[table_index] >= ctx.accounts.hand_state.hand_id,
-            RiverproofError::TournamentResultPending);
-    }
-    let decision = ctx.accounts.arena.next_decision()?;
-    let amount = ctx.accounts.tournament.state.withdraw_at(seat.owner, decision)
-        .map_err(|_| error!(RiverproofError::InvalidTournament))?;
-    require!(amount == seat.stack, RiverproofError::InvalidTournament);
-    valid_mint(&ctx.accounts.mint.to_account_info())?;
-    let config_key = ctx.accounts.config.key();
-    let bump = [ctx.accounts.config.vault_bump];
-    let seeds: &[&[&[u8]]] = &[&[VAULT_SEED, config_key.as_ref(), &bump]];
-    if amount > 0 {
-        token::transfer_checked(CpiContext::new_with_signer(ctx.accounts.token_program.key(), TransferChecked {
-            mint: ctx.accounts.mint.to_account_info(), from: ctx.accounts.vault.to_account_info(),
-            to: ctx.accounts.owner_tokens.to_account_info(), authority: ctx.accounts.vault.to_account_info(),
-        }, seeds), base_units(amount)?, DECIMALS)?;
-    }
-    let table = &mut ctx.accounts.table_state;
-    table.seats[seat_index as usize] = SeatRecord::default();
-    table.escrowed = table.escrowed.checked_sub(amount).ok_or(RiverproofError::InvalidTournament)?;
-    table.version = table.version.checked_add(1).ok_or(RiverproofError::InvalidTournament)?;
-    clear_unplayable_idle_timer(table, &ctx.accounts.hand_state);
-    if ctx.accounts.tournament.state.finish_reason(now).is_some() { ctx.accounts.arena.running = false; }
-    assert_chips_conserved(table, &ctx.accounts.hand_state)
+/// Kept at its original discriminator/account layout for old clients. Tournament
+/// chips remain seated until elimination or terminal settlement; neither owners
+/// nor keepers may turn a live entry into a cash withdrawal. Eliminated zero
+/// stacks are removed by record_native_hand; terminal refunds use their separate
+/// phase-gated instruction. Failed calls roll back all account initialization.
+pub fn exit_poker_tournament(_ctx: Context<ExitPokerTournament>, _seat_index: u8) -> Result<()> {
+    err!(RiverproofError::TournamentTableReserved)
 }
 
 #[derive(Accounts)]

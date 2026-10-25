@@ -1,5 +1,15 @@
 # SoltoshiDICE program source verification
 
+## October 25, 2026 — poker tournament seat lock
+
+The live poker program now refuses voluntary tournament withdrawals and idle
+kicks. Chips remain seated until elimination or terminal settlement. Four tables,
+40-player capacity, account layouts and cash poker are unchanged. All 186 native
+tests passed, including upgrading a live hand with an old deferred exit request.
+The pinned Docker rebuild matches the finalized executable byte for byte.
+See [the release receipt](evidence/poker-seat-lock-release-2026-10-25.json).
+Independent registry refresh is pending; `programs.json` tracks its current state.
+
 October 22 poker update: [finalized AFK board-unlock recovery release](evidence/poker-afk-release-2026-10-22.json).
 The local and independent remote Docker builds match the deployed executable.
 The public registry verifies source `ad183cf73079b61ca5170f68e78227ee6d0da08e`. Four tables / 40 players,

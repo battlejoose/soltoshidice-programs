@@ -315,7 +315,7 @@ fn tournament_native_completion_order_precedes_reverse_reconciliation() {
     let waiting_table = f.tables[2];
     assert!(start_hand_mental(&mut f.h, &f.operator, &waiting_table).unwrap_err().contains("TournamentResultPending"));
     let exit = f.exit_ix(event, players[6].pubkey(), 2, 0, players[6].pubkey());
-    assert!(f.h.send(exit, &[&players[6]]).unwrap_err().contains("TournamentResultPending"));
+    assert!(f.h.send(exit, &[&players[6]]).unwrap_err().contains("TournamentTableReserved"));
     // Deliberately process the later hand first. Neither score crank may
     // assign a fresh elimination sequence or change the native result markers.
     for i in [1, 0] {
@@ -458,62 +458,70 @@ fn missed_tournament_activation_cannot_erase_old_cash_liabilities() {
 }
 
 #[test]
-fn tournament_exits_preserve_idle_grace_exact_refunds_and_one_entry_history() {
-    use riverproof::tournament::model::EntryStatus;
+fn tournament_seats_reject_owner_and_keeper_withdrawals_until_terminal_refunds() {
     let mut f = ArenaFixture::new();
     let start = f.h.now + 600;
     let event = f.schedule_buy_in(start, 1_000_000, BUY_IN).unwrap();
-    let players: Vec<_> = (0..5).map(|n| f.h.player(&format!("exit_{n}"))).collect();
+    let players: Vec<_> = (0..5).map(|n| f.h.player(&format!("locked_{n}"))).collect();
     f.h.set_clock(start);
     for t in 0..4 { f.prepare(event, t).unwrap(); }
     f.activate(event).unwrap();
     for (seat, p) in players.iter().enumerate() { f.enter(event, p, 0, seat as u8).unwrap(); }
-    let initial = f.h.token_balance(&players[0].pubkey());
-    let kick = f.exit_ix(event, f.operator.pubkey(), 0, 0, players[0].pubkey());
-    assert!(f.h.send(kick.clone(), &[&f.operator]).unwrap_err().contains("TimerNotExpired"));
-    f.h.set_clock(start + 120);
-    assert!(f.h.send(kick.clone(), &[&f.operator]).unwrap_err().contains("TimerNotExpired"));
-    f.h.set_clock(start + 299);
-    assert!(f.h.send(kick.clone(), &[&f.operator]).unwrap_err().contains("TimerNotExpired"));
-    let ready_table = f.tables[0];
-    set_ready(&mut f.h, &players[1], &ready_table, true);
-    f.h.set_clock(start + 300);
-    let ready_kick = f.exit_ix(event, f.operator.pubkey(), 0, 1, players[1].pubkey());
-    assert!(f.h.send(ready_kick, &[&f.operator]).unwrap_err().contains("SeatOccupied"));
-    let redirect = f.exit_ix(event, f.operator.pubkey(), 0, 0, f.operator.pubkey());
-    assert!(f.h.send(redirect, &[&f.operator]).is_err());
-    let out_of_range = f.exit_ix(event, f.operator.pubkey(), 0, 10, players[0].pubkey());
-    assert!(f.h.send(out_of_range, &[&f.operator]).is_err());
-    let (cu, bytes) = f.h.send_metered(kick.clone(), &[&f.operator]).unwrap();
-    assert!(cu < 300_000 && bytes <= 1232, "exit budget: {cu} CU, {bytes} bytes");
-    assert_eq!(f.h.token_balance(&players[0].pubkey()), initial + BUY_IN);
-    assert_eq!(f.h.vault_balance(&f.tables[0]), 4 * BUY_IN);
-    assert!(f.h.send(kick, &[&f.operator]).is_err());
-    assert!(f.enter(event, &players[0], 1, 0).is_err(), "withdrawal cannot be a rebuy");
-    // A ready owner can cash out voluntarily, without a keeper's idle grace.
-    let leave = f.exit_ix(event, players[1].pubkey(), 0, 1, players[1].pubkey());
-    f.h.send(leave, &[&players[1]]).unwrap();
-    let t: PokerTournament = f.h.account(&event);
-    assert_eq!(t.state.entered, 5); assert_eq!(t.state.alive(), 3);
-    assert_eq!(t.state.entries[0].status, EntryStatus::Withdrawn);
-    assert_eq!((t.state.entries[0].cash_out, t.state.entries[0].stack), (BUY_IN, 0));
-    assert_eq!(t.state.entries[1].elimination_order, t.state.entries[0].elimination_order + 1);
-    assert_eq!(t.state.standings(riverproof::tournament::model::FinishReason::FinalTwo).len(), 5);
-    // Last-two ranks freeze; a survivor cannot withdraw after the finish/deadline.
-    let leave = f.exit_ix(event, players[2].pubkey(), 0, 2, players[2].pubkey());
-    f.h.send(leave, &[&players[2]]).unwrap();
-    assert!(!f.h.account::<PokerArena>(&f.arena).running);
-    let late = f.exit_ix(event, players[3].pubkey(), 0, 3, players[3].pubkey());
-    assert!(f.h.send(late, &[&players[3]]).unwrap_err().contains("TournamentTableReserved"));
-    assert_eq!(f.h.vault_balance(&f.tables[0]), 2 * BUY_IN);
+    let config = f.tables[0];
+    set_ready(&mut f.h, &players[1], &config, true);
+    let keys = [event, f.arena, table_state_pda(&config), hand_pda(&config), vault_pda(&config)];
+    let before: Vec<_> = keys.iter().map(|k| f.h.svm.get_account(k).unwrap().data).collect();
+    let balance = f.h.token_balance(&players[0].pubkey());
+    for elapsed in [0, 299, 300, 600, 10799] {
+        f.h.set_clock(start + elapsed);
+        for seat in [0, 1] {
+            let owner = players[seat].pubkey();
+            let leave = f.exit_ix(event, owner, 0, seat as u8, owner);
+            assert!(f.h.send(leave, &[&players[seat]]).unwrap_err().contains("TournamentTableReserved"));
+            let kick = f.exit_ix(event, f.operator.pubkey(), 0, seat as u8, owner);
+            assert!(f.h.send(kick, &[&f.operator]).unwrap_err().contains("TournamentTableReserved"));
+        }
+        // The original cash-table instruction cannot bypass the tournament gate.
+        let mut cash_leave = Instruction { program_id: program_id(),
+            accounts: seat_accounts(&f.h, &players[0].pubkey(), &config).to_account_metas(None),
+            data: riverproof::instruction::LeaveTable {}.data() };
+        cash_leave.accounts.push(anchor_lang::solana_program::instruction::AccountMeta::new_readonly(f.arena, false));
+        assert!(f.h.send(cash_leave, &[&players[0]]).unwrap_err().contains("TournamentTableReserved"));
+        let refund = f.terminal_refund_ix(event, 0);
+        assert!(f.h.send(refund, &[&f.operator]).is_err(), "terminal refund cannot bypass a running event");
+        for (i, key) in keys.iter().enumerate() { assert_eq!(f.h.svm.get_account(key).unwrap().data, before[i]); }
+        assert_eq!(f.h.token_balance(&players[0].pubkey()), balance);
+    }
+    assert_eq!(f.h.account::<PokerTournament>(&event).state.alive(), 5);
+    f.h.set_clock(start + 10800);
+    let finalize = f.finalize_ix(event); f.h.send(finalize, &[&f.operator]).unwrap();
+    for entry in 0..5 {
+        let refund = f.terminal_refund_ix(event, entry);
+        f.h.send(refund.clone(), &[&f.operator]).unwrap();
+        assert!(f.h.send(refund, &[&f.operator]).is_err(), "no duplicate terminal refund");
+        assert_eq!(f.h.token_balance(&players[entry as usize].pubkey()), FAUCET_AMOUNT);
+    }
+    assert_eq!(f.h.vault_balance(&config), 0);
 }
 
 #[test]
-fn tournament_mid_hand_leave_waits_for_real_settlement_and_reconciliation() {
+fn tournament_mid_hand_exit_rejected_without_changing_play_or_settlement() {
+    tournament_exit_lock_during_hand(None);
+}
+
+#[test]
+fn tournament_upgrade_preserves_a_live_hand_and_blocks_legacy_pending_exit() {
+    let previous = std::env::var("POKER_TOURNAMENT_PREVIOUS_PROGRAM_SO")
+        .expect("set the verified current mainnet poker binary");
+    tournament_exit_lock_during_hand(Some(&previous));
+}
+
+fn tournament_exit_lock_during_hand(previous: Option<&str>) {
     let mut f = ArenaFixture::new();
+    if let Some(path) = previous { f.h.svm.add_program_from_file(program_id(), path).unwrap(); }
     let start = f.h.now + 600;
     let event = f.schedule_buy_in(start, 1_000_000, BUY_IN).unwrap();
-    let players: Vec<_> = (0..5).map(|n| f.h.player(&format!("depart_{n}"))).collect();
+    let players: Vec<_> = (0..5).map(|n| f.h.player(&format!("stay_{n}"))).collect();
     f.h.set_clock(start);
     for t in 0..4 { f.prepare(event, t).unwrap(); }
     f.activate(event).unwrap();
@@ -526,28 +534,32 @@ fn tournament_mid_hand_leave_waits_for_real_settlement_and_reconciliation() {
     f.h.advance(5);
     let mut meter = Meter::default();
     let (session, deal, slots) = deal_to_hole_cards(&mut f.h, &signing, &config, &mut meter);
+    if previous.is_some() {
+        let old_leave = f.exit_ix(event, players[0].pubkey(), 0, 0, players[0].pubkey());
+        f.h.send(old_leave, &[&players[0]]).unwrap();
+        assert!(f.h.account::<TableState>(&table_state_pda(&config)).seats[0].leave_after_hand);
+    }
+    let keys = [event, table_state_pda(&config), hand_pda(&config), vault_pda(&config)];
+    let before: Vec<_> = keys.iter().map(|k| f.h.svm.get_account(k).unwrap().data).collect();
     let before_tokens = f.h.token_balance(&players[0].pubkey());
+    if previous.is_some() {
+        f.h.svm.add_program_from_file(program_id(), PROGRAM_SO).unwrap();
+        for (i, key) in keys.iter().enumerate() { assert_eq!(f.h.svm.get_account(key).unwrap().data, before[i]); }
+    }
     let leave = f.exit_ix(event, players[0].pubkey(), 0, 0, players[0].pubkey());
-    f.h.send(leave, &[&players[0]]).unwrap();
-    let state: TableState = f.h.account(&table_state_pda(&config));
-    assert!(state.seats[0].leave_after_hand && !state.seats[0].ready);
-    assert_eq!(f.h.token_balance(&players[0].pubkey()), before_tokens);
-    assert_eq!(f.h.account::<PokerTournament>(&event).state.alive(), 5);
+    assert!(f.h.send(leave, &[&players[0]]).unwrap_err().contains("TournamentTableReserved"));
     let kick = f.exit_ix(event, f.operator.pubkey(), 0, 0, players[0].pubkey());
-    assert!(f.h.send(kick.clone(), &[&f.operator]).unwrap_err().contains("HandInProgress"));
+    assert!(f.h.send(kick.clone(), &[&f.operator]).unwrap_err().contains("TournamentTableReserved"));
+    for (i, key) in keys.iter().enumerate() { assert_eq!(f.h.svm.get_account(key).unwrap().data, before[i]); }
     play_to_showdown(&mut f.h, &signing, &config, &session, &deal, &slots, &mut meter);
-    let stack = f.h.account::<TableState>(&table_state_pda(&config)).seats[0].stack;
-    assert!(f.h.send(kick.clone(), &[&f.operator]).unwrap_err().contains("TournamentResultPending"));
+    assert!(f.h.send(kick, &[&f.operator]).unwrap_err().contains("TournamentTableReserved"));
     f.h.send(Instruction { program_id: program_id(), accounts: riverproof::accounts::RecordPokerTournamentHand {
         cranker: f.operator.pubkey(), arena: f.arena, tournament: event, config,
         table_state: table_state_pda(&config), hand_state: hand_pda(&config), settlement: pda(&[b"poker-pot", config.as_ref()]),
     }.to_account_metas(None), data: riverproof::instruction::RecordPokerTournamentHand {}.data() }, &[&f.operator]).unwrap();
-    // No extra five-minute wait for a departure already signed during the hand.
-    f.h.send(kick, &[&f.operator]).unwrap();
-    assert_eq!(f.h.token_balance(&players[0].pubkey()), before_tokens + stack);
-    assert_eq!(f.h.vault_balance(&config), 3 * BUY_IN - stack);
-    assert!(!f.h.account::<TableState>(&table_state_pda(&config)).seats[0].occupied);
-    assert_eq!(f.h.account::<PokerTournament>(&event).state.entries[0].cash_out, stack);
+    assert_eq!(f.h.token_balance(&players[0].pubkey()), before_tokens);
+    assert_eq!(f.h.vault_balance(&config), 3 * BUY_IN);
+    assert_eq!(f.h.account::<PokerTournament>(&event).state.entries[0].cash_out, 0);
 }
 
 #[test]
@@ -696,29 +708,18 @@ fn paid_admission_requires_draining_and_cannot_be_blocked_by_unpaid_registration
     for table in &f.tables { assert_eq!(f.h.vault_balance(table), 100_000); }
     assert!(f.enter(event, &players[39], 0, 0).is_err());
     assert!(join_with(&mut f.h, &players[39], &f.tables[0], 0, None).unwrap_err().contains("TournamentTableReserved"));
-    // Full forty-row history stays intact while nine players cash out and
-    // seven necessary transfers balance the remaining 31 players to 8/8/8/7.
+    // A full event cannot make room by cashing entrants out.
     for slot in 1..10 {
         let owner = &players[slot - 1];
         let leave = f.exit_ix(event, owner.pubkey(), 0, slot as u8, owner.pubkey());
-        f.h.send(leave, &[owner]).unwrap();
-        assert_eq!(f.h.token_balance(&owner.pubkey()), 10_000);
+        assert!(f.h.send(leave, &[owner]).unwrap_err().contains("TournamentTableReserved"));
+        assert_eq!(f.h.token_balance(&owner.pubkey()), 0);
     }
-    let mut moves = 0;
-    while !f.h.account::<PokerTournament>(&event).state.rebalance_plan().unwrap().is_empty() {
-        let ix = f.move_ix(event);
-        let (cu, bytes) = f.h.send_metered(ix, &[&f.operator]).unwrap();
-        assert!(cu < 300_000 && bytes <= 1232, "full history move: {cu} CU, {bytes} bytes");
-        moves += 1; assert!(moves <= 7);
-    }
-    assert_eq!(moves, 7);
-    for (table, expected) in f.tables.iter().zip([8, 8, 8, 7]) {
-        assert_eq!(f.h.vault_balance(table), expected as u64 * 10_000);
-        assert_eq!(f.h.account::<TableState>(&table_state_pda(table)).seats.iter().filter(|s| s.occupied).count(), expected);
-    }
+    assert!(f.h.account::<PokerTournament>(&event).state.rebalance_plan().unwrap().is_empty());
+    for table in &f.tables { assert_eq!(f.h.vault_balance(table), 100_000); }
     let t: PokerTournament = f.h.account(&event);
-    assert_eq!((t.state.entered, t.state.alive()), (40, 31));
-    assert_eq!(t.state.entries.iter().map(|e| e.cash_out).sum::<u64>(), 90_000);
+    assert_eq!((t.state.entered, t.state.alive()), (40, 40));
+    assert_eq!(t.state.entries.iter().map(|e| e.cash_out).sum::<u64>(), 0);
 }
 
 #[test]
