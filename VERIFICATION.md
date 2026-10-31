@@ -1,5 +1,9 @@
 # SoltoshiDICE program source verification
 
+<!-- source-use-policy:start -->
+**Source use:** [Verification-only license](LICENSE) · [AI policy](AI_POLICY.md) · [Permissions and limits](SOURCE_USE.md). Independent AI security/source checks are allowed. Model training and copying/adapting this implementation into another product are not licensed, subject to existing third-party and legal rights. This is source-available material, not an unrestricted open-source grant.
+<!-- source-use-policy:end -->
+
 ## October 25, 2026 — poker tournament seat lock
 
 The live poker program now refuses voluntary tournament withdrawals and idle
@@ -283,5 +287,7 @@ services have additional trust boundaries described in the
 See [Solana Verified Builds](https://solana.com/docs/programs/verified-builds).
 Live registry status: `https://verify.osec.io/status/PROGRAM_ADDRESS`.
 
-Security contact: battlejoose@gmail.com. Public visibility is provided for review
-and reproduction; it does not by itself grant a new software license.
+Security reports: https://github.com/battlejoose/soltoshidice-programs/security/advisories/new.
+Public visibility supports review and reproduction under the limited
+[verification-only license](LICENSE), subject to existing third-party and legal rights.
+See [source-use terms](SOURCE_USE.md) and the [AI policy](AI_POLICY.md).

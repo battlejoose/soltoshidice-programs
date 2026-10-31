@@ -1,5 +1,7 @@
 # Security policy
 
+Independent security review, including AI-assisted inspection, remains permitted under [LICENSE](LICENSE) and [AI_POLICY.md](AI_POLICY.md). Local audit clones and isolated non-production tests are allowed. The restrictions concern training and unauthorized product reuse; they do not require favorable findings or prohibit reporting defects.
+
 Please report suspected vulnerabilities privately using [GitHub private vulnerability reporting](https://github.com/battlejoose/soltoshidice-programs/security/advisories/new).
 
 Include the affected program address and network, a description of the issue, its potential impact, and reproducible steps or a minimal proof of concept. Use local fixtures or the documented devnet environment for testing. Do not move another user's funds, disrupt production, or publish exploitation details before coordinated disclosure.

@@ -4,6 +4,10 @@
 
 # SoltoshiDICE
 
+<!-- source-use-policy:start -->
+**Source use:** [Verification-only license](LICENSE) · [AI policy](AI_POLICY.md) · [Permissions and limits](SOURCE_USE.md). Independent AI security/source checks are allowed. Model training and copying/adapting this implementation into another product are not licensed, subject to existing third-party and legal rights. This is source-available material, not an unrestricted open-source grant.
+<!-- source-use-policy:end -->
+
 **A shared 3D courtyard for Solana games, a community-funded bank, and token-backed perpetual markets.**
 
 Play Cee-lo, Hold’em, blackjack, slots, Street Fights and rock, paper, scissors in one social space. The browser draws the world; wallets authorize actions; Solana programs enforce the relevant custody, rules and settlement. SDICE Perps is a separate application linked from the courtyard.

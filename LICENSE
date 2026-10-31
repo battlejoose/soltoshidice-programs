@@ -1,0 +1,97 @@
+SoltoshiDICE Source-Available Verification License 1.0
+Published: October 31, 2026
+
+Copyright (c) the respective SoltoshiDICE copyright holders.
+All rights reserved except as expressly permitted below.
+
+1. SCOPE
+
+This license applies only to original material whose copyright holders have
+authorized its distribution under these terms (the "Material"). It does not
+claim ownership of third-party code, dependencies, media, public blockchain
+facts, ideas, or material not protected by copyright. Separately licensed
+material remains governed by its own license, including any broader rights.
+Preserve all third-party attribution and license notices.
+
+This is a limited source-available license, not an OSI open-source license.
+Public access and a verified build do not grant unrestricted reuse rights.
+
+2. PERMITTED VERIFICATION
+
+You may inspect the Material, make the copies needed to audit it, reproduce
+builds, compare deployed program hashes, run read-only verification tools,
+and test security hypotheses in an isolated non-production environment.
+You may make local modifications necessary for that verification or testing.
+A repository clone for these purposes is allowed; creating a product clone
+or operating a separate service from the Material is not licensed here.
+
+You may publish independent findings, including critical or negative findings,
+build hashes, transaction references, and reasonably necessary attributed
+excerpts. No favorable conclusion or prior editorial approval is required.
+Retain this license and relevant attribution with permitted source copies.
+This permission does not authorize production exploitation, disruption,
+access to private systems, or transactions involving other people's funds.
+
+3. REUSE AND DEPLOYMENT RESTRICTIONS
+
+Except for Section 2, applicable law, a separate valid license, or express
+permission from the relevant rights holder, this license does not permit:
+
+- Copying, modifying, translating, porting, distributing, selling, or
+  sublicensing the Material to create or supply another product or service.
+- Deploying or operating a competing or separately branded casino, game,
+  trading platform, or other production service using the Material.
+- Using the Material to generate a copied or adapted implementation for
+  another product, whether by a human, an AI system, or a combination.
+- Removing ownership notices or misrepresenting authorship or endorsement.
+
+Independent ideas, functionality, public facts and lawful independent
+implementations are not restricted merely because they resemble this project.
+No trademark rights in SoltoshiDICE, SDICE, names, or logos are granted.
+
+4. AI AND DATASET USE
+
+No permission is granted by this license to use the Material for AI or
+machine-learning training, pretraining, fine-tuning, model distillation,
+model-improvement datasets, synthetic training-data generation, or a shared
+code-reuse or retrieval corpus. No permission is granted to use it to prompt
+or otherwise produce an unauthorized copied or adapted product.
+
+Task-scoped AI-assisted inspection, security analysis, build reproduction,
+and reporting under Section 2 are allowed. Temporary context, indexing and
+tool processing necessary for those tasks are allowed; repurposing them for
+model training, a general reuse corpus, or another product is not licensed.
+The maintainer may expressly authorize AI-assisted maintenance, testing,
+development, or deployment of this project within an identified task.
+That authorization does not itself grant a model provider training rights.
+
+5. EXISTING RIGHTS AND HOSTING TERMS
+
+Nothing here revokes a valid permission already granted, overrides a
+third-party license, restricts rights that applicable law does not allow us
+to restrict, or overrides an applicable separate agreement. This notice
+does not retroactively withdraw rights in an earlier release.
+
+In particular, repository notices do not override rights granted under
+GitHub's Terms of Service, including GitHub-hosted viewing/forking and
+GitHub's own content-use provisions. These files are a statement of license
+permissions and requested tool behavior, not a technical access control,
+universal AI opt-out, or guarantee of enforcement.
+
+6. ADDITIONAL PERMISSION
+
+Request permission from the repository maintainer through
+https://github.com/battlejoose/soltoshidice-programs/issues
+Describe the material and intended use. Silence is not permission.
+For undisclosed vulnerabilities, use private vulnerability reporting:
+https://github.com/battlejoose/soltoshidice-programs/security/advisories/new
+Access to a private repository or a copied notice alone does not authorize
+publishing its private contents.
+
+7. WARRANTY AND LIABILITY
+
+TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE MATERIAL IS PROVIDED "AS IS",
+WITHOUT WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+NONINFRINGEMENT, SECURITY, OR CORRECTNESS. TO THAT SAME EXTENT, THE COPYRIGHT
+HOLDERS ARE NOT LIABLE FOR CLAIMS OR DAMAGES ARISING FROM ITS USE. SOURCE
+VERIFICATION DOES NOT ESTABLISH THAT SOFTWARE IS SAFE OR FREE OF DEFECTS.
