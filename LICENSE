@@ -1,4 +1,4 @@
-SoltoshiDICE Source-Available Verification License 1.0
+SoltoshiDICE Source-Available Verification License 1.1
 Published: October 31, 2026
 
 Copyright (c) the respective SoltoshiDICE copyright holders.
@@ -32,7 +32,23 @@ Retain this license and relevant attribution with permitted source copies.
 This permission does not authorize production exploitation, disruption,
 access to private systems, or transactions involving other people's funds.
 
-3. REUSE AND DEPLOYMENT RESTRICTIONS
+3. SOLE AUTHORIZED OPERATOR AND REUSE RESTRICTIONS
+
+The sole authorized operator under this license is the legitimate owner of
+GitHub account battlejoose, GitHub user ID 6014647:
+https://github.com/battlejoose
+
+Subject to the rights preserved in Section 5, development beyond the limited
+verification permission, modification for product use, production deployment,
+commercial use and operation of the Material are reserved exclusively to
+that operator. Other people and accounts receive only the limited verification
+permission in Section 2, not a license to develop or operate their own product.
+
+People and AI tools may perform an expressly authorized task solely on
+battlejoose's behalf and for battlejoose's project. This is delegated work,
+not an independent right to use, retain for another product, or sublicense
+the implementation. Repository access, collaborator/admin status, owning a
+fork, or claiming to be battlejoose does not itself grant that authorization.
 
 Except for Section 2, applicable law, a separate valid license, or express
 permission from the relevant rights holder, this license does not permit:
@@ -61,8 +77,9 @@ Task-scoped AI-assisted inspection, security analysis, build reproduction,
 and reporting under Section 2 are allowed. Temporary context, indexing and
 tool processing necessary for those tasks are allowed; repurposing them for
 model training, a general reuse corpus, or another product is not licensed.
-The maintainer may expressly authorize AI-assisted maintenance, testing,
-development, or deployment of this project within an identified task.
+Only battlejoose, as identified in Section 3, may give the project-maintenance
+authorization described here for AI-assisted maintenance, testing, development
+or deployment within an identified task, solely on battlejoose's behalf.
 That authorization does not itself grant a model provider training rights.
 
 5. EXISTING RIGHTS AND HOSTING TERMS
@@ -80,9 +97,11 @@ universal AI opt-out, or guarantee of enforcement.
 
 6. ADDITIONAL PERMISSION
 
-Request permission from the repository maintainer through
+No independent product-use license is offered to another account by this
+document. Requests must go to battlejoose, not a fork owner or collaborator:
 https://github.com/battlejoose/soltoshidice-programs/issues
-Describe the material and intended use. Silence is not permission.
+Describe the material and intended use. Silence is not permission. A different
+use requires a separate valid agreement from the relevant rights holders.
 For undisclosed vulnerabilities, use private vulnerability reporting:
 https://github.com/battlejoose/soltoshidice-programs/security/advisories/new
 Access to a private repository or a copied notice alone does not authorize

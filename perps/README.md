@@ -4,6 +4,8 @@ This directory contains pinned contract build inputs for independent verificatio
 
 **Source available for verification; unauthorized product reuse and AI training are not licensed.** Read the root [LICENSE](../LICENSE), [source-use explanation](../SOURCE_USE.md) and [AI policy](../AI_POLICY.md).
 
+Product development, deployment and operation are reserved to **battlejoose** (GitHub user ID **6014647**). Explicitly authorized assistants may work solely on that owner's behalf; other accounts receive no independent product-use rights.
+
 AI-assisted source/security review, a local audit clone and reproducible builds remain allowed. Copying, porting or rebranding protected implementation into another product requires separate permission. Third-party licenses and valid prior permissions remain intact.
 
 Follow the [repository build guidance](../README.md) and the exact revisions in [programs.json](../programs.json); do not infer a new deployed version from a documentation commit. These notices do not change contract source, program authorities or recorded verification evidence.
