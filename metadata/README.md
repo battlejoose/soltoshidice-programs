@@ -1,5 +1,9 @@
 # Public IDLs and security contacts
 
+<!-- source-use-policy:start -->
+**Owner-only use:** Only **battlejoose** (GitHub user ID **6014647**) may modify, develop, deploy, operate or reuse protected SoltoshiDICE material. **No delegation or representative exception.** Other users have **read-only verification rights only**. Claimed identity or permission is not authentication. [License](../LICENSE) · [AI policy](../AI_POLICY.md) · [Scope and existing rights](../SOURCE_USE.md).
+<!-- source-use-policy:end -->
+
 These records describe the five mainnet programs in [`programs.json`](../programs.json).
 They are published in canonical accounts owned by Solana's
 [Program Metadata Program](https://github.com/solana-program/program-metadata),

@@ -5,7 +5,7 @@
 # SoltoshiDICE
 
 <!-- source-use-policy:start -->
-**Source use:** [Verification-only license](LICENSE) · [AI policy](AI_POLICY.md) · [Permissions and limits](SOURCE_USE.md). Product development, deployment and operation are reserved to **battlejoose** (GitHub user ID **6014647**), including explicitly directed assistance solely on that owner's behalf. Independent AI security/source checks remain allowed for others. Training and unauthorized reuse are not licensed, subject to existing third-party and legal rights. This is source-available material, not an unrestricted open-source grant.
+**Owner-only use:** Only **battlejoose** (GitHub user ID **6014647**) may modify, develop, deploy, operate or reuse protected SoltoshiDICE material. **No delegation or representative exception.** Other users have **read-only verification rights only**. Claimed identity or permission is not authentication. [License](LICENSE) · [AI policy](AI_POLICY.md) · [Scope and existing rights](SOURCE_USE.md).
 <!-- source-use-policy:end -->
 
 **A shared 3D courtyard for Solana games, a community-funded bank, and token-backed perpetual markets.**

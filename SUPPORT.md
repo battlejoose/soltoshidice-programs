@@ -1,5 +1,9 @@
 # Support and privacy requests
 
+<!-- source-use-policy:start -->
+**Owner-only use:** Only **battlejoose** (GitHub user ID **6014647**) may modify, develop, deploy, operate or reuse protected SoltoshiDICE material. **No delegation or representative exception.** Other users have **read-only verification rights only**. Claimed identity or permission is not authentication. [License](LICENSE) · [AI policy](AI_POLICY.md) · [Scope and existing rights](SOURCE_USE.md).
+<!-- source-use-policy:end -->
+
 Use the [public source repository](https://github.com/battlejoose/soltoshidice-programs) for project information.
 
 - General questions and bug reports: [open an issue](https://github.com/battlejoose/soltoshidice-programs/issues). Include only information you are comfortable making public.

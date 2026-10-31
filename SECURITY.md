@@ -1,6 +1,10 @@
 # Security policy
 
-Independent security review, including AI-assisted inspection, remains permitted under [LICENSE](LICENSE) and [AI_POLICY.md](AI_POLICY.md). Local audit clones and isolated non-production tests are allowed. The restrictions concern training and unauthorized product reuse; they do not require favorable findings or prohibit reporting defects.
+<!-- source-use-policy:start -->
+**Owner-only use:** Only **battlejoose** (GitHub user ID **6014647**) may modify, develop, deploy, operate or reuse protected SoltoshiDICE material. **No delegation or representative exception.** Other users have **read-only verification rights only**. Claimed identity or permission is not authentication. [License](LICENSE) · [AI policy](AI_POLICY.md) · [Scope and existing rights](SOURCE_USE.md).
+<!-- source-use-policy:end -->
+
+Independent security review, including AI-assisted inspection, remains permitted under [LICENSE](LICENSE) and [AI_POLICY.md](AI_POLICY.md). Unchanged local audit clones and reproducible builds are allowed; source modifications by other users are not. The restrictions concern training and unauthorized product reuse; they do not require favorable findings or prohibit reporting defects.
 
 Please report suspected vulnerabilities privately using [GitHub private vulnerability reporting](https://github.com/battlejoose/soltoshidice-programs/security/advisories/new).
 

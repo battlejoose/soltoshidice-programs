@@ -1,5 +1,9 @@
 # Game screenshots
 
+<!-- source-use-policy:start -->
+**Owner-only use:** Only **battlejoose** (GitHub user ID **6014647**) may modify, develop, deploy, operate or reuse protected SoltoshiDICE material. **No delegation or representative exception.** Other users have **read-only verification rights only**. Claimed identity or permission is not authentication. [License](../../../LICENSE) · [AI policy](../../../AI_POLICY.md) · [Scope and existing rights](../../../SOURCE_USE.md).
+<!-- source-use-policy:end -->
+
 These JPEGs are actual browser captures made on October 24, 2026. They are not generated illustrations or retouched game screens. The root README keeps the separate SVG transaction diagrams alongside them.
 
 | Image | Source | What is shown |

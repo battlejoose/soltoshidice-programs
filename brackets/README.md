@@ -1,5 +1,9 @@
 # RPS and fighting bracket tournaments
 
+<!-- source-use-policy:start -->
+**Owner-only use:** Only **battlejoose** (GitHub user ID **6014647**) may modify, develop, deploy, operate or reuse protected SoltoshiDICE material. **No delegation or representative exception.** Other users have **read-only verification rights only**. Claimed identity or permission is not authentication. [License](../LICENSE) · [AI policy](../AI_POLICY.md) · [Scope and existing rights](../SOURCE_USE.md).
+<!-- source-use-policy:end -->
+
 Separate mainnet program: `EmAQwVNSBkKUDPziofdhSNdD4HYacQSYyfuDn7c4QKe2`.
 Deployed at finalized slot 459778651. See [receipts and exact hash](mainnet.json).
 The existing poker, cash RPS/fights and bank programs were not upgraded.
