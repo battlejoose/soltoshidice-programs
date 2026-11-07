@@ -8,7 +8,7 @@
 
 The installed Perps program at slot **466279342** includes the USDC Thesis venue, PERPS staking rewards and burn allocations, and two SOL operations recipients. The pinned Docker rebuild matches the live executable byte for byte. This publication updates source and verification metadata; it does not redeploy the program.
 
-The [current source evidence](evidence/thesis-perps-source-2026-11-06.json) records the exact hashes and IDL. Independent remote verification is pending. Earlier release records below are historical. Run `bash verify.sh perps` to reproduce the current build.
+The [current source evidence](evidence/thesis-perps-source-2026-11-06.json) records the exact hashes and IDL. Independent remote verification passed at **2026-11-07T01:20:35.540326 UTC** for source `8de09dd44ba32141ff031adebd7438cfcd10f52c`. See the [final verification and metadata receipt](evidence/thesis-perps-verification-2026-11-06.json). Earlier release records below are historical. Run `bash verify.sh perps` to reproduce the current build.
 
 ## October 25, 2026 — poker tournament seat lock
 

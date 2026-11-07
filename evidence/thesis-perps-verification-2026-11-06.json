@@ -1,0 +1,123 @@
+{
+  "at": "2026-11-07T01:21:50.956Z",
+  "program": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+  "programData": "GngBxRxp2nvs7kHSTfjxfL9jgt7Abt3wHw4cUV92TEon",
+  "lastDeploySlot": 466279342,
+  "sourceCommit": "8de09dd44ba32141ff031adebd7438cfcd10f52c",
+  "sourceUrl": "https://github.com/battlejoose/soltoshidice-programs/tree/8de09dd44ba32141ff031adebd7438cfcd10f52c/perps",
+  "localDockerMatch": true,
+  "remoteDockerMatch": true,
+  "sha256": "3ca04bf42683d5942edaaf1111494eb9e2108061534c9634db468298dc0fd79c",
+  "zeroTrimmedSha256": "18c7915cd6812c34cf3af6d893aa225d960fd7dea96433493c2c6ebe69b81504",
+  "verification": {
+    "status": "verified",
+    "statusUrl": "https://verify.osec.io/status/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+    "requestId": "ec04929b-b416-4860-861b-9c6d6f913069",
+    "jobUrl": "https://verify.osec.io/job/ec04929b-b416-4860-861b-9c6d6f913069",
+    "result": {
+      "is_verified": true,
+      "message": "On chain program verified",
+      "on_chain_hash": "18c7915cd6812c34cf3af6d893aa225d960fd7dea96433493c2c6ebe69b81504",
+      "executable_hash": "18c7915cd6812c34cf3af6d893aa225d960fd7dea96433493c2c6ebe69b81504",
+      "repo_url": "https://github.com/battlejoose/soltoshidice-programs/tree/8de09dd44ba32141ff031adebd7438cfcd10f52c",
+      "commit": "8de09dd44ba32141ff031adebd7438cfcd10f52c",
+      "last_verified_at": "2026-11-07T01:20:35.540326",
+      "is_frozen": false,
+      "is_closed": false
+    }
+  },
+  "idl": {
+    "address": "6KRvnUXACkTWMASoPmnYLH63U9z1taRjhsY8EnHrpGes",
+    "allocatedBytes": 21653,
+    "sha256": "bc2e539df50eeb0e381300be88cb5da66154f46deb01080c16a3a0938067c1a6",
+    "localSha256": "bc2e539df50eeb0e381300be88cb5da66154f46deb01080c16a3a0938067c1a6",
+    "matchesLocal": true,
+    "canonical": true,
+    "mutable": true,
+    "authority": {
+      "__option": "None"
+    },
+    "instructions": 94,
+    "accounts": 25,
+    "solscan": {
+      "at": "2026-11-07T01:14:00.466Z",
+      "url": "https://solscan.io/account/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7#programIdl",
+      "instructions": [
+        {
+          "name": "burn_perps_revenue",
+          "visible": true
+        },
+        {
+          "name": "claim_perps_rewards",
+          "visible": true
+        },
+        {
+          "name": "stake_perps_ownership",
+          "visible": true
+        },
+        {
+          "name": "route_perps_revenue",
+          "visible": true
+        },
+        {
+          "name": "operations_secondary",
+          "visible": true
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "program": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+    "sourceCommit": "8de09dd44ba32141ff031adebd7438cfcd10f52c",
+    "at": "2026-11-07T01:17:20.771Z",
+    "feePayer": "2mqNPWFZo8oLUCYrAsEVgos1SfZJNasfs3LZxKNpvSbX",
+    "authority": "GqJwW3CF9XfopAmCP9zNKN1BvVo3aSPQHmfHdrGUeTzA",
+    "totalFeeLamports": 20000,
+    "actions": [
+      {
+        "label": "verification-pda",
+        "signature": "59u8BmwJMLkrrjaLgvtXeKUAVAUkUH1rf11YhiDJLV7PYcrWfjHbHZkWjDn6UxeDmopQywgHKk9kT5ojHVcsZJMP",
+        "feeLamports": 10000,
+        "metadataAddress": "B4maE1et8ydNjhHbR5r7DBe4wt2wn2F6mifHcdfnXjAH",
+        "at": "2026-11-07T01:17:16.348Z",
+        "finalized": true,
+        "finalizedSlot": 466324371,
+        "actualFeeLamports": 10000
+      },
+      {
+        "label": "security-source-link",
+        "signature": "4u2QU8VShfdJKeDq6j9m3ghirzsvWJXEmrYtWpXCBapCi5DRBKcHXF8mZ8tmY4FeZEubySRechxAx52KHt7VZ8bP",
+        "feeLamports": 10000,
+        "metadataAddress": "3VNHV5hcSaxHeByJfmvPsPC3ybwhmNtJqJTgghcVeZei",
+        "at": "2026-11-07T01:17:18.253Z",
+        "finalized": true,
+        "finalizedSlot": 466324380,
+        "actualFeeLamports": 10000
+      }
+    ],
+    "programUnchanged": true,
+    "idlUnchanged": true,
+    "securitySha256": "5e534323a980f7b2e5a196c1be67e3580fb5a3ea4ef3560b5b111e9bbd2684f4",
+    "actualTotalFeeLamports": 20000
+  },
+  "programUnchangedDuringVerification": true,
+  "upgradeAuthorityUnchanged": true,
+  "solscan": {
+    "securitySourceLink": "https://github.com/battlejoose/soltoshidice-programs/tree/8de09dd44ba32141ff031adebd7438cfcd10f52c/perps",
+    "securityTxt": "TRUE",
+    "url": "https://solscan.io/account/7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7#programIdl",
+    "at": "2026-11-07T01:21:14.6499213Z",
+    "sourceCommit": "8de09dd44ba32141ff031adebd7438cfcd10f52c",
+    "lastDeployedSlot": 466279342,
+    "verificationBadge": "VERIFIED",
+    "program": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+    "observedCurrentIdlInstructions": [
+      "burn_perps_revenue",
+      "claim_perps_rewards",
+      "stake_perps_ownership",
+      "route_perps_revenue",
+      "operations_secondary"
+    ],
+    "method": "Solscan browser UI after reload"
+  }
+}

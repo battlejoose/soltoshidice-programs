@@ -39,6 +39,6 @@
     "instructions": 94,
     "accounts": 25
   },
-  "verification": "Matching public source prepared; independent remote verification pending.",
+  "verification": "Independent remote verification passed; see thesis-perps-verification-2026-11-06.json.",
   "executableChangedDuringVerification": false
 }

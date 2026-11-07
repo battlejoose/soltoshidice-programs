@@ -6,7 +6,7 @@
 
 ## Thesis PERPS — November 6, 2026
 
-The current [Perps IDL](perps.idl.json) contains **94 instructions** and **25 account layouts**, including PERPS reward claims, staking, revenue routing, burns, and both operations recipients. Its canonical on-chain contents exactly match SHA-256 `bc2e539df50eeb0e381300be88cb5da66154f46deb01080c16a3a0938067c1a6`. Solscan displays the new instructions. The IDL was already published at launch and is not republished by this verification refresh. See [source and IDL evidence](../evidence/thesis-perps-source-2026-11-06.json). Older IDL records below describe their dated releases.
+The current [Perps IDL](perps.idl.json) contains **94 instructions** and **25 account layouts**, including PERPS reward claims, staking, revenue routing, burns, and both operations recipients. Its canonical on-chain contents exactly match SHA-256 `bc2e539df50eeb0e381300be88cb5da66154f46deb01080c16a3a0938067c1a6`. Solscan displays the new instructions. The IDL was already published at launch and is not republished by this verification refresh. See [source and IDL evidence](../evidence/thesis-perps-source-2026-11-06.json) and [independent verification and metadata receipts](../evidence/thesis-perps-verification-2026-11-06.json). Older IDL records below describe their dated releases.
 
 These records describe the five mainnet programs in [`programs.json`](../programs.json).
 They are published in canonical accounts owned by Solana's
@@ -80,7 +80,7 @@ are recorded separately from transaction finality.
 | Poker | Anchor | 42 | 13 |
 | Block Fights | Codama | 8 | 3 |
 | Rock Paper Scissors | Codama | 8 | 3 |
-| Perps | Anchor | 85 | 23 |
+| Perps | Anchor | 94 | 25 |
 
 The Anchor IDLs come from the exact deployed releases. Their instruction and
 account discriminators were checked. See [Anchor provenance](anchor-provenance.json).
