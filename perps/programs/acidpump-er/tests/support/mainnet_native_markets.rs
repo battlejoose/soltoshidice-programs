@@ -1,10 +1,18 @@
 use super::*;
 
-fn setup(symbol:&str)->(Bank,Value,Token) {
+pub(super) fn setup(symbol:&str)->(Bank,Value,Token) {
     let file=std::env::var("ACIDPUMP_NATIVE_TEST_FIXTURE").unwrap_or_else(|_|".cache/mixed-backing/native-instructions.json".into());
     let rows:Value=serde_json::from_slice(&std::fs::read(Path::new(env!("CARGO_MANIFEST_DIR")).join("../..").join(file)).unwrap()).unwrap();
-    let f=rows["markets"].as_array().unwrap().iter().find(|m|m["asset"]["symbol"]==symbol).unwrap().clone();
+    let f=if symbol=="PERPS" {serde_json::from_slice(&std::fs::read(Path::new(env!("CARGO_MANIFEST_DIR")).join("../../.cache/usdc-only-perps-instructions.json")).unwrap()).unwrap()}
+        else {rows["markets"].as_array().unwrap().iter().find(|m|m["asset"]["symbol"]==symbol).unwrap().clone()};
     let mut h=Bank::new();let root=h.tokens[0];let own=if symbol=="SOL"{h.tokens[2]}else{h.tokens[1]};
+    if symbol=="PERPS" {
+        let capture:Value=serde_json::from_slice(&std::fs::read(Path::new(env!("CARGO_MANIFEST_DIR")).join("../../projects/acidpump-er/src/fixtures/perps-reward-pool.json")).unwrap()).unwrap();
+        for(address,row)in capture["accounts"].as_object().unwrap() {
+            h.svm.set_account(pk(address),Account{lamports:row["lamports"].as_u64().unwrap(),data:STANDARD.decode(row["data"][0].as_str().unwrap()).unwrap(),owner:key(row,"owner"),executable:false,rent_epoch:0}).unwrap();
+        }
+        h.admin("register PERPS reward asset",Bank::client_instructions(&f["registration"]),false);
+    }
     h.admin("create canonical native market",Bank::client_instructions(&f["create"]),false);
     for step in f["setup"].as_array().unwrap(){h.admin(step["name"].as_str().unwrap(),Bank::client_instructions(&step["instructions"]),false);}
     let config=key(&f["venue"],"config");h.config=config;h.pool=key(&f["venue"],"pool");h.authority=pda(&[b"authority",h.pool.as_ref()]);
@@ -18,10 +26,10 @@ fn setup(symbol:&str)->(Bank,Value,Token) {
     h.admin("enable initialized native market",vec![ix(p::accounts::Admin{admin:p::mainnet_config::ADMIN,config},p::instruction::Pause{paused:false})],false);
     (h,f,root)
 }
-fn settlement(f:&Value,nonce:u64)->Vec<Instruction> {
+pub(super) fn settlement(f:&Value,nonce:u64)->Vec<Instruction> {
     Bank::client_instructions(&f["settlements"].as_array().unwrap().iter().find(|r|r["nonce"].as_u64()==Some(nonce)).unwrap()["instructions"])
 }
-fn seed(h:&mut Bank,amount:u64) {
+pub(super) fn seed(h:&mut Bank,amount:u64) {
     let a=h.tokens[0];let mut inv:Inventory=get(&h.svm,a.inventory);inv.treasury=amount;
     token_account(&mut h.svm,a.vault,h.authority,a.mint,a.program,inv.locked+amount);put(&mut h.svm,a.inventory,&inv,p::ID);
 }
@@ -108,5 +116,67 @@ fn native_market_profit_claims_pay_primary_asset_at_spot() {
         h.send("redeem native primary profit",Bank::client_instructions(&f["payout"]),false);
         assert_eq!(get::<Position>(&h.svm,position).remaining,0);assert!(token(&h.svm,own.wallet)>before);
         h.send("native profit cannot replay",Bank::client_instructions(&f["payout"]),true);
+    }
+}
+
+#[test]
+fn usdc_market_converts_sol_backing_atomically_without_replay() {
+    for partial in [false,true] {
+    let(mut h,f,_)=setup("USDC");
+    let config=h.config;h.config=p::ROOT_CONFIG;
+    let collateral=h.register_backed_collateral("FARTCOIN");h.config=config;
+    let usd=h.tokens[0];let sol=h.tokens[2];
+    for (asset,amount) in [(collateral,100*UNIT),(usd,100*UNIT),(sol,1_000_000_000)] {
+        h.send("fund USDC mixed backing",vec![h.deposit(asset,amount)],false);
+    }
+    let before:ErCustody=get(&h.svm,h.custody);
+    let intent=h.committed(collateral,25,100*UNIT,true,false);
+    let mut trader:ErTrader=get(&h.svm,h.trader);
+    trader.core_stake.tokens=100*UNIT;
+    trader.auxiliary_stakes[0].tokens=1_000_000_000;
+    trader.custody_generation=before.generation;trader.notional=intent.entry_value*intent.leverage as u64;
+    for (target,source) in trader.assets.iter_mut().zip(before.assets.iter()) {
+        *target=ErBalance {asset:source.asset,credited_deposits:source.deposited_credits,
+            credited_returns:source.returned_credits,available:0,generation:source.generation};
+    }
+    put(&mut h.svm,h.trader,&trader,p::basebridge::DELEGATION_OWNER);
+    // The wager collapses while the USDC and SOL backing reserves remain funded.
+    let valuation=h.valuation(collateral);let mut quote=h.svm.get_account(&valuation.dex_quote).unwrap();
+    let pool=h.svm.get_account(&collateral.pool).unwrap().data;
+    let retained=[271,279].iter().map(|&at|pool.get(at..at+8).map(|b|u64::from_le_bytes(b.try_into().unwrap())).unwrap_or(0)).sum::<u64>();
+    let remaining=retained+if partial {1_000_000_000}else{0};
+    quote.data[64..72].copy_from_slice(&remaining.to_le_bytes());
+    quote.lamports=h.svm.minimum_balance_for_rent_exemption(quote.data.len())+remaining;
+    h.svm.set_account(valuation.dex_quote,quote).unwrap();
+    if partial {
+        let mut base=h.svm.get_account(&valuation.dex_base).unwrap();
+        base.data[64..72].copy_from_slice(&(2_000*UNIT).to_le_bytes());h.svm.set_account(valuation.dex_base,base).unwrap();
+    }
+    let instructions=Bank::client_instructions(&f["mixedBacking"]);
+    let vault=token(&h.svm,usd.vault);let inventory:Inventory=get(&h.svm,usd.inventory);
+    let mut bad=instructions.clone();let close=bad.last_mut().unwrap();let len=close.data.len();
+    close.data[len-18..len-10].copy_from_slice(&u64::MAX.to_le_bytes());
+    h.send("failed SOL conversion rolls back USDC and SOL charges",bad,true);
+    assert_eq!(get::<ErCustody>(&h.svm,h.custody).auxiliary_coverage,before.auxiliary_coverage);
+    assert_eq!(token(&h.svm,usd.vault),vault);
+    let mut bad=instructions.clone();
+    bad.last_mut().unwrap().accounts.iter_mut().find(|a|a.pubkey==sol.inventory).unwrap().pubkey=usd.inventory;
+    h.send("foreign SOL inventory cannot be charged",bad,true);
+    h.send("settle USDC SOL backing",instructions.clone(),false);
+    let after:ErCustody=get(&h.svm,h.custody);
+    assert!(after.core_coverage.debited_tokens>0);
+    for (i,asset) in [sol].into_iter().enumerate() {
+        let debit=after.auxiliary_coverage[i].debited_tokens;
+        assert!(debit>0 && debit<trader.auxiliary_stakes[i].tokens);
+        assert_eq!(get::<Inventory>(&h.svm,asset.inventory).locked,trader.auxiliary_stakes[i].tokens-debit);
+    }
+    let bought=token(&h.svm,usd.vault)-vault;assert!(bought>0);
+    let change=get::<Inventory>(&h.svm,usd.inventory).treasury-inventory.treasury;
+    if partial {assert!(change>after.core_coverage.debited_tokens);}else{assert_eq!(change,after.core_coverage.debited_tokens+bought);}
+    h.send("USDC backing close cannot replay",instructions,true);
+    let mut risk=ErRisk {config:h.config,..ErRisk::default()};risk.markets[2].long_oi=trader.notional;
+    sync_custody(&mut trader,&mut risk,&after).unwrap();let saved=trader.auxiliary_stakes;
+    sync_custody(&mut trader,&mut risk,&after).unwrap();sync_custody(&mut trader,&mut risk,&before).unwrap();
+    assert_eq!(trader.auxiliary_stakes,saved);assert_eq!(trader.slots[0].state,ER_FREE);
     }
 }

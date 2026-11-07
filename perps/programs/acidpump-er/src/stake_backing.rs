@@ -65,6 +65,8 @@ pub struct Backing {
     pub exempt: [Pubkey; 3],
 }
 impl Backing {
+    pub fn for_pool(core:Pubkey,quote_mint:Pubkey,_pool:Pubkey)->Self {Self::new(core,quote_mint)}
+    pub fn auxiliary_usd(&self)->Pubkey {self.exempt[2]}
     pub fn new(core: Pubkey, quote_mint: Pubkey) -> Self {
         let usd = Pubkey::find_program_address(&[b"asset", quote_mint.as_ref()], &crate::ID).0;
         Self { core, exempt: [core, crate::engine::sol_collateral_asset(), usd] }

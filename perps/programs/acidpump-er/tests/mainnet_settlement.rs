@@ -41,6 +41,8 @@ mod spot_profit;
 mod mixed_backing;
 #[path="support/mainnet_native_markets.rs"]
 mod native_markets;
+#[path="support/mainnet_perps_rewards.rs"]
+mod perps_rewards;
 #[cfg(feature="bank-contribution-test")]
 mod bank_contribution { include!(env!("SDICE_BANK_CONTRIBUTION_TEST")); }
 fn pk(s:&str)->Pubkey {Pubkey::from_str(s).unwrap()}

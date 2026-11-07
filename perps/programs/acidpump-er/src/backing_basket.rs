@@ -99,6 +99,14 @@ pub struct Plan {
 /// No asset can be charged beyond its acknowledged available stake.
 pub fn coverage<F>(available: [u64; ASSETS], assets: &Assets, target: u64, quote: &mut F) -> Result<Plan>
 where F: FnMut(usize, u64) -> Result<u64> {
+    coverage_sized(available,assets,target,quote,&mut |i,n,t,q:&mut F|
+        coverage_tokens(n,t,&mut |amount|q(i,amount)))
+}
+
+/// Allocation is unchanged; a validated curve can supply a bounded inverse
+/// instead of dozens of expensive SBF quote evaluations for each reserve.
+pub fn coverage_sized<F,S>(available:[u64;ASSETS],assets:&Assets,target:u64,quote:&mut F,size:&mut S)->Result<Plan>
+where F:FnMut(usize,u64)->Result<u64>,S:FnMut(usize,u64,u64,&mut F)->Result<Coverage> {
     let mut values = [0; ASSETS];
     for i in 0..ASSETS {
         require!(assets.active(i) || available[i] == 0, MixError::Binding);
@@ -119,8 +127,9 @@ where F: FnMut(usize, u64) -> Result<u64> {
     for i in 0..ASSETS {
         plan.debits[i] = if shares[i]>0 && shares[i]==values[i] {
             Coverage{tokens:available[i],quoted_usd:values[i],uncovered_usd:0}
-        } else {coverage_tokens(available[i], shares[i], &mut |n| quote(i, n))?};
-        require!(plan.debits[i].uncovered_usd == 0, MixError::Quote);
+        } else {size(i,available[i],shares[i],quote)?};
+        require!(plan.debits[i].uncovered_usd == 0 && plan.debits[i].tokens<=available[i], MixError::Quote);
+        if shares[i]>0 {require!(quote(i,plan.debits[i].tokens)?>=shares[i],MixError::Quote);}
     }
     Ok(plan)
 }

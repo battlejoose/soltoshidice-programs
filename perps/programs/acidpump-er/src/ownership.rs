@@ -93,6 +93,13 @@ pub fn fund_rewards(p: &mut OwnershipPool, receipts: u64) -> Result<()> {
     distribute(p)
 }
 pub fn change_stake(p: &mut OwnershipPool, t: &mut OwnershipTrader, inv: &mut Inventory, amount: u128, unstake: bool) -> Result<()> {
+    let dust=change_stake_balances(p,t,amount,unstake)?;
+    inv.treasury=inv.treasury.checked_add(dust).ok_or(MixError::Arithmetic)?;
+    Ok(())
+}
+/// Return unclaimable reward dust in the reward mint's units. The caller chooses
+/// its destination; distinct reward/payout mints must never share this balance.
+pub fn change_stake_balances(p:&mut OwnershipPool,t:&mut OwnershipTrader,amount:u128,unstake:bool)->Result<u64> {
     require!(amount > 0, MixError::Amount);
     distribute(p)?;
     accrue(p, t)?;
@@ -105,14 +112,14 @@ pub fn change_stake(p: &mut OwnershipPool, t: &mut OwnershipTrader, inv: &mut In
         t.staked = t.staked.checked_add(amount).ok_or(MixError::Arithmetic)?;
         p.total_staked = p.total_staked.checked_add(amount).ok_or(MixError::Arithmetic)?;
     }
-    if p.total_staked == 0 {
+    let dust=if p.total_staked == 0 {
         // Everyone has accrued by their final unstake. Return unclaimable fractions to payouts.
         let dust = p.reward_pool.checked_sub(p.pending_liabilities).ok_or(MixError::Arithmetic)?;
         p.reward_pool -= dust;
-        inv.treasury = inv.treasury.checked_add(dust).ok_or(MixError::Arithmetic)?;
-    }
+        dust
+    } else {0};
     distribute(p)?;
-    Ok(())
+    Ok(dust)
 }
 pub fn sweep_surplus(p: &mut OwnershipPool, inv: &mut Inventory, queue_usd:u64, settlement:&Asset, valuation:&Valuation) -> Result<u64> {
     if queue_usd != 0 || p.total_staked == 0 { return Ok(0); }

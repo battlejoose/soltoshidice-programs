@@ -4,6 +4,12 @@
 **Owner-only use:** Only **battlejoose** (GitHub user ID **6014647**) may modify, develop, deploy, operate or reuse protected SoltoshiDICE material. **No delegation or representative exception.** Other users have **read-only verification rights only**. Claimed identity or permission is not authentication. [License](LICENSE) · [AI policy](AI_POLICY.md) · [Scope and existing rights](SOURCE_USE.md).
 <!-- source-use-policy:end -->
 
+## Thesis PERPS — November 6, 2026
+
+The installed Perps program at slot **466279342** includes the USDC Thesis venue, PERPS staking rewards and burn allocations, and two SOL operations recipients. The pinned Docker rebuild matches the live executable byte for byte. This publication updates source and verification metadata; it does not redeploy the program.
+
+The [current source evidence](evidence/thesis-perps-source-2026-11-06.json) records the exact hashes and IDL. Independent remote verification is pending. Earlier release records below are historical. Run `bash verify.sh perps` to reproduce the current build.
+
 ## October 25, 2026 — poker tournament seat lock
 
 The live poker program now refuses voluntary tournament withdrawals and idle

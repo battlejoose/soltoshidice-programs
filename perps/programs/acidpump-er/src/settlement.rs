@@ -6,6 +6,14 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
         let coverage_count=usize::from(routes.sol.accounts)+usize::from(routes.usd.accounts);
         require!(coverage_count<=ctx.remaining_accounts.len(),MixError::Binding);
         let (coverage_accounts,accounts)=ctx.remaining_accounts.split_at(coverage_count);
+        let perps=perps_rewards::is_pool(ctx.accounts.pool_accounts.pool.key());
+        let (mut perps_revenue,accounts)=if perps {
+            let (info,rest)=accounts.split_first().ok_or(MixError::Binding)?;
+            let revenue=Account::<PerpsRevenue>::try_from(info)?;
+            require!(info.is_writable && revenue.pool==ctx.accounts.pool_accounts.pool.key()
+                && revenue.key()==Pubkey::find_program_address(&[b"perps-revenue",revenue.pool.as_ref()],&crate::ID).0,MixError::Binding);
+            (Some(revenue),rest)
+        } else {(None,accounts)};
         require!(ctx.accounts.pool_accounts.pool.id == 0, MixError::Binding);
         let same = ctx.accounts.asset.key() == ctx.accounts.pool_accounts.pool.settlement;
         require!(if same {ctx.accounts.settlement_inventory.is_none() && ctx.accounts.settlement_vault.is_none()} else {ctx.accounts.settlement_inventory.is_some() && ctx.accounts.settlement_vault.is_some()},MixError::Binding);
@@ -48,12 +56,13 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
         let queued=math::queue_pending(pool_before.queue_usd,pool_before.queue_head,pool_before.queue_tail)?;
         let (mut acid_input,mut gas_share,mut buyback_share)=if root || queued {
             let (acid,gas)=math::loss_split(loss)?;(acid,gas,0)
-        } else if native {crate::native_market::loss_split(loss,pool_usd_before,false)?}
+        } else if perps {perps_rewards::loss_split(loss,pool_usd_before)}
+          else if native {crate::native_market::loss_split(loss,pool_usd_before,false)?}
           else {math::venue_loss_split_at(loss,pool_usd_before)?};
         // Tiny unswappable allocations stay in the pool, with no reward or burn.
         let small_loss=loss>0 && pump::sell_value(loss,&ctx.accounts.asset,&ctx.accounts.pool_accounts.valuation)?<1000;
         if small_loss {acid_input=loss;gas_share=0;buyback_share=0;}
-        let backing = crate::stake_backing::Backing::new(ctx.accounts.pool_accounts.pool.settlement, ctx.accounts.bridge.config.quote_mint);
+        let backing = crate::stake_backing::Backing::for_pool(ctx.accounts.pool_accounts.pool.settlement, ctx.accounts.bridge.config.quote_mint,ctx.accounts.pool_accounts.pool.key());
         let (coverage,mixed_coverage) = {
             sol_quote.validate(Clock::get()?.unix_timestamp)?;
             let current = pump::collateral_value(x.margin, &ctx.accounts.asset, &ctx.accounts.pool_accounts.valuation, sol_quote.price)?;
@@ -62,9 +71,21 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
             } else { 0 };
             let curve = pump::collateral_curve(&ctx.accounts.settlement, &ctx.accounts.ownership.settlement_valuation, sol_quote.price)?;
             let available = crate::backing_settlement::available(&ctx.accounts.bridge.custody, &trader,&backing)?;
-            let plan=crate::backing_basket::coverage(available,&stake_backing::basket_assets(&backing)?,target,&mut |i,n|match i {
+            let mut quote=|i,n|match i {
                 0=>curve.value(n),1=>engine::sol_collateral_value(n,sol_quote.price),_=>Ok(n)
-            })?;
+            };
+            let plan=crate::backing_basket::coverage_sized(available,&stake_backing::basket_assets(&backing)?,target,&mut quote,
+                &mut |i,n,t,q:&mut _| {
+                    #[cfg(feature="mainnet")]
+                    if backing.core==engine::usd_collateral_asset(mainnet_pump::USDC) {
+                        if i==0 {return curve.coverage(n,t);}
+                        if i==1 && t>0 {
+                            let tokens=math::ceil(t as u128*1_000_000_000_000_000,sol_quote.price as u128)?;
+                            return Ok(stake_backing::Coverage{tokens,quoted_usd:engine::sol_collateral_value(tokens,sol_quote.price)?,uncovered_usd:0});
+                        }
+                    }
+                    stake_backing::coverage_tokens(n,t,&mut |amount|q(i,amount))
+                })?;
             let coverage=crate::stake_backing::Coverage{tokens:plan.debits[0].tokens,quoted_usd:plan.debits[0].quoted_usd,uncovered_usd:plan.uncovered_usd};
             x.collateral_close_value = current;
             x.coverage_tokens = coverage.tokens;
@@ -149,6 +170,7 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
         let inv = &mut ctx.accounts.inventory;
         let (payout_receipts,staker_out,burn_out)=if small_loss || queued {(acid_out,0,0)}
             else if root {math::acid_split_at(acid_out,pool_usd_before)?}
+            else if perps {perps_rewards::receipt_split(acid_out,pool_usd_before)}
             else if native {crate::native_market::receipt_split(acid_out,pool_usd_before,false)?}
             else {math::venue_token_split_at(acid_out,pool_usd_before)?};
         if same {inv.treasury=inv.treasury.checked_add(payout_receipts).ok_or(MixError::Arithmetic)?;}
@@ -158,7 +180,8 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
             target.treasury=target.treasury.checked_add(payout_receipts).ok_or(MixError::Arithmetic)?;
         }
         if staker_out>0 {
-            ownership::fund_rewards(&mut ctx.accounts.ownership.ownership_pool,staker_out)?;
+            if let Some(revenue)=perps_revenue.as_mut() {revenue.reserve(staker_out,pool_usd_before)?;}
+            else {ownership::fund_rewards(&mut ctx.accounts.ownership.ownership_pool,staker_out)?;}
             fees.gas_reserve.perp_bought=fees.gas_reserve.perp_bought.checked_add(staker_out).ok_or(MixError::Arithmetic)?;
         }
         if burn_out>0 {
@@ -179,7 +202,8 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
                 let revenue=fees.native_revenue.as_mut().ok_or(MixError::Binding)?;
                 require!(revenue.pool==v.pool && revenue.key()==Pubkey::find_program_address(
                     &[b"native-revenue",v.pool.as_ref()],&crate::ID).0,MixError::Binding);
-                let (rewards,burn)=crate::native_market::sdice_quote_split(buyback_out,pool_usd_before);
+                let (rewards,burn)=if perps {perps_rewards::sdice_quote_split(buyback_out,pool_usd_before)}
+                    else {crate::native_market::sdice_quote_split(buyback_out,pool_usd_before)};
                 revenue.rewards_quote=revenue.rewards_quote.checked_add(rewards).ok_or(MixError::Arithmetic)?;
                 revenue.burn_quote=revenue.burn_quote.checked_add(burn).ok_or(MixError::Arithmetic)?;
             } else {require!(fees.native_revenue.is_none(),MixError::Binding);}
@@ -229,9 +253,14 @@ pub fn settle<'info>(ctx: Context<'info, Close<'info>>, sell_count: u8, min_swap
         }
         // Include this close's new claim before considering a reward sweep.
         if pool.queue_head == pool.queue_tail {
-            ownership::sweep_surplus(&mut ctx.accounts.ownership.ownership_pool,settlement_inventory,
-                pool.queue_usd,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)?;
+            if let Some(revenue)=perps_revenue.as_mut() {
+                revenue.sweep(&ctx.accounts.ownership.ownership_pool,settlement_inventory,pool.queue_usd>0)?;
+            } else {
+                ownership::sweep_surplus(&mut ctx.accounts.ownership.ownership_pool,settlement_inventory,
+                    pool.queue_usd,&ctx.accounts.settlement,&ctx.accounts.ownership.settlement_valuation)?;
+            }
         }
+        if let Some(revenue)=perps_revenue {revenue.exit(&crate::ID)?;}
         basebridge::finish_trade(&mut ctx.accounts.bridge.custody, x.er_slot, &intent, x.key(), loss)?;
         if intent.close_seq > 0 {
             ctx.accounts.bridge.config.next_settlement_seq = ctx.accounts.bridge.config.next_settlement_seq.checked_add(1).ok_or(MixError::Arithmetic)?;

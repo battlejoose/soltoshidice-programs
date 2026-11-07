@@ -653,12 +653,12 @@ pub fn sync(ctx: Context<SyncErTrader>) -> Result<()> {
 pub fn change_core_stake(ctx: Context<ChangeErCoreStake>, amount: u64, unstake: bool) -> Result<()> {
     require!(unstake || !ctx.accounts.config.paused, MixError::Paused);
     // Each venue stakes its own pool settlement token.
-    let backing = Backing::new(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint);
+    let backing = Backing::for_pool(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint,ctx.accounts.pool.key());
     crate::stake_backing::change_stake(&mut ctx.accounts.er_trader, amount, unstake, &backing)
 }
 pub fn change_backing(ctx: Context<ChangeErCoreStake>, asset: Pubkey, amount: u64, unstake: bool) -> Result<()> {
     require!(unstake || !ctx.accounts.config.paused, MixError::Paused);
-    let backing = Backing::new(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint);
+    let backing = Backing::for_pool(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint,ctx.accounts.pool.key());
     crate::stake_backing::change_backing(&mut ctx.accounts.er_trader, asset, amount, unstake, &backing)
 }
 pub fn open(ctx: Context<OpenErPosition>, request: OpenRequest) -> Result<()> {
@@ -670,7 +670,7 @@ pub fn open(ctx: Context<OpenErPosition>, request: OpenRequest) -> Result<()> {
     let pool_usd=match ctx.accounts.pool_exposure.as_ref() {Some(p)=>p.value(now)?,None=>0};
     risk::check_pool_entry(ctx.accounts.er_quote.value(request.amount,now)?,request.leverage,
         ctx.accounts.er_trader.notional,pool_usd)?;
-    let backing = Backing::new(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint);
+    let backing = Backing::for_pool(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint,ctx.accounts.pool.key());
     if backing.requires(ctx.accounts.asset.key()) {
         crate::stake_backing::check_entry_mixed(&ctx.accounts.er_trader, &ctx.accounts.core_quote,
             [ctx.accounts.sol_backing_quote.as_deref().map(|q| &**q),ctx.accounts.usd_backing_quote.as_deref().map(|q| &**q)],
@@ -687,7 +687,7 @@ pub fn close(ctx: Context<CloseErPosition>, slot: u8, nonce: u64, expires: i64) 
 }
 pub fn force_core_close(ctx: Context<CloseErPosition>, slot: u8, nonce: u64, expires: i64) -> Result<()> {
     let now = Clock::get()?.unix_timestamp;
-    let backing = Backing::new(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint);
+    let backing = Backing::for_pool(ctx.accounts.pool.settlement, ctx.accounts.config.quote_mint,ctx.accounts.pool.key());
     crate::stake_backing::check_forced_close_mixed(&ctx.accounts.er_trader, &ctx.accounts.core_quote,
         [ctx.accounts.sol_backing_quote.as_deref().map(|q| &**q),ctx.accounts.usd_backing_quote.as_deref().map(|q| &**q)], slot, now, &backing)?;
     close_slot_authorized(&mut ctx.accounts.er_trader, &mut ctx.accounts.er_risk, &ctx.accounts.er_quote,
@@ -917,7 +917,7 @@ pub struct OpenErPosition<'info> {
     pub pool_exposure: Option<Box<Account<'info,crate::pool_exposure::PoolExposure>>>,
     #[account(seeds=[b"er-quote",sol_collateral_asset().as_ref()],bump=sol_backing_quote.bump)]
     pub sol_backing_quote: Option<Box<Account<'info,ErQuote>>>,
-    #[account(constraint=usd_backing_quote.key()==Pubkey::find_program_address(&[b"er-quote",usd_collateral_asset(config.quote_mint).as_ref()],&crate::ID).0 @ MixError::Binding)]
+    #[account(constraint=usd_backing_quote.key()==Pubkey::find_program_address(&[b"er-quote",Backing::for_pool(pool.settlement,config.quote_mint,pool.key()).auxiliary_usd().as_ref()],&crate::ID).0 @ MixError::Binding)]
     pub usd_backing_quote: Option<Box<Account<'info,ErQuote>>>,
 }
 #[derive(Accounts)]
@@ -943,7 +943,7 @@ pub struct CloseErPosition<'info> {
     pub pool: Box<Account<'info, Pool>>,
     #[account(seeds=[b"er-quote",sol_collateral_asset().as_ref()],bump=sol_backing_quote.bump)]
     pub sol_backing_quote: Option<Box<Account<'info,ErQuote>>>,
-    #[account(constraint=usd_backing_quote.key()==Pubkey::find_program_address(&[b"er-quote",usd_collateral_asset(config.quote_mint).as_ref()],&crate::ID).0 @ MixError::Binding)]
+    #[account(constraint=usd_backing_quote.key()==Pubkey::find_program_address(&[b"er-quote",Backing::for_pool(pool.settlement,config.quote_mint,pool.key()).auxiliary_usd().as_ref()],&crate::ID).0 @ MixError::Binding)]
     pub usd_backing_quote: Option<Box<Account<'info,ErQuote>>>,
 }
 #[derive(Accounts)]

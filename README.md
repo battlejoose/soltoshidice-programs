@@ -21,7 +21,7 @@ Play Cee-lo, Hold’em, blackjack, slots, Street Fights and rock, paper, scissor
 
 This public repository contains the released Solana program source, reproducible-build records and read-only verification tools. The overview below also explains the wider platform; the website, 3D clients and hosted services are not included in this contract-source export. All README images are stored here and are publicly accessible.
 
-This overview reflects recorded releases through **October 23, 2026**, with screenshots captured October 24. The bank program is immutable; poker, fights, RPS, brackets and Perps remain upgradeable. [Program records](programs.json), exact verified source revisions and [release receipts](VERIFICATION.md) take precedence over historical feature notes.
+The historical product overview and screenshots below date to October 2026. The **November 6 Thesis PERPS release** is now exported in `perps/`, with its current IDL in `metadata/perps.idl.json`; see [current release verification](VERIFICATION.md#thesis-perps--november-6-2026). The bank program is immutable; poker, fights, RPS, brackets and Perps remain upgradeable. [Program records](programs.json), exact verified source revisions and [release receipts](VERIFICATION.md) take precedence over historical feature notes.
 
 **Explore:** [Games](#the-games) · [Competitions](#competitions) · [Community bank](#the-community-bank) · [Architecture](#server-and-chain-architecture) · [Verification](#what-can-be-verified) · [Code map](#find-your-way-around) · [Reproduce the builds](#reproduce-independently)
 

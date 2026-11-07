@@ -28,6 +28,8 @@ pub use pool_contribution::*;
 pub mod stake_backing;
 pub mod backing_basket;
 pub mod native_market;
+pub mod perps_rewards;
+pub use perps_rewards::*;
 pub mod backing_settlement;
 pub use backing_settlement::{BackingRoute,BackingRoutes};
 pub mod core_migration;
@@ -81,6 +83,12 @@ pub const ACTIVE_MARKET_COUNT: u16 = 4;
 #[program]
 pub mod acidpump_er {
     use super::*;
+pub fn create_perps_market(ctx:Context<CreatePerpsMarket>)->Result<()> {perps_rewards::create(ctx)}
+pub fn stake_perps_ownership(ctx:Context<StakePerpsOwnership>,amount:u128,unstake:bool)->Result<()> {perps_rewards::stake(ctx,amount,unstake)}
+pub fn claim_perps_rewards(ctx:Context<ClaimPerpsRewards>)->Result<()> {perps_rewards::claim(ctx)}
+pub fn sweep_perps_surplus(ctx:Context<SweepPerpsSurplus>)->Result<()> {perps_rewards::sweep(ctx)}
+pub fn route_perps_revenue<'info>(ctx:Context<'info,RoutePerpsRevenue<'info>>,operations:bool,amount:u64,min_out:u64,sell_count:u8)->Result<()> {perps_rewards::route(ctx,operations,amount,min_out,sell_count)}
+pub fn burn_perps_revenue<'info>(ctx:Context<'info,RoutePerpsRevenue<'info>>,amount:u64,min_out:u64,sell_count:u8)->Result<()> {perps_rewards::burn_revenue(ctx,amount,min_out,sell_count)}
 pub fn contribute_pool(ctx:Context<ContributePool>,amount:u64,nonce:u64,min_issued:u128,expires:i64)->Result<()> {pool_contribution::contribute(ctx,amount,nonce,min_issued,expires)}
 pub fn initialize_pool_exposure(ctx:Context<InitializePoolExposure>)->Result<()> {pool_exposure::initialize(ctx)}
 pub fn delegate_pool_exposure(ctx:Context<DelegatePoolExposure>)->Result<()> {pool_exposure::delegate(ctx)}
@@ -518,14 +526,17 @@ pub fn er_commit(ctx: Context<CommitErTrader>) -> Result<()> { engine::commit_tr
         Ok(())
     }
     pub fn stake_ownership(ctx: Context<StakeOwnership>, amount: u128, unstake: bool) -> Result<()> {
+        require!(!perps_rewards::is_pool(ctx.accounts.pool.key()),MixError::Binding);
         ownership::change_stake(&mut ctx.accounts.ownership_pool, &mut ctx.accounts.ownership_trader, &mut ctx.accounts.inventory, amount, unstake)
     }
     pub fn sweep_surplus(ctx: Context<SweepSurplus>) -> Result<()> {
+        require!(!perps_rewards::is_pool(ctx.accounts.pool.key()),MixError::Binding);
         if ctx.accounts.pool.queue_head < ctx.accounts.pool.queue_tail { return Ok(()); }
         ownership::sweep_surplus(&mut ctx.accounts.ownership_pool,&mut ctx.accounts.inventory,ctx.accounts.pool.queue_usd,&ctx.accounts.settlement,&ctx.accounts.valuation)?;
         Ok(())
     }
     pub fn claim_ownership_rewards(ctx: Context<ClaimOwnershipRewards>) -> Result<()> {
+        require!(!perps_rewards::is_pool(ctx.accounts.pool.key()),MixError::Binding);
         let p = &mut ctx.accounts.ownership_pool;
         let t = &mut ctx.accounts.ownership_trader;
         ownership::distribute(p)?;
@@ -539,6 +550,7 @@ pub fn er_commit(ctx: Context<CommitErTrader>) -> Result<()> { engine::commit_tr
         pay(&ctx.accounts.pool, &ctx.accounts.vault, &ctx.accounts.destination, &ctx.accounts.mint, &ctx.accounts.token_program, &ctx.accounts.authority, amount)
     }
     pub fn claim_ownership_developer(ctx: Context<ClaimOwnershipDeveloper>) -> Result<()> {
+        require!(!perps_rewards::is_pool(ctx.accounts.pool.key()),MixError::Binding);
         let amount = ctx.accounts.ownership_pool.dev_fees;
         require!(amount > 0, MixError::NoClaim);
         ctx.accounts.ownership_pool.dev_fees = 0;

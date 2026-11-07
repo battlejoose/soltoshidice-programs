@@ -8,6 +8,320 @@
   },
   "instructions": [
     {
+      "name": "burn_perps_revenue",
+      "discriminator": [
+        22,
+        125,
+        94,
+        243,
+        63,
+        11,
+        203,
+        190
+      ],
+      "accounts": [
+        {
+          "name": "publisher",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  100,
+                  99,
+                  45,
+                  112,
+                  101,
+                  114,
+                  112,
+                  115,
+                  45,
+                  118,
+                  49
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool",
+          "address": "CMoX4JrCCkmPY3rthwH8RKcQaMvPVJCruVJv2abu3k72",
+          "relations": [
+            "revenue",
+            "ownership_pool"
+          ]
+        },
+        {
+          "name": "authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc"
+        },
+        {
+          "name": "target",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  115,
+                  115,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "target.mint",
+                "account": "Asset"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "source",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "usdc"
+              }
+            ]
+          }
+        },
+        {
+          "name": "quote_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  111,
+                  108,
+                  45,
+                  113,
+                  117,
+                  111,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "output",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  101,
+                  114,
+                  112,
+                  115,
+                  45,
+                  111,
+                  117,
+                  116,
+                  112,
+                  117,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "revenue",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  101,
+                  114,
+                  112,
+                  115,
+                  45,
+                  114,
+                  101,
+                  118,
+                  101,
+                  110,
+                  117,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "ownership_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  119,
+                  110,
+                  101,
+                  114,
+                  115,
+                  104,
+                  105,
+                  112,
+                  45,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "operations",
+          "writable": true,
+          "address": "ELczEiAWnZ4WimPXBoArTeiq4c4x7Y52ud49tSr9q9R5"
+        },
+        {
+          "name": "operations_secondary",
+          "docs": [
+            "including any indivisible one-lamport remainder."
+          ],
+          "writable": true,
+          "address": "8bCzV1vbWcGBVfdj85YJXtnuQTbJ6fBREsYieaiRPjTm"
+        },
+        {
+          "name": "pump_program",
+          "address": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "execution",
+          "accounts": [
+            {
+              "name": "magic_program",
+              "address": "Magic11111111111111111111111111111111111111"
+            }
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "min_out",
+          "type": "u64"
+        },
+        {
+          "name": "sell_count",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "claim_ownership_developer",
       "discriminator": [
         45,
@@ -307,6 +621,216 @@
         {
           "name": "destination",
           "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claim_perps_rewards",
+      "discriminator": [
+        3,
+        27,
+        21,
+        59,
+        89,
+        103,
+        57,
+        235
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "ownership_trader"
+          ]
+        },
+        {
+          "name": "pool",
+          "address": "CMoX4JrCCkmPY3rthwH8RKcQaMvPVJCruVJv2abu3k72",
+          "relations": [
+            "ownership_pool",
+            "ownership_trader"
+          ]
+        },
+        {
+          "name": "ownership_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  119,
+                  110,
+                  101,
+                  114,
+                  115,
+                  104,
+                  105,
+                  112,
+                  45,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "ownership_trader",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  119,
+                  110,
+                  101,
+                  114,
+                  115,
+                  104,
+                  105,
+                  112,
+                  45,
+                  116,
+                  114,
+                  97,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "address": "51H7AzyyUAy6AkTPa2g1AMyfkoEoVXZjAKkqyHTopump"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  101,
+                  114,
+                  112,
+                  115,
+                  45,
+                  111,
+                  117,
+                  116,
+                  112,
+                  117,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  59,
+                  128,
+                  245,
+                  148,
+                  66,
+                  104,
+                  250,
+                  20,
+                  82,
+                  87,
+                  74,
+                  203,
+                  113,
+                  153,
+                  169,
+                  82,
+                  214,
+                  162,
+                  182,
+                  85,
+                  32,
+                  194,
+                  220,
+                  248,
+                  36,
+                  136,
+                  240,
+                  202,
+                  35,
+                  215,
+                  155,
+                  239
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "destination",
+          "writable": true
+        },
+        {
+          "name": "execution",
+          "accounts": [
+            {
+              "name": "magic_program",
+              "address": "Magic11111111111111111111111111111111111111"
+            }
+          ]
         }
       ],
       "args": []
@@ -2779,6 +3303,426 @@
         {
           "name": "system_program",
           "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_perps_market",
+      "discriminator": [
+        174,
+        115,
+        11,
+        125,
+        49,
+        182,
+        197,
+        193
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "root"
+          ]
+        },
+        {
+          "name": "root",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "asset",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  115,
+                  115,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  198,
+                  250,
+                  122,
+                  243,
+                  190,
+                  219,
+                  173,
+                  58,
+                  61,
+                  101,
+                  243,
+                  106,
+                  171,
+                  201,
+                  116,
+                  49,
+                  177,
+                  187,
+                  228,
+                  194,
+                  210,
+                  246,
+                  224,
+                  228,
+                  124,
+                  166,
+                  2,
+                  3,
+                  69,
+                  47,
+                  93,
+                  97
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "reward_asset",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  115,
+                  115,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  59,
+                  128,
+                  245,
+                  148,
+                  66,
+                  104,
+                  250,
+                  20,
+                  82,
+                  87,
+                  74,
+                  203,
+                  113,
+                  153,
+                  169,
+                  82,
+                  214,
+                  162,
+                  182,
+                  85,
+                  32,
+                  194,
+                  220,
+                  248,
+                  36,
+                  136,
+                  240,
+                  202,
+                  35,
+                  215,
+                  155,
+                  239
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  100,
+                  99,
+                  45,
+                  112,
+                  101,
+                  114,
+                  112,
+                  115,
+                  45,
+                  118,
+                  49
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "venue",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  101,
+                  110,
+                  117,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  0,
+                  0
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sol_mint",
+          "address": "So11111111111111111111111111111111111111112"
+        },
+        {
+          "name": "usdc_mint",
+          "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "quote_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  111,
+                  108,
+                  45,
+                  113,
+                  117,
+                  111,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "buyback_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  117,
+                  121,
+                  98,
+                  97,
+                  99,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "payout_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  113,
+                  117,
+                  111,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "native_revenue",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  97,
+                  116,
+                  105,
+                  118,
+                  101,
+                  45,
+                  114,
+                  101,
+                  118,
+                  101,
+                  110,
+                  117,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "revenue",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  101,
+                  114,
+                  112,
+                  115,
+                  45,
+                  114,
+                  101,
+                  118,
+                  101,
+                  110,
+                  117,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "execution",
+          "accounts": [
+            {
+              "name": "magic_program",
+              "address": "Magic11111111111111111111111111111111111111"
+            }
+          ]
         }
       ],
       "args": []
@@ -11106,6 +12050,324 @@
       ]
     },
     {
+      "name": "route_perps_revenue",
+      "discriminator": [
+        62,
+        94,
+        138,
+        189,
+        174,
+        50,
+        150,
+        117
+      ],
+      "accounts": [
+        {
+          "name": "publisher",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  100,
+                  99,
+                  45,
+                  112,
+                  101,
+                  114,
+                  112,
+                  115,
+                  45,
+                  118,
+                  49
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool",
+          "address": "CMoX4JrCCkmPY3rthwH8RKcQaMvPVJCruVJv2abu3k72",
+          "relations": [
+            "revenue",
+            "ownership_pool"
+          ]
+        },
+        {
+          "name": "authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc"
+        },
+        {
+          "name": "target",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  115,
+                  115,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "target.mint",
+                "account": "Asset"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "source",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "usdc"
+              }
+            ]
+          }
+        },
+        {
+          "name": "quote_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  111,
+                  108,
+                  45,
+                  113,
+                  117,
+                  111,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "output",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  101,
+                  114,
+                  112,
+                  115,
+                  45,
+                  111,
+                  117,
+                  116,
+                  112,
+                  117,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "revenue",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  101,
+                  114,
+                  112,
+                  115,
+                  45,
+                  114,
+                  101,
+                  118,
+                  101,
+                  110,
+                  117,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "ownership_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  119,
+                  110,
+                  101,
+                  114,
+                  115,
+                  104,
+                  105,
+                  112,
+                  45,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "operations",
+          "writable": true,
+          "address": "ELczEiAWnZ4WimPXBoArTeiq4c4x7Y52ud49tSr9q9R5"
+        },
+        {
+          "name": "operations_secondary",
+          "docs": [
+            "including any indivisible one-lamport remainder."
+          ],
+          "writable": true,
+          "address": "8bCzV1vbWcGBVfdj85YJXtnuQTbJ6fBREsYieaiRPjTm"
+        },
+        {
+          "name": "pump_program",
+          "address": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "execution",
+          "accounts": [
+            {
+              "name": "magic_program",
+              "address": "Magic11111111111111111111111111111111111111"
+            }
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "operations",
+          "type": "bool"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "min_out",
+          "type": "u64"
+        },
+        {
+          "name": "sell_count",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "settle_withdrawal",
       "discriminator": [
         107,
@@ -11391,6 +12653,114 @@
       ]
     },
     {
+      "name": "stake_perps_ownership",
+      "discriminator": [
+        141,
+        250,
+        160,
+        230,
+        238,
+        241,
+        108,
+        100
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "ownership_trader"
+          ]
+        },
+        {
+          "name": "pool",
+          "address": "CMoX4JrCCkmPY3rthwH8RKcQaMvPVJCruVJv2abu3k72",
+          "relations": [
+            "ownership_pool",
+            "ownership_trader"
+          ]
+        },
+        {
+          "name": "ownership_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  119,
+                  110,
+                  101,
+                  114,
+                  115,
+                  104,
+                  105,
+                  112,
+                  45,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "ownership_trader",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  119,
+                  110,
+                  101,
+                  114,
+                  115,
+                  104,
+                  105,
+                  112,
+                  45,
+                  116,
+                  114,
+                  97,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u128"
+        },
+        {
+          "name": "unstake",
+          "type": "bool"
+        }
+      ]
+    },
+    {
       "name": "sweep_dust",
       "discriminator": [
         9,
@@ -11417,6 +12787,135 @@
         {
           "name": "position",
           "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "sweep_perps_surplus",
+      "discriminator": [
+        154,
+        71,
+        14,
+        230,
+        91,
+        60,
+        77,
+        18
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "signer": true
+        },
+        {
+          "name": "pool",
+          "address": "CMoX4JrCCkmPY3rthwH8RKcQaMvPVJCruVJv2abu3k72",
+          "relations": [
+            "ownership_pool",
+            "inventory",
+            "revenue"
+          ]
+        },
+        {
+          "name": "ownership_pool",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  119,
+                  110,
+                  101,
+                  114,
+                  115,
+                  104,
+                  105,
+                  112,
+                  45,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "inventory",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  118,
+                  101,
+                  110,
+                  116,
+                  111,
+                  114,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "pool.settlement",
+                "account": "Pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "revenue",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  101,
+                  114,
+                  112,
+                  115,
+                  45,
+                  114,
+                  101,
+                  118,
+                  101,
+                  110,
+                  117,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "execution",
+          "accounts": [
+            {
+              "name": "magic_program",
+              "address": "Magic11111111111111111111111111111111111111"
+            }
+          ]
         }
       ],
       "args": []
@@ -12099,6 +13598,19 @@
       ]
     },
     {
+      "name": "PerpsRevenue",
+      "discriminator": [
+        184,
+        65,
+        65,
+        175,
+        207,
+        0,
+        128,
+        224
+      ]
+    },
+    {
       "name": "Pool",
       "discriminator": [
         241,
@@ -12319,6 +13831,32 @@
         234,
         94,
         35
+      ]
+    },
+    {
+      "name": "PerpsRevenueBurned",
+      "discriminator": [
+        115,
+        135,
+        69,
+        190,
+        168,
+        187,
+        2,
+        71
+      ]
+    },
+    {
+      "name": "PerpsRevenueDelivered",
+      "discriminator": [
+        58,
+        184,
+        220,
+        46,
+        24,
+        210,
+        58,
+        74
       ]
     },
     {
@@ -14338,6 +15876,105 @@
           {
             "name": "bump",
             "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PerpsRevenue",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "rewards_usdc",
+            "docs": [
+              "Reserved USDC already removed from payout inventory, awaiting conversion."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "operations_usdc",
+            "type": "u64"
+          },
+          {
+            "name": "rewards_spent",
+            "type": "u64"
+          },
+          {
+            "name": "operations_spent",
+            "type": "u64"
+          },
+          {
+            "name": "perps_received",
+            "type": "u64"
+          },
+          {
+            "name": "operations_sol",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "burn_usdc",
+            "type": "u64"
+          },
+          {
+            "name": "burn_spent",
+            "type": "u64"
+          },
+          {
+            "name": "perps_burned",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PerpsRevenueBurned",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "usdc_spent",
+            "type": "u64"
+          },
+          {
+            "name": "perps_burned",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PerpsRevenueDelivered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "operations",
+            "type": "bool"
+          },
+          {
+            "name": "usdc_spent",
+            "type": "u64"
+          },
+          {
+            "name": "received",
+            "type": "u64"
           }
         ]
       }

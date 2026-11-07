@@ -1,0 +1,44 @@
+{
+  "at": "2026-11-07T01:09:20.763Z",
+  "cluster": "mainnet-beta",
+  "program": "7YWUnPaP5tQjJTC5kZu235P5Qix2VpoJk5rTMgkXeCw7",
+  "programData": "GngBxRxp2nvs7kHSTfjxfL9jgt7Abt3wHw4cUV92TEon",
+  "readSlot": 466322146,
+  "lastDeploySlot": 466279342,
+  "upgradeAuthority": "GqJwW3CF9XfopAmCP9zNKN1BvVo3aSPQHmfHdrGUeTzA",
+  "allocatedBytes": 2314584,
+  "sha256": "3ca04bf42683d5942edaaf1111494eb9e2108061534c9634db468298dc0fd79c",
+  "zeroTrimmedSha256": "18c7915cd6812c34cf3af6d893aa225d960fd7dea96433493c2c6ebe69b81504",
+  "zeroTrimmedBytes": 2314569,
+  "sourceCommit": "05ffc31ed5b3b0830a1a75ec299819a7dc9e6977",
+  "release": "Thesis PERPS: USDC venue, PERPS rewards and dual operations recipients",
+  "binarySha256": "3ca04bf42683d5942edaaf1111494eb9e2108061534c9634db468298dc0fd79c",
+  "localDockerMatch": true,
+  "build": {
+    "solanaVerifyVersion": "0.5.2",
+    "image": "solanafoundation/solana-verifiable-build@sha256:f71be5ca7620b7e40933b7f1294fa44e01d08c1fc5ba1f375a2478f5a01580d3",
+    "mount": "perps",
+    "workspace": "perps",
+    "library": "acidpump_er",
+    "cargoArgs": [
+      "--features",
+      "mainnet"
+    ]
+  },
+  "idl": {
+    "address": "6KRvnUXACkTWMASoPmnYLH63U9z1taRjhsY8EnHrpGes",
+    "allocatedBytes": 21653,
+    "sha256": "bc2e539df50eeb0e381300be88cb5da66154f46deb01080c16a3a0938067c1a6",
+    "localSha256": "bc2e539df50eeb0e381300be88cb5da66154f46deb01080c16a3a0938067c1a6",
+    "matchesLocal": true,
+    "canonical": true,
+    "mutable": true,
+    "authority": {
+      "__option": "None"
+    },
+    "instructions": 94,
+    "accounts": 25
+  },
+  "verification": "Matching public source prepared; independent remote verification pending.",
+  "executableChangedDuringVerification": false
+}

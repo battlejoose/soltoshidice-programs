@@ -98,12 +98,68 @@ impl CollateralCurve {
         crate::mainnet_quote_path::collateral_usd(amount, self.source.as_slice(),
             if self.source_usdc {1_000_000_000_000_000} else {self.sol_usd})
     }
+    /// Conservative constant-product inverse. Each rounded fee costs less than
+    /// one extra quote atom; reserving that bound avoids a full token-space
+    /// binary search. Verify the actual executable quote before any debit.
+    pub fn coverage(&self,available:u64,target:u64)->Result<crate::stake_backing::Coverage> {
+        use crate::stake_backing::{Coverage,coverage_tokens};
+        if target==0 {return Ok(Coverage::default());}
+        let maximum=self.value(available)?;
+        if maximum<=target {return Ok(Coverage{tokens:available,quoted_usd:maximum,uncovered_usd:target-maximum});}
+        let candidate=if self.usd {target as u128} else {
+            let scale=if self.source_usdc {1_000_000_000_000_000}else{self.sol_usd};
+            let net=math::ceil(target as u128*1_000_000_000_000_000,scale as u128)? as u128;
+            if let Some(pool)=self.source {
+                let fees=pool.fees.iter().map(|f|*f as u128).sum::<u128>();
+                require!(fees<10_000,MixError::Quote);
+                let rounding=pool.fees.iter().filter(|f|**f>0).count() as u128;
+                let numerator=(net+rounding)*10_000;let denominator=10_000-fees;
+                let gross=numerator/denominator+u128::from(numerator%denominator>0);
+                let reserve=pool.effective_quote()? as u128;
+                if gross>=reserve {return coverage_tokens(available,target,&mut |n|self.value(n));}
+                let numerator=gross*pool.base as u128;
+                numerator/(reserve-gross)+u128::from(numerator%(reserve-gross)>0)
+            } else {net}
+        };
+        if candidate>available as u128 {return coverage_tokens(available,target,&mut |n|self.value(n));}
+        let tokens=candidate as u64;let quoted_usd=self.value(tokens)?;
+        if quoted_usd<target {return coverage_tokens(available,target,&mut |n|self.value(n));}
+        Ok(Coverage{tokens,quoted_usd,uncovered_usd:0})
+    }
 }
 pub fn collateral_curve(a:&Asset,v:&Valuation,sol_usd:u64)->Result<CollateralCurve> {
     live::sol_to_usd_micro(0, sol_usd)?;
     Ok(CollateralCurve { source: if is_sol(a)||is_quote(a) { None } else { Some(source_pool_quote(a,v,true)?) }, usd:is_quote(a), source_usdc:a.quote_mint==live::USDC, sol_usd })
 }
 pub fn collateral_value(amount:u64,a:&Asset,v:&Valuation,sol_usd:u64)->Result<u64> { collateral_curve(a,v,sol_usd)?.value(amount) }
+
+#[cfg(test)]
+mod coverage_tests {
+    use super::*;
+    #[test]
+    fn inverse_covers_actual_fee_rounded_quotes_without_overspending_reserves() {
+        for fees in [[0,0,0],[20,5,5],[0,5,95],[9000,999,0]] {
+            for available in [1,100,1_000_000,500_000_000_000,u64::MAX] {
+                let curve=CollateralCurve{source:Some(SolPoolQuote{base:1_000_000_000_000,real_quote:10_000_000_000,virtual_quote:0,fees}),
+                    usd:false,source_usdc:false,sol_usd:110_000_000_000_000};
+                let maximum=curve.value(available).unwrap();
+                for target in [0,1,maximum/2,maximum,maximum.saturating_add(1)] {
+                    let sized=curve.coverage(available,target).unwrap();
+                    assert!(sized.tokens<=available);
+                    assert_eq!(sized.quoted_usd,curve.value(sized.tokens).unwrap());
+                    if maximum>=target {assert!(sized.quoted_usd>=target);assert_eq!(sized.uncovered_usd,0);}
+                    else {assert_eq!(sized.uncovered_usd,target-maximum);assert_eq!(sized.tokens,available);}
+                }
+            }
+        }
+        for usd in [false,true] {
+            let curve=CollateralCurve{source:None,usd,source_usdc:false,sol_usd:110_000_000_000_000};
+            let sized=curve.coverage(1_000_000_000,1_000_000).unwrap();
+            assert!(sized.quoted_usd>=1_000_000);
+            assert!(curve.value(sized.tokens-1).unwrap()<1_000_000);
+        }
+    }
+}
 // ER legacy arithmetic remains available for the devnet-shaped snapshot method;
 // mainnet ER publication uses explicit SOL/USD fields rather than this shortcut.
 pub fn sell_from_reserves(amount:u64,base:u64,quote:u64,fees:[u16;3])->Result<u64> {
